@@ -42,6 +42,8 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 	switch types {
 	case "getadmin":
 		result, err = h.glodokSvc.GetAdmin(ctx)
+	case "getadminbyid":
+		result, err = h.glodokSvc.GetAdminbyID(ctx, r.FormValue("adminid"))
 	}
 
 	if err != nil {

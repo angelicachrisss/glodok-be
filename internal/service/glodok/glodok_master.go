@@ -97,3 +97,15 @@ func (s Service) SubmitLogin(ctx context.Context, adminid string, adminpass stri
 
 	return result, err
 }
+
+func (s Service) GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error) {
+
+	adminArray, err := s.glodok.GetAdminbyID(ctx, adminid)
+
+	if err != nil {
+		return adminArray, errors.Wrap(err, "[Service][GetAdminbyID]")
+	}
+
+	return adminArray, nil
+
+}

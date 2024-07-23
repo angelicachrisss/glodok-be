@@ -166,3 +166,26 @@ func (d Data) SubmitLogin(ctx context.Context, adminid string, adminpass string)
 	result = "Login successful"
 	return result, nil
 }
+
+func (d Data) GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error) {
+	var (
+		admin      glodokEntity.GetAdmin
+		adminArray []glodokEntity.GetAdmin
+		err        error
+	)
+
+	rows, err := (*d.stmt)[getAdminbyID].QueryxContext(ctx,adminid)
+	if err != nil {
+		return adminArray, errors.Wrap(err, "[DATA] [GetAdminbyID]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&admin); err != nil {
+			return adminArray, errors.Wrap(err, "[DATA] [GetAdminbyID]")
+		}
+		adminArray = append(adminArray, admin)
+	}
+	return adminArray, err
+}

@@ -46,11 +46,13 @@ const (
 	getAdmin  = "GetAdmin"
 	qGetAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin`
 
+	getAdminbyID  = "GetAdminByID"
+	qGetAdminByID = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id =?`
+
 	//query insert
 	insertAdmin  = "InsertAdmin"
 	qInsertAdmin = `INSERT INTO t_admin (admin_id, admin_name, admin_pass) VALUES (?,?,?)`
 
-	//post
 	submitLogin  = "SubmitLogin"
 	qSubmitLogin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id = ?`
 )
@@ -59,10 +61,10 @@ var (
 	readStmt = []statement{
 		{getAdmin, qGetAdmin},
 		{submitLogin, qSubmitLogin},
+		{getAdminbyID, qGetAdminByID},
 	}
 	insertStmt = []statement{
 		{insertAdmin, qInsertAdmin},
-		
 	}
 	updateStmt = []statement{}
 	deleteStmt = []statement{}
