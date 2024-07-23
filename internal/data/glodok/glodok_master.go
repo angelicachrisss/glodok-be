@@ -159,6 +159,7 @@ func (d Data) SubmitLogin(ctx context.Context, adminid string, adminpass string)
 	err = bcrypt.CompareHashAndPassword([]byte(admin.AdminPass), []byte(adminpass))
 	if err != nil {
 		result = "Invalid password"
+		fmt.Println("error",err)
 		return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
 	}
 
