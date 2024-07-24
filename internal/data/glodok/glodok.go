@@ -46,8 +46,20 @@ const (
 	getAdmin  = "GetAdmin"
 	qGetAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin`
 
+	getTableAdmin = "GetTableAdmin"
+	qGetTableAdmin=`SELECT admin_id, admin_name, admin_pass FROM t_admin LIMIT ?,?`
+
 	getAdminbyID  = "GetAdminByID"
 	qGetAdminByID = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id =?`
+
+	getCountAdmin  = "GetCountAdmin"
+	qGetCountAdmin=`SELECT COUNT(admin_id) AS TotalCount FROM t_admin`
+
+	getSearchAdmin = "GetSearchAdmin"
+	qGetSearchAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id LIKE ? LIMIT ?, ?`
+
+	getCountSearchAdmin = "GetCountSearchAdmin"
+	qGetCountSearchAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin WHERE admin_id LIKE ?`
 
 	//query insert
 	insertAdmin  = "InsertAdmin"
@@ -62,6 +74,11 @@ var (
 		{getAdmin, qGetAdmin},
 		{submitLogin, qSubmitLogin},
 		{getAdminbyID, qGetAdminByID},
+		{getTableAdmin,qGetTableAdmin},
+		{getCountAdmin,qGetCountAdmin},
+		{getSearchAdmin,qGetSearchAdmin},
+		{getCountSearchAdmin,qGetCountSearchAdmin},
+
 	}
 	insertStmt = []statement{
 		{insertAdmin, qInsertAdmin},

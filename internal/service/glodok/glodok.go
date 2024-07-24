@@ -15,15 +15,13 @@ import (
 )
 
 type Data interface {
-	// //get
-	// GetKaryawan(ctx context.Context) ([]glodokEntity.GetKaryawan, error)
-	// GetCountKaryawan(ctx context.Context) (int, error)
-	// //insert
-	// InsertKaryawan(ctx context.Context, karyawan glodokEntity.GetKaryawan) (string, error)
-
 	// get
 	GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error)
 	GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error)
+	GetTableAdmin(ctx context.Context,page int, length int) ([]glodokEntity.GetAdmin, error)
+	GetCountAdmin(ctx context.Context) (int, error)
+	GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, error)
+	GetCountSearchAdmin(ctx context.Context, adminid string) (int, error)
 
 	//insert
 	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)

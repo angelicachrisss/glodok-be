@@ -28,6 +28,3 @@ type GetAdmin struct {
 	AdminPass string `db:"admin_pass" json:"admin_pass"`
 }
 
-type InsertAdmin struct {
-    InsertAdmin GetAdmin `json:"data"`
-}
