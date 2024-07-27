@@ -26,7 +26,7 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 		// InsertLokasi JOEntity.InsertKaryawan
 
 		// InsertPack	JOEntity.InsertUnit
-		InsertAdmin glodokEntity.InsertAdmin
+		InsertAdmin glodokEntity.GetAdmin
 		// loginReq    glodokEntity.GetAdmin
 	)
 	defer resp.RenderJSON(w, r)

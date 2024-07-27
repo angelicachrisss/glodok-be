@@ -12,46 +12,6 @@ import (
 	// "time"
 )
 
-// func (s Service) GetKaryawan(ctx context.Context) ([]JoEntity.GetKaryawan, interface{}, error) {
-// 	var (
-// 		total int
-// 	)
-
-// 	metadata := make(map[string]interface{})
-// 	karyawanArray, err := s.glodok.GetKaryawan(ctx)
-
-// 	if err != nil {
-// 		return karyawanArray, metadata, errors.Wrap(err, "[Service][GetKaryawan]")
-// 	}
-
-// 	total, err = s.glodok.GetCountKaryawan(ctx)
-
-// 	if err != nil {
-// 		return karyawanArray, metadata, errors.Wrap(err, "[Service][GetCountKaryawan]")
-// 	}
-// 	metadata["total_data"] = total
-
-// 	return karyawanArray, metadata, nil
-
-// }
-
-// func (s Service) InsertKaryawan(ctx context.Context, karyawan JoEntity.InsertKaryawan) (string, error) {
-
-// 	var (
-// 		result string
-// 	)
-// 	result, err := s.glodok.InsertKaryawan(ctx, karyawan.Insertkaryawan)
-
-// 	if err != nil {
-// 		result = "Gagal"
-// 		return result, errors.Wrap(err, "[Service][InsertKaryawan]")
-// 	}
-
-// 	result = "Berhasil"
-
-// 	return result, err
-// }
-
 func (s Service) GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error) {
 
 	adminArray, err := s.glodok.GetAdmin(ctx)
@@ -64,12 +24,12 @@ func (s Service) GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error) 
 
 }
 
-func (s Service) InsertAdmin(ctx context.Context, admin glodokEntity.InsertAdmin) (string, error) {
+func (s Service) InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error) {
 
 	var (
 		result string
 	)
-	result, err := s.glodok.InsertAdmin(ctx, admin.InsertAdmin)
+	result, err := s.glodok.InsertAdmin(ctx, admin)
 
 	if err != nil {
 		result = "Gagal"
@@ -97,3 +57,68 @@ func (s Service) SubmitLogin(ctx context.Context, adminid string, adminpass stri
 
 	return result, err
 }
+
+func (s Service) GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error) {
+
+	adminArray, err := s.glodok.GetAdminbyID(ctx, adminid)
+
+	if err != nil {
+		return adminArray, errors.Wrap(err, "[Service][GetAdminbyID]")
+	}
+
+	return adminArray, nil
+
+}
+
+func (s Service) GetTableAdmin(ctx context.Context,page int, length int) ([]glodokEntity.GetAdmin,interface{}, error) {
+
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	adminArray, err := s.glodok.GetTableAdmin(ctx, offset, length)
+
+	if err != nil {
+		return adminArray, metadata, errors.Wrap(err, "[Service][GetTableAdmin]")
+	}
+
+	total, err = s.glodok.GetCountAdmin(ctx)
+
+	if err != nil {
+		return adminArray, metadata, errors.Wrap(err, "[Service][GetCountAdmin]")
+	}
+	metadata["total_data"] = total
+
+	return adminArray, metadata, nil
+
+
+}
+
+func (s Service) GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	fmt.Println("offset: ", offset)
+	searchListAdminArray, err := s.glodok.GetSearchAdmin(ctx, adminid, offset, length)
+
+	if err != nil {
+		return searchListAdminArray, metadata, errors.Wrap(err, "[Service][GetSearchAdmin]")
+	}
+
+	total, err = s.glodok.GetCountSearchAdmin(ctx, adminid)
+
+	if err != nil {
+		return searchListAdminArray, metadata, errors.Wrap(err, "[Service][GetSearchAdmin]")
+	}
+	metadata["total_data"] = total
+
+	return searchListAdminArray, metadata, nil
+}
+

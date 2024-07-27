@@ -19,9 +19,12 @@ type IglodokSvc interface {
 
 	// get
 	GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error)
+	GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error)
+	GetTableAdmin(ctx context.Context,page int, length int) ([]glodokEntity.GetAdmin,interface{}, error)
+	GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
 
 	//insert
-	InsertAdmin(ctx context.Context, admin glodokEntity.InsertAdmin) (string, error)
+	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
 	SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error)
 }
 

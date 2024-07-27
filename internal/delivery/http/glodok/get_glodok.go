@@ -2,10 +2,12 @@ package glodok
 
 import (
 	// "internal/itoa"
+	"fmt"
 	httpHelper "glodok-be/internal/delivery/http"
 	"glodok-be/pkg/response"
 	"log"
 	"net/http"
+	"strconv"
 
 	// "strconv"
 
@@ -42,6 +44,17 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 	switch types {
 	case "getadmin":
 		result, err = h.glodokSvc.GetAdmin(ctx)
+	case "getadminbyid":
+		result, err = h.glodokSvc.GetAdminbyID(ctx, r.FormValue("adminid"))
+	case "gettableadmin":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetTableAdmin(ctx, page, length)
+	case "getsearchadmin":
+        page, _ := strconv.Atoi(r.FormValue("page"))
+        length, _ := strconv.Atoi(r.FormValue("length"))
+		fmt.Println("pagelength2", page, length)
+        result, metadata, err = h.glodokSvc.GetSearchAdmin(ctx, r.FormValue("adminid"), page, length)
 	}
 
 	if err != nil {
