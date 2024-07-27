@@ -3,7 +3,10 @@ package glodok
 import (
 	// "encoding/json"
 	// "io/ioutil"
+	"encoding/json"
 	httpHelper "glodok-be/internal/delivery/http"
+	"io/ioutil"
+
 	// glodokEntity "glodok-be/internal/entity/glodok"
 	"glodok-be/pkg/response"
 	// "encoding/json"
@@ -12,6 +15,8 @@ import (
 	"net/http"
 
 	// "strconv"
+
+	glodokEntity "glodok-be/internal/entity/glodok"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
@@ -39,8 +44,11 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 	// Your code here
 	types = r.FormValue("type")
 	switch types {
-	// case "":
-
+	case "updateadmin":
+		var requestUpdate glodokEntity.GetAdmin
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &requestUpdate)
+		result, err = h.glodokSvc.UpdateAdmin(ctx, requestUpdate, r.FormValue("adminid"))
 	}
 
 	if err != nil {

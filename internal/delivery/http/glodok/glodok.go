@@ -12,20 +12,21 @@ import (
 )
 
 type IglodokSvc interface {
-	// //get
-	// GetKaryawan(ctx context.Context) ([]JOEntity.GetKaryawan, interface{}, error)
-	// //insert
-	// InsertKaryawan(ctx context.Context, karyawan JOEntity.InsertKaryawan) (string, error)
-
 	// get
 	GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error)
 	GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error)
-	GetTableAdmin(ctx context.Context,page int, length int) ([]glodokEntity.GetAdmin,interface{}, error)
+	GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
 	GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
 
 	//insert
 	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
 	SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error)
+
+	//update
+	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)
+
+	//delete
+	DeleteAdmin(ctx context.Context, adminid string) (string, error)
 }
 
 type (
