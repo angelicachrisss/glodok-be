@@ -28,37 +28,23 @@ type (
 )
 
 const (
-	// //query get
-	// getKaryawan  = "GetKaryawan"
-	// qGetKaryawan = `SELECT karyawanID, namaKaryawan, noTelp, keterangan FROM t_karyawan`
-
-	// getCountKaryawan  = "GetCountKaryawan"
-	// qGetCountKaryawan = `SELECT COUNT(karyawanID)  AS TotalCount FROM t_karyawan`
-
-	// getAdmin  = "GetAdmin"
-	// qGetAdmin = `SELECT admin_id, admin_pass from t_admin`
-
-	// //query insert
-	// insertKaryawan  = "InsertKaryawan"
-	// qInsertKaryawan = `INSERT INTO t_karyawan (karyawanID, namaKaryawan, noTelp, keterangan) VALUES (?,?,?,?)`
-
 	// query get
 	getAdmin  = "GetAdmin"
 	qGetAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin`
 
-	getTableAdmin = "GetTableAdmin"
-	qGetTableAdmin=`SELECT admin_id, admin_name, admin_pass FROM t_admin LIMIT ?,?`
+	getTableAdmin  = "GetTableAdmin"
+	qGetTableAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin LIMIT ?,?`
 
 	getAdminbyID  = "GetAdminByID"
 	qGetAdminByID = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id =?`
 
 	getCountAdmin  = "GetCountAdmin"
-	qGetCountAdmin=`SELECT COUNT(admin_id) AS TotalCount FROM t_admin`
+	qGetCountAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin`
 
-	getSearchAdmin = "GetSearchAdmin"
+	getSearchAdmin  = "GetSearchAdmin"
 	qGetSearchAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id LIKE ? LIMIT ?, ?`
 
-	getCountSearchAdmin = "GetCountSearchAdmin"
+	getCountSearchAdmin  = "GetCountSearchAdmin"
 	qGetCountSearchAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin WHERE admin_id LIKE ?`
 
 	//query insert
@@ -67,6 +53,14 @@ const (
 
 	submitLogin  = "SubmitLogin"
 	qSubmitLogin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id = ?`
+
+	//query update
+	updateAdmin  = "UpdateAdmin"
+	qUpdateAdmin = `UPDATE t_admin SET admin_name =?, admin_pass =? WHERE admin_id =?`
+
+	//query delete
+	deleteAdmin  = "DeleteAdmin"
+	qDeleteAdmin = `DELETE FROM t_admin WHERE admin_id =?`
 )
 
 var (
@@ -74,17 +68,18 @@ var (
 		{getAdmin, qGetAdmin},
 		{submitLogin, qSubmitLogin},
 		{getAdminbyID, qGetAdminByID},
-		{getTableAdmin,qGetTableAdmin},
-		{getCountAdmin,qGetCountAdmin},
-		{getSearchAdmin,qGetSearchAdmin},
-		{getCountSearchAdmin,qGetCountSearchAdmin},
-
+		{getTableAdmin, qGetTableAdmin},
+		{getCountAdmin, qGetCountAdmin},
+		{getSearchAdmin, qGetSearchAdmin},
+		{getCountSearchAdmin, qGetCountSearchAdmin},
 	}
 	insertStmt = []statement{
 		{insertAdmin, qInsertAdmin},
 	}
-	updateStmt = []statement{}
-	deleteStmt = []statement{}
+	updateStmt = []statement{
+		{updateAdmin, qUpdateAdmin},
+	}
+	deleteStmt = []statement{{deleteAdmin, qDeleteAdmin}}
 )
 
 // New ...

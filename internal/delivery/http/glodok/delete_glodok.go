@@ -31,6 +31,8 @@ func (h *Handler) DeleteGlodok(w http.ResponseWriter, r *http.Request) {
 
 	types = r.FormValue("type")
 	switch types {
+	case "deleteadmin":
+		result, err = h.glodokSvc.DeleteAdmin(ctx, (r.FormValue("adminid")))
 
 	}
 

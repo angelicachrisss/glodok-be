@@ -70,7 +70,7 @@ func (s Service) GetAdminbyID(ctx context.Context, adminid string) ([]glodokEnti
 
 }
 
-func (s Service) GetTableAdmin(ctx context.Context,page int, length int) ([]glodokEntity.GetAdmin,interface{}, error) {
+func (s Service) GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error) {
 
 	var (
 		total int
@@ -93,7 +93,6 @@ func (s Service) GetTableAdmin(ctx context.Context,page int, length int) ([]glod
 	metadata["total_data"] = total
 
 	return adminArray, metadata, nil
-
 
 }
 
@@ -122,3 +121,35 @@ func (s Service) GetSearchAdmin(ctx context.Context, adminid string, page int, l
 	return searchListAdminArray, metadata, nil
 }
 
+func (s Service) DeleteAdmin(ctx context.Context, adminid string) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteAdmin(ctx, adminid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteAdmin]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.UpdateAdmin(ctx, admin, adminid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][UpdateAdmin]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
