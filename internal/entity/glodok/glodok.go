@@ -28,3 +28,12 @@ type GetAdmin struct {
 	AdminPass string `db:"admin_pass" json:"admin_pass"`
 }
 
+type TableDestinasiIc struct {
+	DestinasiID     string  `db:"destinasi_id" json:"destinasi_id"`
+	DestinasiName   string  `db:"destinasi_name" json:"destinasi_name"`
+	DestinasiDesc   string  `db:"destinasi_desc" json:"destinasi_desc"`
+	DestinasiAlamat string  `db:"destinasi_alamat" json:"destinasi_alamat"`
+	DestinasiGambar string  `db:"destinasi_gambar" json:"destinasi_gambar"`
+	DestinasiLang   float64 `db:"destinasi_lang" json:"destinasi_lang"`
+	DestinasiLong   float64 `db:"destinasi_long" json:"destinasi_long"`
+}

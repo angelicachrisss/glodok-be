@@ -23,11 +23,8 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 		resp  response.Response
 		types string
 
-		// InsertLokasi JOEntity.InsertKaryawan
-
-		// InsertPack	JOEntity.InsertUnit
-		InsertAdmin glodokEntity.GetAdmin
-		// loginReq    glodokEntity.GetAdmin
+		InsertAdmin     glodokEntity.GetAdmin
+		TableDestinasiIc glodokEntity.TableDestinasiIc
 	)
 	defer resp.RenderJSON(w, r)
 
@@ -49,11 +46,11 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 		result, err = h.glodokSvc.InsertAdmin(ctx, InsertAdmin)
 
 	case "submitlogin":
-		// body, _ := ioutil.ReadAll(r.Body)
-		// json.Unmarshal(body, &loginReq)
-		// result, err = h.glodokSvc.SubmitLogin(ctx, loginReq.AdminID, loginReq.AdminPass)
-		result, err = h.glodokSvc.SubmitLogin(ctx,r.FormValue("adminid"),r.FormValue("adminpass"))
-
+		result, err = h.glodokSvc.SubmitLogin(ctx, r.FormValue("adminid"), r.FormValue("adminpass"))
+	case "insertdestinasi-ic":
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &TableDestinasiIc)
+		result, err = h.glodokSvc.InsertDestinasiIc(ctx, TableDestinasiIc)
 	}
 
 	if err != nil {

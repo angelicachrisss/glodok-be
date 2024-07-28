@@ -153,3 +153,46 @@ func (s Service) UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, a
 
 	return result, err
 }
+
+func (s Service) InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.TableDestinasiIc) (string, error) {
+
+	var (
+		result string
+	)
+	result, err := s.glodok.InsertDestinasiIc(ctx, destinasi)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][InsertDestinasiIc]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) GetTableDestinasiIc(ctx context.Context, page int, length int) ([]glodokEntity.TableDestinasiIc, interface{}, error) {
+
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	destinasiArray, err := s.glodok.GetTableDestinasiIc(ctx, offset, length)
+
+	if err != nil {
+		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetTableDestinasiIc]")
+	}
+
+	total, err = s.glodok.GetCounDestinasiIc(ctx)
+
+	if err != nil {
+		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetTableDestinasiIc]")
+	}
+	metadata["total_data"] = total
+
+	return destinasiArray, metadata, nil
+
+}

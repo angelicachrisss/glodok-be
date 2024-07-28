@@ -51,10 +51,14 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		length, _ := strconv.Atoi(r.FormValue("length"))
 		result, metadata, err = h.glodokSvc.GetTableAdmin(ctx, page, length)
 	case "getsearchadmin":
-        page, _ := strconv.Atoi(r.FormValue("page"))
-        length, _ := strconv.Atoi(r.FormValue("length"))
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
 		fmt.Println("pagelength2", page, length)
-        result, metadata, err = h.glodokSvc.GetSearchAdmin(ctx, r.FormValue("adminid"), page, length)
+		result, metadata, err = h.glodokSvc.GetSearchAdmin(ctx, r.FormValue("adminid"), page, length)
+	case "gettabledestinasiic":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetTableDestinasiIc(ctx, page, length)
 	}
 
 	if err != nil {

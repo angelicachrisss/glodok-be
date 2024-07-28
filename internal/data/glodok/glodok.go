@@ -47,12 +47,22 @@ const (
 	getCountSearchAdmin  = "GetCountSearchAdmin"
 	qGetCountSearchAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin WHERE admin_id LIKE ?`
 
+	getDestinasiIc  = "GetDestinasiIC"
+	qGetDestinasiIc = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long FROM t_destinasi_ic LIMIT ?,?`
+
+	getCountDestinasiIc  = "GetCountAdmin"
+	qGetCountDestinasiIc = `SELECT COUNT(destinasi_id) AS TotalCount FROM t_destinasi_ic`
+
 	//query insert
 	insertAdmin  = "InsertAdmin"
 	qInsertAdmin = `INSERT INTO t_admin (admin_id, admin_name, admin_pass) VALUES (?,?,?)`
 
 	submitLogin  = "SubmitLogin"
 	qSubmitLogin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id = ?`
+
+	insertDestinasiIc  = "InsertDestinasiIc"
+	qInsertDestinasiIc = `INSERT INTO t_destinasi_ic (destinasi_id, destinasi_name,destinasi_desc,destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long)
+	values (?,?,?,?,?,?,?)`
 
 	//query update
 	updateAdmin  = "UpdateAdmin"
@@ -72,9 +82,12 @@ var (
 		{getCountAdmin, qGetCountAdmin},
 		{getSearchAdmin, qGetSearchAdmin},
 		{getCountSearchAdmin, qGetCountSearchAdmin},
+		{getDestinasiIc, qGetDestinasiIc},
+		{getCountDestinasiIc, qGetCountDestinasiIc},
 	}
 	insertStmt = []statement{
 		{insertAdmin, qInsertAdmin},
+		{insertDestinasiIc, qInsertDestinasiIc},
 	}
 	updateStmt = []statement{
 		{updateAdmin, qUpdateAdmin},

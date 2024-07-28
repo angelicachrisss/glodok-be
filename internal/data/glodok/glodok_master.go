@@ -255,3 +255,75 @@ func (d Data) UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, admi
 	result = "Berhasil"
 	return result, err
 }
+
+// destinasi
+func (d Data) InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.TableDestinasiIc) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[insertDestinasiIc].ExecContext(ctx,
+		destinasi.DestinasiID,
+		destinasi.DestinasiName,
+		destinasi.DestinasiDesc,
+		destinasi.DestinasiAlamat,
+		destinasi.DestinasiGambar,
+		destinasi.DestinasiLang,
+		destinasi.DestinasiLong,
+	)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][InsertDestinasiIc]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (d Data) GetTableDestinasiIc(ctx context.Context, page int, length int) ([]glodokEntity.TableDestinasiIc, error) {
+	var (
+		destinasiIc      glodokEntity.TableDestinasiIc
+		destinasiIcArray []glodokEntity.TableDestinasiIc
+		err              error
+	)
+
+	rows, err := (*d.stmt)[getDestinasiIc].QueryxContext(ctx, page, length)
+	if err != nil {
+		return destinasiIcArray, errors.Wrap(err, "[DATA] [GetTableDestinasiIc]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&destinasiIc); err != nil {
+			return destinasiIcArray, errors.Wrap(err, "[DATA] [GetTableDestinasiIc]")
+		}
+		destinasiIcArray = append(destinasiIcArray, destinasiIc)
+	}
+	return destinasiIcArray, err
+}
+
+func (d Data) GetCounDestinasiIc(ctx context.Context) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountDestinasiIc].QueryxContext(ctx)
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCounDestinasiIc]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCounDestinasiIc]")
+		}
+
+	}
+	return total, err
+}

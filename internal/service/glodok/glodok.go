@@ -23,9 +23,15 @@ type Data interface {
 	GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, error)
 	GetCountSearchAdmin(ctx context.Context, adminid string) (int, error)
 
+	// GetDestinasiIc(ctx context.Context) ([]glodokEntity.TableDestinasiIc, error)
+	GetTableDestinasiIc(ctx context.Context, page int, length int) ([]glodokEntity.TableDestinasiIc, error)
+	GetCounDestinasiIc(ctx context.Context) (int, error)
+
 	//insert
 	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
 	SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error)
+
+	InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.TableDestinasiIc) (string, error)
 
 	//update
 	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)
