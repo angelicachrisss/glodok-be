@@ -24,12 +24,14 @@ type IglodokSvc interface {
 	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
 	SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error)
 	InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.TableDestinasiIc) (string, error)
+	GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, interface{}, error)
 
 	//update
 	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)
 
 	//delete
 	DeleteAdmin(ctx context.Context, adminid string) (string, error)
+	DeleteDestinasiIc(ctx context.Context, destinasiid string) (string, error)
 }
 
 type (

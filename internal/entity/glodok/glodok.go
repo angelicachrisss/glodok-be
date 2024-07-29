@@ -36,4 +36,6 @@ type TableDestinasiIc struct {
 	DestinasiGambar string  `db:"destinasi_gambar" json:"destinasi_gambar"`
 	DestinasiLang   float64 `db:"destinasi_lang" json:"destinasi_lang"`
 	DestinasiLong   float64 `db:"destinasi_long" json:"destinasi_long"`
+	DestinasiHBuka string `db:"destinasi_hbuka" json:"destinasi_hbuka"`
+	DestinasiHTutup string `db:"destinasi_htutup" json:"destinasi_htutup"`
 }

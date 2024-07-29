@@ -59,6 +59,10 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
 		result, metadata, err = h.glodokSvc.GetTableDestinasiIc(ctx, page, length)
+	case "getsearchdestinasi-ic":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetSearchDestinasiIc(ctx, r.FormValue("destinasiname"), page, length)
 	}
 
 	if err != nil {

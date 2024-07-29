@@ -271,6 +271,8 @@ func (d Data) InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.Tabl
 		destinasi.DestinasiGambar,
 		destinasi.DestinasiLang,
 		destinasi.DestinasiLong,
+		destinasi.DestinasiHBuka,
+		destinasi.DestinasiHTutup,
 	)
 
 	if err != nil {
@@ -322,6 +324,70 @@ func (d Data) GetCounDestinasiIc(ctx context.Context) (int, error) {
 	for rows.Next() {
 		if err = rows.Scan(&total); err != nil {
 			return total, errors.Wrap(err, "[DATA] [GetCounDestinasiIc]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) DeleteDestinasiIc(ctx context.Context, destinasiid string) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteDestinasiIc].ExecContext(ctx, destinasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteDestinasiIc]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (d Data) GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, error) {
+	var (
+		destinasi      glodokEntity.TableDestinasiIc
+		destinasiArray []glodokEntity.TableDestinasiIc
+		err        error
+	)
+
+	rows, err := (*d.stmt)[getSearchDestinasiIc].QueryxContext(ctx, "%"+destinasiname+"%", page, length)
+	fmt.Println("pagelength", page, length)
+	if err != nil {
+		return destinasiArray, errors.Wrap(err, "[DATA] [GetSearchDestinasiIc]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&destinasi); err != nil {
+			return destinasiArray, errors.Wrap(err, "[DATA] [GetSearchDestinasiIc]")
+		}
+		destinasiArray = append(destinasiArray, destinasi)
+	}
+	return destinasiArray, err
+}
+
+func (d Data) GetCountSearchDestinasiIc(ctx context.Context, destinasiname string) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountSearchDestinasiIc].QueryxContext(ctx, "%"+destinasiname+"%")
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountSearchDestinasiIc]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountSearchDestinasiIc]")
 		}
 
 	}

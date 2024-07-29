@@ -196,3 +196,46 @@ func (s Service) GetTableDestinasiIc(ctx context.Context, page int, length int) 
 	return destinasiArray, metadata, nil
 
 }
+
+func (s Service) DeleteDestinasiIc(ctx context.Context, destinasiid string) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteDestinasiIc(ctx, destinasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteDestinasiIc]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	fmt.Println("offset: ", offset)
+	searchListDestinasiIcArray, err := s.glodok.GetSearchDestinasiIc(ctx, destinasiname, offset, length)
+
+	if err != nil {
+		return searchListDestinasiIcArray, metadata, errors.Wrap(err, "[Service][GetSearchDestinasiIc]")
+	}
+
+	total, err = s.glodok.GetCountSearchDestinasiIc(ctx, destinasiname)
+
+	if err != nil {
+		return searchListDestinasiIcArray, metadata, errors.Wrap(err, "[Service][GetSearchDestinasiIc]")
+	}
+	metadata["total_data"] = total
+
+	return searchListDestinasiIcArray, metadata, nil
+}
+

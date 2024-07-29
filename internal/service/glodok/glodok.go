@@ -26,6 +26,8 @@ type Data interface {
 	// GetDestinasiIc(ctx context.Context) ([]glodokEntity.TableDestinasiIc, error)
 	GetTableDestinasiIc(ctx context.Context, page int, length int) ([]glodokEntity.TableDestinasiIc, error)
 	GetCounDestinasiIc(ctx context.Context) (int, error)
+	GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, error)
+	GetCountSearchDestinasiIc(ctx context.Context, destinasiname string) (int, error)
 
 	//insert
 	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
@@ -38,6 +40,7 @@ type Data interface {
 
 	//delete
 	DeleteAdmin(ctx context.Context, adminid string) (string, error)
+	DeleteDestinasiIc(ctx context.Context, destinasiid string) (string, error)
 }
 
 type Service struct {
