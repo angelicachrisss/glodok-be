@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 	"glodok-be/pkg/errors"
+	"strconv"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -88,14 +90,28 @@ func (d Data) SubmitLogin(ctx context.Context, adminid string, adminpass string)
 		return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(admin.AdminPass), []byte(adminpass))
-	if err != nil {
-		result = "Invalid password"
-		fmt.Println("error", err)
-		return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
+	// Check if the adminid is "ADMIN" or "admin"
+	if strings.EqualFold(adminid, "ADMIN") {
+		// Compare the plain text password directly
+		if admin.AdminPass == adminpass {
+			result = "Login successful"
+		} else {
+			result = "Invalid password"
+			err = errors.New("password does not match")
+			return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
+		}
+	} else {
+		// Proceed with hashed password comparison for other adminids
+		err = bcrypt.CompareHashAndPassword([]byte(admin.AdminPass), []byte(adminpass))
+		if err != nil {
+			result = "Invalid password"
+			fmt.Println("error", err)
+			return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
+		}
+
+		result = "Login successful"
 	}
 
-	result = "Login successful"
 	return result, nil
 }
 
@@ -257,13 +273,36 @@ func (d Data) UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, admi
 }
 
 // destinasi
-func (d Data) InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.TableDestinasiIc) (string, error) {
+func (d Data) InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi) (string, error) {
 	var (
 		err    error
 		result string
+		lastID string
+		newID  string
 	)
 
-	_, err = (*d.stmt)[insertDestinasiIc].ExecContext(ctx,
+	// Fetch the last inserted DestinasiID
+	err = (*d.stmt)[fetchLastDestinasiID].QueryRowxContext(ctx).Scan(&lastID)
+	if err != nil && err != sql.ErrNoRows {
+		result = "Gagal mengambil ID terakhir"
+		return result, errors.Wrap(err, "[DATA][InsertDestinasiWarisan]")
+	}
+
+	// Generate the new DestinasiID
+	if lastID != "" {
+		// Extract the numeric part from lastID and increment it
+		num, _ := strconv.Atoi(lastID[1:])
+		newID = fmt.Sprintf("D%04d", num+1)
+	} else {
+		// If there are no previous records, start with D0001
+		newID = "D0001"
+	}
+
+	// Assign the new DestinasiID
+	destinasi.DestinasiID = newID
+
+	// Proceed with the insertion
+	_, err = (*d.stmt)[insertDestinasi].ExecContext(ctx,
 		destinasi.DestinasiID,
 		destinasi.DestinasiName,
 		destinasi.DestinasiDesc,
@@ -273,123 +312,125 @@ func (d Data) InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.Tabl
 		destinasi.DestinasiLong,
 		destinasi.DestinasiHBuka,
 		destinasi.DestinasiHTutup,
+		destinasi.DestinasiKet,
+		destinasi.DestinasiHalal,
 	)
 
 	if err != nil {
 		result = "Gagal"
-		return result, errors.Wrap(err, "[DATA][InsertDestinasiIc]")
+		return result, errors.Wrap(err, "[DATA][InsertDestinasi]")
 	}
 
 	result = "Berhasil"
-
-	return result, err
+	return result, nil
 }
 
-func (d Data) GetTableDestinasiIc(ctx context.Context, page int, length int) ([]glodokEntity.TableDestinasiIc, error) {
+func (d Data) GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, error) {
 	var (
-		destinasiIc      glodokEntity.TableDestinasiIc
-		destinasiIcArray []glodokEntity.TableDestinasiIc
-		err              error
+		destinasi      glodokEntity.TableDestinasi
+		destinasiArray []glodokEntity.TableDestinasi
+		err            error
 	)
 
-	rows, err := (*d.stmt)[getDestinasiIc].QueryxContext(ctx, page, length)
+	rows, err := (*d.stmt)[getTableDestinasi].QueryxContext(ctx, ket, page, length)
 	if err != nil {
-		return destinasiIcArray, errors.Wrap(err, "[DATA] [GetTableDestinasiIc]")
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		if err = rows.StructScan(&destinasiIc); err != nil {
-			return destinasiIcArray, errors.Wrap(err, "[DATA] [GetTableDestinasiIc]")
-		}
-		destinasiIcArray = append(destinasiIcArray, destinasiIc)
-	}
-	return destinasiIcArray, err
-}
-
-func (d Data) GetCounDestinasiIc(ctx context.Context) (int, error) {
-	var (
-		err   error
-		total int
-	)
-
-	rows, err := (*d.stmt)[getCountDestinasiIc].QueryxContext(ctx)
-	if err != nil {
-		return total, errors.Wrap(err, "[DATA] [GetCounDestinasiIc]")
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		if err = rows.Scan(&total); err != nil {
-			return total, errors.Wrap(err, "[DATA] [GetCounDestinasiIc]")
-		}
-
-	}
-	return total, err
-}
-
-func (d Data) DeleteDestinasiIc(ctx context.Context, destinasiid string) (string, error) {
-	var (
-		err    error
-		result string
-	)
-
-	_, err = (*d.stmt)[deleteDestinasiIc].ExecContext(ctx, destinasiid)
-
-	if err != nil {
-		result = "Gagal"
-		return result, errors.Wrap(err, "[DATA][DeleteDestinasiIc]")
-	}
-
-	result = "Berhasil"
-
-	return result, err
-}
-
-func (d Data) GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, error) {
-	var (
-		destinasi      glodokEntity.TableDestinasiIc
-		destinasiArray []glodokEntity.TableDestinasiIc
-		err        error
-	)
-
-	rows, err := (*d.stmt)[getSearchDestinasiIc].QueryxContext(ctx, "%"+destinasiname+"%", page, length)
-	fmt.Println("pagelength", page, length)
-	if err != nil {
-		return destinasiArray, errors.Wrap(err, "[DATA] [GetSearchDestinasiIc]")
+		return destinasiArray, errors.Wrap(err, "[DATA] [GetTableDestinasi]")
 	}
 
 	defer rows.Close()
 
 	for rows.Next() {
 		if err = rows.StructScan(&destinasi); err != nil {
-			return destinasiArray, errors.Wrap(err, "[DATA] [GetSearchDestinasiIc]")
+			return destinasiArray, errors.Wrap(err, "[DATA] [GetTableDestinasi]")
 		}
 		destinasiArray = append(destinasiArray, destinasi)
 	}
 	return destinasiArray, err
+
 }
 
-func (d Data) GetCountSearchDestinasiIc(ctx context.Context, destinasiname string) (int, error) {
+func (d Data) GetCountDestinasi(ctx context.Context, ket string) (int, error) {
 	var (
 		err   error
 		total int
 	)
 
-	rows, err := (*d.stmt)[getCountSearchDestinasiIc].QueryxContext(ctx, "%"+destinasiname+"%")
+	rows, err := (*d.stmt)[getCountDestinasi].QueryxContext(ctx, ket)
 	if err != nil {
-		return total, errors.Wrap(err, "[DATA] [GetCountSearchDestinasiIc]")
+		return total, errors.Wrap(err, "[DATA] [GetCountDestinasi]")
 	}
 
 	defer rows.Close()
 
 	for rows.Next() {
 		if err = rows.Scan(&total); err != nil {
-			return total, errors.Wrap(err, "[DATA] [GetCountSearchDestinasiIc]")
+			return total, errors.Wrap(err, "[DATA] [GetCountDestinasi]")
 		}
 
 	}
 	return total, err
 }
+
+func (d Data) DeleteDestinasi(ctx context.Context, destinasiid string) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteDestinasi].ExecContext(ctx, destinasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteDestinasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+// func (d Data) GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, error) {
+// 	var (
+// 		destinasi      glodokEntity.TableDestinasiIc
+// 		destinasiArray []glodokEntity.TableDestinasiIc
+// 		err        error
+// 	)
+
+// 	rows, err := (*d.stmt)[getSearchDestinasiIc].QueryxContext(ctx, "%"+destinasiname+"%", page, length)
+// 	fmt.Println("pagelength", page, length)
+// 	if err != nil {
+// 		return destinasiArray, errors.Wrap(err, "[DATA] [GetSearchDestinasiIc]")
+// 	}
+
+// 	defer rows.Close()
+
+// 	for rows.Next() {
+// 		if err = rows.StructScan(&destinasi); err != nil {
+// 			return destinasiArray, errors.Wrap(err, "[DATA] [GetSearchDestinasiIc]")
+// 		}
+// 		destinasiArray = append(destinasiArray, destinasi)
+// 	}
+// 	return destinasiArray, err
+// }
+
+// func (d Data) GetCountSearchDestinasiIc(ctx context.Context, destinasiname string) (int, error) {
+// 	var (
+// 		err   error
+// 		total int
+// 	)
+
+// 	rows, err := (*d.stmt)[getCountSearchDestinasiIc].QueryxContext(ctx, "%"+destinasiname+"%")
+// 	if err != nil {
+// 		return total, errors.Wrap(err, "[DATA] [GetCountSearchDestinasiIc]")
+// 	}
+
+// 	defer rows.Close()
+
+// 	for rows.Next() {
+// 		if err = rows.Scan(&total); err != nil {
+// 			return total, errors.Wrap(err, "[DATA] [GetCountSearchDestinasiIc]")
+// 		}
+
+// 	}
+// 	return total, err
+// }

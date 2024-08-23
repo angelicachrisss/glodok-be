@@ -2,7 +2,6 @@ package glodok
 
 import (
 	// "internal/itoa"
-	"fmt"
 	httpHelper "glodok-be/internal/delivery/http"
 	"glodok-be/pkg/response"
 	"log"
@@ -53,16 +52,15 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 	case "getsearchadmin":
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
-		fmt.Println("pagelength2", page, length)
 		result, metadata, err = h.glodokSvc.GetSearchAdmin(ctx, r.FormValue("adminid"), page, length)
-	case "gettabledestinasiic":
+	case "getdestinasi":
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetTableDestinasiIc(ctx, page, length)
-	case "getsearchdestinasi-ic":
-		page, _ := strconv.Atoi(r.FormValue("page"))
-		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetSearchDestinasiIc(ctx, r.FormValue("destinasiname"), page, length)
+		result, metadata, err = h.glodokSvc.GetTableDestinasi(ctx, r.FormValue("ket"), page, length)
+		// case "getsearchdestinasi-ic":
+		// 	page, _ := strconv.Atoi(r.FormValue("page"))
+		// 	length, _ := strconv.Atoi(r.FormValue("length"))
+		// 	result, metadata, err = h.glodokSvc.GetSearchDestinasiIc(ctx, r.FormValue("destinasiname"), page, length)
 	}
 
 	if err != nil {

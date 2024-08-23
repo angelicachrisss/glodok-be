@@ -23,24 +23,23 @@ type Data interface {
 	GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, error)
 	GetCountSearchAdmin(ctx context.Context, adminid string) (int, error)
 
-	// GetDestinasiIc(ctx context.Context) ([]glodokEntity.TableDestinasiIc, error)
-	GetTableDestinasiIc(ctx context.Context, page int, length int) ([]glodokEntity.TableDestinasiIc, error)
-	GetCounDestinasiIc(ctx context.Context) (int, error)
-	GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, error)
-	GetCountSearchDestinasiIc(ctx context.Context, destinasiname string) (int, error)
+	GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, error)
+	GetCountDestinasi(ctx context.Context, ket string) (int, error)
+	// GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, error)
+	// GetCountSearchDestinasiIc(ctx context.Context, destinasiname string) (int, error)
 
 	//insert
 	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
 	SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error)
 
-	InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.TableDestinasiIc) (string, error)
+	InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi) (string, error)
 
 	//update
 	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)
 
 	//delete
 	DeleteAdmin(ctx context.Context, adminid string) (string, error)
-	DeleteDestinasiIc(ctx context.Context, destinasiid string) (string, error)
+	DeleteDestinasi(ctx context.Context, destinasiid string) (string, error)
 }
 
 type Service struct {

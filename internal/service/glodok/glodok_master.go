@@ -154,16 +154,16 @@ func (s Service) UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, a
 	return result, err
 }
 
-func (s Service) InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.TableDestinasiIc) (string, error) {
+func (s Service) InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi) (string, error) {
 
 	var (
 		result string
 	)
-	result, err := s.glodok.InsertDestinasiIc(ctx, destinasi)
+	result, err := s.glodok.InsertDestinasi(ctx, destinasi)
 
 	if err != nil {
 		result = "Gagal"
-		return result, errors.Wrap(err, "[Service][InsertDestinasiIc]")
+		return result, errors.Wrap(err, "[Service][InsertDestinasi]")
 	}
 
 	result = "Berhasil"
@@ -171,8 +171,7 @@ func (s Service) InsertDestinasiIc(ctx context.Context, destinasi glodokEntity.T
 	return result, err
 }
 
-func (s Service) GetTableDestinasiIc(ctx context.Context, page int, length int) ([]glodokEntity.TableDestinasiIc, interface{}, error) {
-
+func (s Service) GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, interface{}, error) {
 	var (
 		total int
 	)
@@ -180,33 +179,33 @@ func (s Service) GetTableDestinasiIc(ctx context.Context, page int, length int) 
 	metadata := make(map[string]interface{})
 
 	offset := page * length
-	destinasiArray, err := s.glodok.GetTableDestinasiIc(ctx, offset, length)
+	destinasiArray, err := s.glodok.GetTableDestinasi(ctx, ket, offset, length)
 
 	if err != nil {
-		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetTableDestinasiIc]")
+		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetTableDestinasi]")
 	}
 
-	total, err = s.glodok.GetCounDestinasiIc(ctx)
+	total, err = s.glodok.GetCountDestinasi(ctx, ket)
 
 	if err != nil {
-		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetTableDestinasiIc]")
+		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetCountDestinasi]")
 	}
 	metadata["total_data"] = total
 
 	return destinasiArray, metadata, nil
-
 }
 
-func (s Service) DeleteDestinasiIc(ctx context.Context, destinasiid string) (string, error) {
+
+func (s Service) DeleteDestinasi(ctx context.Context, destinasiid string) (string, error) {
 
 	var (
 		result string
 	)
-	_, err := s.glodok.DeleteDestinasiIc(ctx, destinasiid)
+	_, err := s.glodok.DeleteDestinasi(ctx, destinasiid)
 
 	if err != nil {
 		result = "Gagal"
-		return result, errors.Wrap(err, "[Service][DeleteDestinasiIc]")
+		return result, errors.Wrap(err, "[Service][DeleteDestinasi]")
 	}
 
 	result = "Berhasil"
@@ -214,28 +213,27 @@ func (s Service) DeleteDestinasiIc(ctx context.Context, destinasiid string) (str
 	return result, err
 }
 
-func (s Service) GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, interface{}, error) {
-	var (
-		total int
-	)
+// func (s Service) GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, interface{}, error) {
+// 	var (
+// 		total int
+// 	)
 
-	metadata := make(map[string]interface{})
+// 	metadata := make(map[string]interface{})
 
-	offset := page * length
-	fmt.Println("offset: ", offset)
-	searchListDestinasiIcArray, err := s.glodok.GetSearchDestinasiIc(ctx, destinasiname, offset, length)
+// 	offset := page * length
+// 	fmt.Println("offset: ", offset)
+// 	searchListDestinasiIcArray, err := s.glodok.GetSearchDestinasiIc(ctx, destinasiname, offset, length)
 
-	if err != nil {
-		return searchListDestinasiIcArray, metadata, errors.Wrap(err, "[Service][GetSearchDestinasiIc]")
-	}
+// 	if err != nil {
+// 		return searchListDestinasiIcArray, metadata, errors.Wrap(err, "[Service][GetSearchDestinasiIc]")
+// 	}
 
-	total, err = s.glodok.GetCountSearchDestinasiIc(ctx, destinasiname)
+// 	total, err = s.glodok.GetCountSearchDestinasiIc(ctx, destinasiname)
 
-	if err != nil {
-		return searchListDestinasiIcArray, metadata, errors.Wrap(err, "[Service][GetSearchDestinasiIc]")
-	}
-	metadata["total_data"] = total
+// 	if err != nil {
+// 		return searchListDestinasiIcArray, metadata, errors.Wrap(err, "[Service][GetSearchDestinasiIc]")
+// 	}
+// 	metadata["total_data"] = total
 
-	return searchListDestinasiIcArray, metadata, nil
-}
-
+// 	return searchListDestinasiIcArray, metadata, nil
+// }

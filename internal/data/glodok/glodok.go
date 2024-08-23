@@ -47,17 +47,24 @@ const (
 	getCountSearchAdmin  = "GetCountSearchAdmin"
 	qGetCountSearchAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin WHERE admin_id LIKE ?`
 
-	getDestinasiIc  = "GetDestinasiIC"
-	qGetDestinasiIc = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup FROM t_destinasi_ic LIMIT ?,?`
+	getTableDestinasi  = "GetTableDestinasi"
+	qGetTableDestinasi = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ? LIMIT ?,?`
 
-	getCountDestinasiIc  = "GetCountAdmin"
-	qGetCountDestinasiIc = `SELECT COUNT(destinasi_id) AS TotalCount FROM t_destinasi_ic`
+	getCountDestinasi  = "GetCountDestinasi"
+	qGetCountDestinasi = `SELECT COUNT(destinasi_id) AS TotalCount FROM t_destinasi WHERE destinasi_kat = ?`
 
-	getSearchDestinasiIc ="GetSearchDestinasiIc"
-	qGetSearchDestinasiIc = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup FROM t_destinasi_ic WHERE destinasi_name LIKE ? LIMIT ? , ?`
+	// getDestinasiIc  = "GetDestinasiIC"
+	// qGetDestinasiIc = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup, destinasi_kat FROM t_destinasi WHERE destinasi_kat = ?LIMIT ?,?`
+
+	// getCountDestinasiIc  = "GetCountAdmin"
+	// qGetCountDestinasiIc = `SELECT COUNT(destinasi_id) AS TotalCount FROM t_destinasi WHERE destinasi_kat = ?`
+
+	// getSearchDestinasiIc  = "GetSearchDestinasiIc"
+	// qGetSearchDestinasiIc = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup,destinasi_kat FROM t_destinasi WHERE destinasi_name LIKE ? LIMIT ? , ?`
+
+	// getCountSearchDestinasiIc  = "GetCountSearchDestinasiIc"
+	// qGetCountSearchDestinasiIc = `SELECT COUNT(destinasi_name) AS TotalCount FROM t_destinasi WHERE destinasi_kat = ? AND destinasi_name LIKE ?`
 	
-	getCountSearchDestinasiIc  = "GetCountSearchDestinasiIc"
-	qGetCountSearchDestinasiIc = `SELECT COUNT(destinasi_name) AS TotalCount FROM t_destinasi_ic WHERE destinasi_name LIKE ?`
 	//query insert
 	insertAdmin  = "InsertAdmin"
 	qInsertAdmin = `INSERT INTO t_admin (admin_id, admin_name, admin_pass) VALUES (?,?,?)`
@@ -65,9 +72,12 @@ const (
 	submitLogin  = "SubmitLogin"
 	qSubmitLogin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id = ?`
 
-	insertDestinasiIc  = "InsertDestinasiIc"
-	qInsertDestinasiIc = `INSERT INTO t_destinasi_ic (destinasi_id, destinasi_name,destinasi_desc,destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup)
-	values (?,?,?,?,?,?,?,?,?)`
+	insertDestinasi  = "InsertDestinasi"
+	qInsertDestinasi = `INSERT INTO t_destinasi (destinasi_id, destinasi_name,destinasi_desc,destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup,destinasi_kat,destinasi_labelhalal)
+	values (?,?,?,?,?,?,?,?,?,?,?)`
+
+	fetchLastDestinasiID  = "FetchLastDestinasiID"
+	qFetchLastDestinasiID = `SELECT destinasi_id FROM t_destinasi ORDER BY destinasi_id DESC LIMIT 1`
 
 	//query update
 	updateAdmin  = "UpdateAdmin"
@@ -77,8 +87,8 @@ const (
 	deleteAdmin  = "DeleteAdmin"
 	qDeleteAdmin = `DELETE FROM t_admin WHERE admin_id =?`
 
-	deleteDestinasiIc = "DeleteDestinasiIc"
-	qDeleteDestinasiIc = `DELETE FROM t_destinasi_ic WHERE destinasi_id =?`
+	deleteDestinasi  = "DeleteDestinasi"
+	qDeleteDestinasi = `DELETE FROM t_destinasi WHERE destinasi_id =?`
 )
 
 var (
@@ -91,21 +101,25 @@ var (
 		{getSearchAdmin, qGetSearchAdmin},
 		{getCountSearchAdmin, qGetCountSearchAdmin},
 
-		{getDestinasiIc, qGetDestinasiIc},
-		{getCountDestinasiIc, qGetCountDestinasiIc},
-		{getSearchDestinasiIc,qGetSearchDestinasiIc},
-		{getCountSearchDestinasiIc,qGetCountSearchDestinasiIc},
+		{fetchLastDestinasiID, qFetchLastDestinasiID},
+		{getTableDestinasi, qGetTableDestinasi},
+		{getCountDestinasi, qGetCountDestinasi},
+
+		// {getDestinasiIc, qGetDestinasiIc},
+		// {getCountDestinasiIc, qGetCountDestinasiIc},
+		// {getSearchDestinasiIc, qGetSearchDestinasiIc},
+		// {getCountSearchDestinasiIc, qGetCountSearchDestinasiIc},
 	}
 	insertStmt = []statement{
 		{insertAdmin, qInsertAdmin},
-		{insertDestinasiIc, qInsertDestinasiIc},
+		{insertDestinasi, qInsertDestinasi},
 	}
 	updateStmt = []statement{
 		{updateAdmin, qUpdateAdmin},
 	}
 	deleteStmt = []statement{
 		{deleteAdmin, qDeleteAdmin},
-		{deleteDestinasiIc,qDeleteDestinasiIc},
+		{deleteDestinasi, qDeleteDestinasi},
 	}
 )
 
