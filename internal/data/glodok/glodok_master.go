@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"glodok-be/pkg/errors"
+	"log"
 	"strconv"
 	"strings"
 
@@ -315,6 +316,8 @@ func (d Data) InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableD
 		destinasi.DestinasiKet,
 		destinasi.DestinasiHalal,
 	)
+
+	log.Println("data user object", destinasi)
 
 	if err != nil {
 		result = "Gagal"

@@ -174,6 +174,7 @@ func (s Service) InsertDestinasi(ctx context.Context, destinasi glodokEntity.Tab
 func (s Service) GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, interface{}, error) {
 	var (
 		total int
+		// destinasiArrayFinish []glodokEntity.TableDestinasi
 	)
 
 	metadata := make(map[string]interface{})
@@ -192,9 +193,43 @@ func (s Service) GetTableDestinasi(ctx context.Context, ket string, page int, le
 	}
 	metadata["total_data"] = total
 
+	// for _, y := range destinasiArray {
+	// 	// Encode image data to PNG format
+	// 	var buf bytes.Buffer
+	// 	imgBuffer := bytes.NewReader(y.DestinasiGambar)
+	// 	img, _, err := image.Decode(imgBuffer)
+	// 	if err != nil {
+	// 		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetCountDestinasi]")
+	// 	}
+
+	// 	err = png.Encode(&buf, img)
+	// 	if err != nil {
+	// 		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetCountDestinasi]")
+	// 	}
+
+	// 	// Convert encoded image data to Base64
+	// 	encodedImageData := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+	// 	oneObj := glodokEntity.TableDestinasi{
+	// 		DestinasiID:     y.DestinasiID,
+	// 		DestinasiName:   y.DestinasiName,
+	// 		DestinasiDesc:   y.DestinasiDesc,
+	// 		DestinasiAlamat: y.DestinasiAlamat,
+	// 		// DestinasiGambar: y.DestinasiGambar,
+	// 		DestinasiLang:   y.DestinasiLang,
+	// 		DestinasiLong:   y.DestinasiLong,
+	// 		DestinasiHBuka:  y.DestinasiHBuka,
+	// 		DestinasiHTutup: y.DestinasiHTutup,
+	// 		DestinasiKet:    y.DestinasiKet,
+	// 		DestinasiHalal:  y.DestinasiHalal,
+	// 		DestinasiPic:    encodedImageData,
+	// 	}
+	// 	destinasiArrayFinish = append(destinasiArrayFinish, oneObj)
+	// 	// 	responses = append(responses, response)
+	// }
+
 	return destinasiArray, metadata, nil
 }
-
 
 func (s Service) DeleteDestinasi(ctx context.Context, destinasiid string) (string, error) {
 
