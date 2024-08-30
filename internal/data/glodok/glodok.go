@@ -29,6 +29,7 @@ type (
 
 const (
 	// query get
+	//--admin
 	getAdmin  = "GetAdmin"
 	qGetAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin`
 
@@ -47,34 +48,27 @@ const (
 	getCountSearchAdmin  = "GetCountSearchAdmin"
 	qGetCountSearchAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin WHERE admin_id LIKE ?`
 
+
+	//--destinasi
 	getTableDestinasi  = "GetTableDestinasi"
-	qGetTableDestinasi = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ? LIMIT ?,?`
+	qGetTableDestinasi = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup,destinasi_jbuka,destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ? LIMIT ?,?`
 
 	getCountDestinasi  = "GetCountDestinasi"
 	qGetCountDestinasi = `SELECT COUNT(destinasi_id) AS TotalCount FROM t_destinasi WHERE destinasi_kat = ?`
 
-	// getDestinasiIc  = "GetDestinasiIC"
-	// qGetDestinasiIc = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup, destinasi_kat FROM t_destinasi WHERE destinasi_kat = ?LIMIT ?,?`
-
-	// getCountDestinasiIc  = "GetCountAdmin"
-	// qGetCountDestinasiIc = `SELECT COUNT(destinasi_id) AS TotalCount FROM t_destinasi WHERE destinasi_kat = ?`
-
-	// getSearchDestinasiIc  = "GetSearchDestinasiIc"
-	// qGetSearchDestinasiIc = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup,destinasi_kat FROM t_destinasi WHERE destinasi_name LIKE ? LIMIT ? , ?`
-
-	// getCountSearchDestinasiIc  = "GetCountSearchDestinasiIc"
-	// qGetCountSearchDestinasiIc = `SELECT COUNT(destinasi_name) AS TotalCount FROM t_destinasi WHERE destinasi_kat = ? AND destinasi_name LIKE ?`
-	
 	//query insert
+	//--admin
 	insertAdmin  = "InsertAdmin"
 	qInsertAdmin = `INSERT INTO t_admin (admin_id, admin_name, admin_pass) VALUES (?,?,?)`
 
 	submitLogin  = "SubmitLogin"
 	qSubmitLogin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id = ?`
 
+	//--destinasi
+
 	insertDestinasi  = "InsertDestinasi"
-	qInsertDestinasi = `INSERT INTO t_destinasi (destinasi_id, destinasi_name,destinasi_desc,destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup,destinasi_kat,destinasi_labelhalal)
-	values (?,?,?,?,?,?,?,?,?,?,?)`
+	qInsertDestinasi = `INSERT INTO t_destinasi (destinasi_id, destinasi_name,destinasi_desc,destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup, destinasi_jbuka, destinasi_jtutup, destinasi_kat,destinasi_labelhalal)
+	values (?,?,?,?,?,?,?,?,?,TIME(?),TIME(?),?,?)`
 
 	fetchLastDestinasiID  = "FetchLastDestinasiID"
 	qFetchLastDestinasiID = `SELECT destinasi_id FROM t_destinasi ORDER BY destinasi_id DESC LIMIT 1`
@@ -104,11 +98,6 @@ var (
 		{fetchLastDestinasiID, qFetchLastDestinasiID},
 		{getTableDestinasi, qGetTableDestinasi},
 		{getCountDestinasi, qGetCountDestinasi},
-
-		// {getDestinasiIc, qGetDestinasiIc},
-		// {getCountDestinasiIc, qGetCountDestinasiIc},
-		// {getSearchDestinasiIc, qGetSearchDestinasiIc},
-		// {getCountSearchDestinasiIc, qGetCountSearchDestinasiIc},
 	}
 	insertStmt = []statement{
 		{insertAdmin, qInsertAdmin},

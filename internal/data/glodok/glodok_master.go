@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"glodok-be/pkg/errors"
-	"log"
 	"strconv"
 	"strings"
 
@@ -302,6 +301,9 @@ func (d Data) InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableD
 	// Assign the new DestinasiID
 	destinasi.DestinasiID = newID
 
+	jambuka := destinasi.DestinasiJBuka.Format("15:04:05")
+	jamtutup := destinasi.DestinasiJTutup.Format("15:04:05")
+	
 	// Proceed with the insertion
 	_, err = (*d.stmt)[insertDestinasi].ExecContext(ctx,
 		destinasi.DestinasiID,
@@ -313,11 +315,11 @@ func (d Data) InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableD
 		destinasi.DestinasiLong,
 		destinasi.DestinasiHBuka,
 		destinasi.DestinasiHTutup,
+		jambuka,
+		jamtutup,
 		destinasi.DestinasiKet,
 		destinasi.DestinasiHalal,
 	)
-
-	log.Println("data user object", destinasi)
 
 	if err != nil {
 		result = "Gagal"
