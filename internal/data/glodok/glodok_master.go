@@ -285,17 +285,21 @@ func (d Data) InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableD
 	err = (*d.stmt)[fetchLastDestinasiID].QueryRowxContext(ctx).Scan(&lastID)
 	if err != nil && err != sql.ErrNoRows {
 		result = "Gagal mengambil ID terakhir"
-		return result, errors.Wrap(err, "[DATA][InsertDestinasiWarisan]")
+		return result, errors.Wrap(err, "[DATA][InsertDestinasi]")
 	}
+
+	fmt.Println("lastID", lastID)
 
 	// Generate the new DestinasiID
 	if lastID != "" {
 		// Extract the numeric part from lastID and increment it
 		num, _ := strconv.Atoi(lastID[1:])
 		newID = fmt.Sprintf("D%04d", num+1)
+
 	} else {
 		// If there are no previous records, start with D0001
 		newID = "D0001"
+
 	}
 
 	// Assign the new DestinasiID
@@ -303,7 +307,7 @@ func (d Data) InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableD
 
 	jambuka := destinasi.DestinasiJBuka.Format("15:04:05")
 	jamtutup := destinasi.DestinasiJTutup.Format("15:04:05")
-	
+
 	// Proceed with the insertion
 	_, err = (*d.stmt)[insertDestinasi].ExecContext(ctx,
 		destinasi.DestinasiID,
@@ -394,48 +398,304 @@ func (d Data) DeleteDestinasi(ctx context.Context, destinasiid string) (string, 
 	return result, err
 }
 
-// func (d Data) GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, error) {
-// 	var (
-// 		destinasi      glodokEntity.TableDestinasiIc
-// 		destinasiArray []glodokEntity.TableDestinasiIc
-// 		err        error
-// 	)
+// tipetransportasi
+func (d Data) InsertTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi) (string, error) {
+	var (
+		err    error
+		result string
+		lastID string
+		newID  string
+	)
 
-// 	rows, err := (*d.stmt)[getSearchDestinasiIc].QueryxContext(ctx, "%"+destinasiname+"%", page, length)
-// 	fmt.Println("pagelength", page, length)
-// 	if err != nil {
-// 		return destinasiArray, errors.Wrap(err, "[DATA] [GetSearchDestinasiIc]")
-// 	}
+	err = (*d.stmt)[fetchLastTipeTransportasiID].QueryRowxContext(ctx).Scan(&lastID)
+	if err != nil && err != sql.ErrNoRows {
+		result = "Gagal mengambil ID terakhir"
+		return result, errors.Wrap(err, "[DATA][InsertTipeTransportasi]")
+	}
 
-// 	defer rows.Close()
+	if lastID != "" {
+		// Extract the numeric part from lastID and increment it
+		num, _ := strconv.Atoi(lastID[2:])
+		newID = fmt.Sprintf("TT%03d", num+1)
 
-// 	for rows.Next() {
-// 		if err = rows.StructScan(&destinasi); err != nil {
-// 			return destinasiArray, errors.Wrap(err, "[DATA] [GetSearchDestinasiIc]")
-// 		}
-// 		destinasiArray = append(destinasiArray, destinasi)
-// 	}
-// 	return destinasiArray, err
-// }
+	} else {
+		newID = "TT001"
 
-// func (d Data) GetCountSearchDestinasiIc(ctx context.Context, destinasiname string) (int, error) {
-// 	var (
-// 		err   error
-// 		total int
-// 	)
+	}
 
-// 	rows, err := (*d.stmt)[getCountSearchDestinasiIc].QueryxContext(ctx, "%"+destinasiname+"%")
-// 	if err != nil {
-// 		return total, errors.Wrap(err, "[DATA] [GetCountSearchDestinasiIc]")
-// 	}
+	tipetransportasi.TipeTransportasiID = newID
 
-// 	defer rows.Close()
+	// Proceed with the insertion
+	_, err = (*d.stmt)[insertTipeTransportasi].ExecContext(ctx,
+		tipetransportasi.TipeTransportasiID,
+		tipetransportasi.TipeTransportasiName,
+	)
 
-// 	for rows.Next() {
-// 		if err = rows.Scan(&total); err != nil {
-// 			return total, errors.Wrap(err, "[DATA] [GetCountSearchDestinasiIc]")
-// 		}
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][InsertTipeTransportasi]")
+	}
 
-// 	}
-// 	return total, err
-// }
+	result = "Berhasil"
+	return result, nil
+}
+
+func (d Data) GetTableTipeTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableTipeTransportasi, error) {
+	var (
+		tipeTransportasi      glodokEntity.TableTipeTransportasi
+		tipeTransportasiArray []glodokEntity.TableTipeTransportasi
+		err                   error
+	)
+
+	rows, err := (*d.stmt)[getTableTipeTransportasi].QueryxContext(ctx, page, length)
+	if err != nil {
+		return tipeTransportasiArray, errors.Wrap(err, "[DATA] [GetTableTipeTransportasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&tipeTransportasi); err != nil {
+			return tipeTransportasiArray, errors.Wrap(err, "[DATA] [GetTableTipeTransportasi]")
+		}
+		tipeTransportasiArray = append(tipeTransportasiArray, tipeTransportasi)
+	}
+	return tipeTransportasiArray, err
+
+}
+
+func (d Data) GetCountTableTipeTransportasi(ctx context.Context) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountTableTipeTransportasi].QueryxContext(ctx)
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountTableTipeTransportasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountTableTipeTransportasi]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) GetSearchTipeTransportasi(ctx context.Context, tipetransportasiid string, tipetransportasiname string, page int, length int) ([]glodokEntity.TableTipeTransportasi, error) {
+	var (
+		tipeTransportasi      glodokEntity.TableTipeTransportasi
+		tipeTransportasiArray []glodokEntity.TableTipeTransportasi
+		err                   error
+	)
+
+	rows, err := (*d.stmt)[getSearchTipeTransportasi].QueryxContext(ctx, "%"+tipetransportasiid+"%", "%"+tipetransportasiname+"%", page, length)
+	fmt.Println("pagelength", page, length)
+	if err != nil {
+		return tipeTransportasiArray, errors.Wrap(err, "[DATA] [GetSearchTipeTransportasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&tipeTransportasi); err != nil {
+			return tipeTransportasiArray, errors.Wrap(err, "[DATA] [GetSearchTipeTransportasi]")
+		}
+		tipeTransportasiArray = append(tipeTransportasiArray, tipeTransportasi)
+	}
+	return tipeTransportasiArray, err
+}
+
+func (d Data) GetCountSearchTipeTransportasi(ctx context.Context, tipetransportasiid string, tipetransportasiname string) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountSearchTipeTransportasi].QueryxContext(ctx,  "%"+tipetransportasiid+"%", "%"+tipetransportasiname+"%")
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountSearchTipeTransportasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountSearchTipeTransportasi]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) DeleteTipeTransportasi(ctx context.Context, tipetransportasiid string) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteTipeTransportasi].ExecContext(ctx, tipetransportasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteTipeTransportasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (d Data) UpdateTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi, tipetransportasiid string) (string, error) {
+	var (
+		result string
+		err    error
+	)
+
+	_, err = (*d.stmt)[updateTipeTransportasi].ExecContext(ctx, tipetransportasi.TipeTransportasiName, tipetransportasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][UpdateTipeTransportasi]")
+	}
+
+	result = "Berhasil"
+	return result, err
+}
+
+//rutetransportasi
+func (d Data) GetTipeTransportasi(ctx context.Context) ([]glodokEntity.TableTipeTransportasi, error) {
+	var (
+		tipeTransportasi      glodokEntity.TableTipeTransportasi
+		tipeTransportasiArray []glodokEntity.TableTipeTransportasi
+		err                   error
+	)
+
+	rows, err := (*d.stmt)[getTipeTransportasi].QueryxContext(ctx)
+	if err != nil {
+		return tipeTransportasiArray, errors.Wrap(err, "[DATA] [GetTipeTransportasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&tipeTransportasi); err != nil {
+			return tipeTransportasiArray, errors.Wrap(err, "[DATA] [GetTipeTransportasi]")
+		}
+		tipeTransportasiArray = append(tipeTransportasiArray, tipeTransportasi)
+	}
+	return tipeTransportasiArray, err
+
+}
+
+func (d Data) InsertRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi) (string, error) {
+	var (
+		err    error
+		result string
+		lastID string
+		newID  string
+	)
+
+	err = (*d.stmt)[fetchLastRuteTransportasiID].QueryRowxContext(ctx).Scan(&lastID)
+	if err != nil && err != sql.ErrNoRows {
+		result = "Gagal mengambil ID terakhir"
+		return result, errors.Wrap(err, "[DATA][fetchLastRuteTransportasiID]")
+	}
+
+	if lastID != "" {
+		// Extract the numeric part from lastID and increment it
+		num, _ := strconv.Atoi(lastID[1:])
+		newID = fmt.Sprintf("R%04d", num+1)
+
+	} else {
+		newID = "R0001"
+
+	}
+
+	rutetransportasi.RuteID = newID
+
+	// Proceed with the insertion
+	_, err = (*d.stmt)[insertRuteTransportasi].ExecContext(ctx,
+		rutetransportasi.RuteID,
+		rutetransportasi.TipeTransportasiID,
+		rutetransportasi.RuteNoBus,
+		rutetransportasi.RuteTujuanAwal,
+		rutetransportasi.RuteTujuanAkhir,
+	)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][InsertRuteTransportasi]")
+	}
+
+	result = "Berhasil"
+	return result, nil
+}
+
+func (d Data) GetTableRuteTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableRuteTransportasi, error) {
+	var (
+		ruteTransportasi      glodokEntity.TableRuteTransportasi
+		ruteTransportasiArray []glodokEntity.TableRuteTransportasi
+		err                   error
+	)
+
+	rows, err := (*d.stmt)[getTableRuteTransportasi].QueryxContext(ctx, page, length)
+	if err != nil {
+		return ruteTransportasiArray, errors.Wrap(err, "[DATA] [GetTableRuteTransportasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&ruteTransportasi); err != nil {
+			return ruteTransportasiArray, errors.Wrap(err, "[DATA] [GetTableRuteTransportasi]")
+		}
+		ruteTransportasiArray = append(ruteTransportasiArray, ruteTransportasi)
+	}
+	return ruteTransportasiArray, err
+
+}
+
+func (d Data) GetCountTableRuteTransportasi(ctx context.Context) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountTableRuteTransportasi].QueryxContext(ctx)
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountTableRuteTransportasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountTableRuteTransportasi]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) DeleteRuteTransportasi(ctx context.Context, ruteid string) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteRuteTransportasi].ExecContext(ctx, ruteid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteRuteTransportasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}

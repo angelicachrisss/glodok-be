@@ -26,7 +26,8 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 		resp  response.Response
 		types string
 
-		InsertAdmin    glodokEntity.GetAdmin
+		InsertAdmin glodokEntity.GetAdmin
+		// InsertTipeTransportasi glodokEntity.TableTipeTransportasi
 		// TableDestinasi glodokEntity.TableDestinasi
 	)
 	defer resp.RenderJSON(w, r)
@@ -136,7 +137,7 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 
 		// Membaca data JSON yang lain dari form-data
 		TableDestinasi := glodokEntity.TableDestinasi{
-			DestinasiID:     "", 
+			DestinasiID:     "",
 			DestinasiName:   r.FormValue("destinasi_name"),
 			DestinasiDesc:   r.FormValue("destinasi_desc"),
 			DestinasiAlamat: r.FormValue("destinasi_alamat"),
@@ -144,7 +145,7 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 			DestinasiLong:   destinasiLong,
 			DestinasiHBuka:  r.FormValue("destinasi_hbuka"),
 			DestinasiHTutup: r.FormValue("destinasi_htutup"),
-			DestinasiJBuka: jamBuka,
+			DestinasiJBuka:  jamBuka,
 			DestinasiJTutup: jamTutup,
 			DestinasiKet:    r.FormValue("destinasi_kat"),
 			DestinasiHalal:  r.FormValue("destinasi_labelhalal"),
@@ -158,8 +159,31 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 			resp.StatusCode = 500
 			log.Printf("[ERROR] %s %s - %s\n", r.Method, r.URL, err.Error())
 			resp.Data = result
-				return
-			}	
+			return
+		}
+
+	//-------------------------------------------------------------------------------------------------------------------------
+	//tipetransportasi
+	case "inserttipetransportasi":
+		var (
+			InsertTipeTransportasi glodokEntity.TableTipeTransportasi
+		)
+
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &InsertTipeTransportasi)
+		result, err = h.glodokSvc.InsertTipeTransportasi(ctx, InsertTipeTransportasi)
+
+		//-------------------------------------------------------------------------------------------------------------------------
+	//rutetransportasi
+	case "insertrutetransportasi":
+		var (
+			InsertRuteTransportasi glodokEntity.TableRuteTransportasi
+		)
+
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &InsertRuteTransportasi)
+		result, err = h.glodokSvc.InsertRuteTransportasi(ctx, InsertRuteTransportasi)
+		fmt.Println("masoook", body, result)
 	}
 
 	if err != nil {

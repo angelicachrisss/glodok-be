@@ -18,10 +18,19 @@ type IglodokSvc interface {
 	GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error)
 	GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
 	GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
-	
+
 	//--destinasi
 	GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, interface{}, error)
-	// GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, interface{}, error)
+
+	//--tipetransportasi
+	GetTableTipeTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableTipeTransportasi, interface{}, error)
+	GetSearchTipeTransportasi(ctx context.Context, tipetransportasiid string, tipetransportasiname string, page int, length int) ([]glodokEntity.TableTipeTransportasi, interface{}, error)
+
+	//--rutetransportasi
+	GetTipeTransportasi(ctx context.Context) ([]glodokEntity.TableTipeTransportasi, error)
+	GetTableRuteTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
+
+	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//insert
 	//--admin
@@ -31,16 +40,35 @@ type IglodokSvc interface {
 	//--destinasi
 	InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi) (string, error)
 
+	//--tipetransportasi
+	InsertTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi) (string, error)
+
+	//--rutetransportasi
+	InsertRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi) (string, error)
+
+	//--------------------------------------------------------------------------------------------------------------------------------
+
 	//update
 	//--admin
 	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)
+
+	//--tipetransportasi
+	UpdateTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi, tipetransportasiid string) (string, error)
+
+	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//delete
 	//--admin
 	DeleteAdmin(ctx context.Context, adminid string) (string, error)
 
-	//--destinasi
+	//destinasi
 	DeleteDestinasi(ctx context.Context, destinasiid string) (string, error)
+
+	//tipetransportasi
+	DeleteTipeTransportasi(ctx context.Context, tipetransportasiid string) (string, error)
+
+	//rutetransportasi
+	DeleteRuteTransportasi(ctx context.Context, ruteid string) (string, error)
 }
 
 type (

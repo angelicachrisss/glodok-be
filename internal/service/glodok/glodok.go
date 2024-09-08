@@ -25,8 +25,15 @@ type Data interface {
 
 	GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, error)
 	GetCountDestinasi(ctx context.Context, ket string) (int, error)
-	// GetSearchDestinasiIc(ctx context.Context, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasiIc, error)
-	// GetCountSearchDestinasiIc(ctx context.Context, destinasiname string) (int, error)
+
+	GetTableTipeTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableTipeTransportasi, error)
+	GetCountTableTipeTransportasi(ctx context.Context) (int, error)
+	GetSearchTipeTransportasi(ctx context.Context, tipetransportasiid string, tipetransportasiname string, page int, length int) ([]glodokEntity.TableTipeTransportasi, error)
+	GetCountSearchTipeTransportasi(ctx context.Context, tipetransportasiid string, tipetransportasiname string) (int, error)
+
+	GetTipeTransportasi(ctx context.Context) ([]glodokEntity.TableTipeTransportasi, error)
+	GetTableRuteTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableRuteTransportasi, error)
+	GetCountTableRuteTransportasi(ctx context.Context) (int, error)
 
 	//insert
 	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
@@ -34,12 +41,19 @@ type Data interface {
 
 	InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi) (string, error)
 
+	InsertTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi) (string, error)
+
+	InsertRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi) (string, error)
+
 	//update
 	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)
+	UpdateTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi, tipetransportasiid string) (string, error)
 
 	//delete
 	DeleteAdmin(ctx context.Context, adminid string) (string, error)
 	DeleteDestinasi(ctx context.Context, destinasiid string) (string, error)
+	DeleteTipeTransportasi(ctx context.Context, tipetransportasiid string) (string, error)
+	DeleteRuteTransportasi(ctx context.Context, ruteid string) (string, error)
 }
 
 type Service struct {
