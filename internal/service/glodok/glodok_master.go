@@ -387,3 +387,121 @@ func (s Service) DeleteRuteTransportasi(ctx context.Context, ruteid string) (str
 
 	return result, err
 }
+
+func (s Service) GetSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	fmt.Println("offset: ", offset)
+	searchListRuteTransportasiArray, err := s.glodok.GetSearchRuteTransportasi(ctx, tipetransportasiname, tujuanawal, tujuanakhir, offset, length)
+
+	if err != nil {
+		return searchListRuteTransportasiArray, metadata, errors.Wrap(err, "[Service][GetSearchTipeTransportasi]")
+	}
+
+	total, err = s.glodok.GetCountSearchRuteTransportasi(ctx, tipetransportasiname, tujuanawal, tujuanakhir)
+
+	if err != nil {
+		return searchListRuteTransportasiArray, metadata, errors.Wrap(err, "[Service][GetCountSearchRuteTransportasi]")
+	}
+	metadata["total_data"] = total
+
+	return searchListRuteTransportasiArray, metadata, nil
+}
+
+func (s Service) UpdateRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi, ruteid string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.UpdateRuteTransportasi(ctx, rutetransportasi, ruteid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][UpdateRuteTransportasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+//transportasi
+func (s Service) InsertTransportasi(ctx context.Context, transportasi glodokEntity.TableTransportasi) (string, error) {
+
+	var (
+		result string
+	)
+	result, err := s.glodok.InsertTransportasi(ctx, transportasi)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][InsertTransportasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) GetTableTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableTransportasi, interface{}, error) {
+
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	transportasiArray, err := s.glodok.GetTableTransportasi(ctx, offset, length)
+
+	if err != nil {
+		return transportasiArray, metadata, errors.Wrap(err, "[Service][GetTableTransportasi]")
+	}
+
+	total, err = s.glodok.GetCountTableTransportasi(ctx)
+
+	if err != nil {
+		return transportasiArray, metadata, errors.Wrap(err, "[Service][GetCountTableTransportasi]")
+	}
+	metadata["total_data"] = total
+
+	return transportasiArray, metadata, nil
+
+}
+
+func (s Service) DeleteTransportasi(ctx context.Context, transportasiid string) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteTransportasi(ctx, transportasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteTransportasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) UpdateTransportasi(ctx context.Context, transportasi glodokEntity.TableTransportasi, transportasiid string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.UpdateTransportasi(ctx, transportasi, transportasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][UpdateTransportasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}

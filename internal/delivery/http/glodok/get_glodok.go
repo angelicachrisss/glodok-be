@@ -72,6 +72,14 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
 		result, metadata, err = h.glodokSvc.GetTableRuteTransportasi(ctx, page, length)
+	case "getsearchrutetransportasi":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetSearchRuteTransportasi(ctx, r.FormValue("tipetransportasiname"), r.FormValue("tujuanawal"), r.FormValue("tujuanakhir"), page, length)
+	case "gettransportasi":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetTableTransportasi(ctx, page, length)
 	}
 
 	if err != nil {

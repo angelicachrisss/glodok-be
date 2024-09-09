@@ -43,3 +43,14 @@ type TableRuteTransportasi struct {
 	RuteTujuanAkhir      string `db:"rute_tujuanakhir" json:"rute_tujuanakhir"`
 	TipeTransportasiName string `db:"tipetransportasi_name" json:"tipetransportasi_name"`
 }
+
+type TableTransportasi struct {
+	TransportasiID       string `db:"transportasi_id" json:"transportasi_id"`
+	RuteID               string `db:"rute_id" json:"rute_id"`
+	TransportasiTurun    string `db:"transportasi_turun" json:"transportasi_turun"`
+	TipeTransportasiID   string `db:"tipetransportasi_id" json:"tipetransportasi_id"`
+	TipeTransportasiName string `db:"tipetransportasi_name" json:"tipetransportasi_name"`
+	RuteNoBus            string `db:"rute_no" json:"rute_no"`
+	RuteTujuanAwal       string `db:"rute_tujuanawal" json:"rute_tujuanawal"`
+	RuteTujuanAkhir      string `db:"rute_tujuanakhir" json:"rute_tujuanakhir"`
+}
