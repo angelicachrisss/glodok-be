@@ -107,26 +107,6 @@ const (
 	qGetCountSearchRuteTransportasi = `SELECT COUNT(r.rute_id) AS TotalCount FROM t_rutetransportasi AS r JOIN t_tipetransportasi AS t ON r.tipetransportasi_id = t.tipetransportasi_id WHERE t.tipetransportasi_name LIKE ? 
     OR r.rute_tujuanawal LIKE ? OR r.rute_tujuanakhir LIKE ?`
 
-	//transportasi
-	fetchLastTransportasiID  = "FetchLastTransportasiID"
-	qFetchLastTransportasiID = `SELECT transportasi_id FROM t_transportasi ORDER BY transportasi_id DESC LIMIT 1`
-
-	getTableTransportasi  = "GetTableTransportasi"
-	qGetTableTransportasi = `SELECT 
-    t.transportasi_id,
-    t.rute_id,
-    t.transportasi_turun,
-    r.tipetransportasi_id,
-    tt.tipetransportasi_name,
-    r.rute_no,
-    r.rute_tujuanawal,
-    r.rute_tujuanakhir
-	FROM t_rutetransportasi AS r 
-	JOIN t_transportasi AS t ON r.rute_id = t.rute_id
-	JOIN t_tipetransportasi AS tt ON r.tipetransportasi_id = tt.tipetransportasi_id LIMIT ?,?`
-
-	getCountTableTransportasi  = "GetCountTableTransportasi"
-	qGetCountTableTransportasi = "SELECT COUNT(transportasi_id) AS TotalCount FROM t_transportasi"
 
 	//------------------------------------------------------------------------
 	//query insert
@@ -150,10 +130,6 @@ const (
 	insertRuteTransportasi  = "InsertRuteTransportasi"
 	qInsertRuteTransportasi = `INSERT INTO t_rutetransportasi (rute_id, tipetransportasi_id, rute_no, rute_tujuanawal, rute_tujuanakhir) VALUES (?,?,?,?,?)`
 
-	//transportasi
-	insertTransportasi  = "InsertTransportasi"
-	qInsertTransportasi = `INSERT INTO t_transportasi (transportasi_id, rute_id, transportasi_turun) VALUES (?,?,?)`
-
 	//------------------------------------------------------------------------
 	//query update
 	updateAdmin  = "UpdateAdmin"
@@ -164,9 +140,6 @@ const (
 
 	updateRuteTransportasi  = "UpdateRuteTransportasi"
 	qUpdateRuteTransportasi = `UPDATE t_rutetransportasi SET tipetransportasi_id = ?, rute_no = ?, rute_tujuanawal = ?, rute_tujuanakhir = ? WHERE rute_id =?`
-
-	updateTransportasi  = "UpdateTransportasi"
-	qUpdateTransportasi = `UPDATE t_transportasi SET rute_id = ?, transportasi_turun = ? WHERE transportasi_id = ?`
 
 	//------------------------------------------------------------------------
 	//query delete
@@ -181,9 +154,6 @@ const (
 
 	deleteRuteTransportasi  = "DeleteRuteTransportasi"
 	qDeleteRuteTransportasi = `DELETE FROM t_rutetransportasi WHERE rute_id =?`
-
-	deleteTransportasi  = "DeleteTransportasi"
-	qDeleteTransportasi = `DELETE FROM t_transportasi WHERE transportasi_id =?`
 )
 
 var (
@@ -217,10 +187,6 @@ var (
 		{getSearchRuteTransportasi, qGetSearchRuteTransportasi},
 		{getCountSearchRuteTransportasi, qGetCountSearchRuteTransportasi},
 
-		//transportasi
-		{fetchLastTransportasiID, qFetchLastTransportasiID},
-		{getTableTransportasi, qGetTableTransportasi},
-		{getCountTableTransportasi, qGetCountTableTransportasi},
 	}
 	insertStmt = []statement{
 		//--admin
@@ -231,21 +197,17 @@ var (
 		{insertTipeTransportasi, qInsertTipeTransportasi},
 		//rutetransportasi
 		{insertRuteTransportasi, qInsertRuteTransportasi},
-		//transportasi
-		{insertTransportasi, qInsertTransportasi},
 	}
 	updateStmt = []statement{
 		{updateAdmin, qUpdateAdmin},
 		{updateTipeTransportasi, qUpdateTipeTransportasi},
 		{updateRuteTransportasi, qUpdateRuteTransportasi},
-		{updateTransportasi, qUpdateTransportasi},
 	}
 	deleteStmt = []statement{
 		{deleteAdmin, qDeleteAdmin},
 		{deleteDestinasi, qDeleteDestinasi},
 		{deleteTipeTransportasi, qDeleteTipeTransportasi},
 		{deleteRuteTransportasi, qDeleteRuteTransportasi},
-		{deleteTransportasi, qDeleteTransportasi},
 	}
 )
 

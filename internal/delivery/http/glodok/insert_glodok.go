@@ -184,15 +184,6 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 		json.Unmarshal(body, &InsertRuteTransportasi)
 		result, err = h.glodokSvc.InsertRuteTransportasi(ctx, InsertRuteTransportasi)
 		//-------------------------------------------------------------------------------------------------------------------------
-	//transportasi
-	case "inserttransportasi":
-		var (
-			InsertTransportasi glodokEntity.TableTransportasi
-		)
-
-		body, _ := ioutil.ReadAll(r.Body)
-		json.Unmarshal(body, &InsertTransportasi)
-		result, err = h.glodokSvc.InsertTransportasi(ctx, InsertTransportasi)
 	}
 
 	if err != nil {

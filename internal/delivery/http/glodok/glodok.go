@@ -27,8 +27,6 @@ type IglodokSvc interface {
 	GetTableRuteTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
 	GetSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
 
-	GetTableTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableTransportasi, interface{}, error)
-
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//insert
@@ -41,15 +39,12 @@ type IglodokSvc interface {
 
 	InsertRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi) (string, error)
 
-	InsertTransportasi(ctx context.Context, transportasi glodokEntity.TableTransportasi) (string, error)
-
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//update
 	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)
 	UpdateTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi, tipetransportasiid string) (string, error)
 	UpdateRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi, ruteid string) (string, error)
-	UpdateTransportasi(ctx context.Context, transportasi glodokEntity.TableTransportasi, transportasiid string) (string, error)
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 
@@ -58,7 +53,6 @@ type IglodokSvc interface {
 	DeleteDestinasi(ctx context.Context, destinasiid string) (string, error)
 	DeleteTipeTransportasi(ctx context.Context, tipetransportasiid string) (string, error)
 	DeleteRuteTransportasi(ctx context.Context, ruteid string) (string, error)
-	DeleteTransportasi(ctx context.Context, transportasiid string) (string, error)
 }
 
 type (

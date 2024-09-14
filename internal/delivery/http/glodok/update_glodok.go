@@ -59,11 +59,6 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		json.Unmarshal(body, &rutetransportasi)
 		result, err = h.glodokSvc.UpdateRuteTransportasi(ctx, rutetransportasi, r.FormValue("ruteid"))
-	case "updatetransportasi":
-		var transportasi glodokEntity.TableTransportasi
-		body, _ := ioutil.ReadAll(r.Body)
-		json.Unmarshal(body, &transportasi)
-		result, err = h.glodokSvc.UpdateTransportasi(ctx, transportasi, r.FormValue("transportasiid"))
 	}
 
 	if err != nil {

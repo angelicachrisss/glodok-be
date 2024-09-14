@@ -39,9 +39,6 @@ func (h *Handler) DeleteGlodok(w http.ResponseWriter, r *http.Request) {
 		result, err = h.glodokSvc.DeleteTipeTransportasi(ctx, (r.FormValue("tipetransportasiid")))
 	case "deleterutetransportasi":
 		result, err = h.glodokSvc.DeleteRuteTransportasi(ctx, (r.FormValue("ruteid")))
-	case "deletetransportasi":
-		result, err = h.glodokSvc.DeleteTransportasi(ctx, (r.FormValue("transportasiid")))
-
 	}
 
 	if err != nil {
