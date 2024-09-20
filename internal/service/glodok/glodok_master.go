@@ -96,7 +96,7 @@ func (s Service) GetTableAdmin(ctx context.Context, page int, length int) ([]glo
 
 }
 
-func (s Service) GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error) {
+func (s Service) GetSearchAdmin(ctx context.Context, adminid string, adminname string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error) {
 	var (
 		total int
 	)
@@ -105,13 +105,13 @@ func (s Service) GetSearchAdmin(ctx context.Context, adminid string, page int, l
 
 	offset := page * length
 	fmt.Println("offset: ", offset)
-	searchListAdminArray, err := s.glodok.GetSearchAdmin(ctx, adminid, offset, length)
+	searchListAdminArray, err := s.glodok.GetSearchAdmin(ctx, adminid, adminname, offset, length)
 
 	if err != nil {
 		return searchListAdminArray, metadata, errors.Wrap(err, "[Service][GetSearchAdmin]")
 	}
 
-	total, err = s.glodok.GetCountSearchAdmin(ctx, adminid)
+	total, err = s.glodok.GetCountSearchAdmin(ctx, adminid,adminname)
 
 	if err != nil {
 		return searchListAdminArray, metadata, errors.Wrap(err, "[Service][GetSearchAdmin]")
@@ -196,6 +196,15 @@ func (s Service) GetTableDestinasi(ctx context.Context, ket string, page int, le
 	return destinasiArray, metadata, nil
 }
 
+func (s Service) GetImageDestinasi(ctx context.Context, destinasiid string, destinasikat string) ([]byte, error) {
+	image, err := s.glodok.GetImageDestinasi(ctx, destinasiid, destinasikat)
+	if err != nil {
+		return image, errors.Wrap(err, "[SERVICE][GetImageDestinasi]")
+	}
+
+	return image, err
+}
+
 func (s Service) DeleteDestinasi(ctx context.Context, destinasiid string) (string, error) {
 
 	var (
@@ -212,6 +221,49 @@ func (s Service) DeleteDestinasi(ctx context.Context, destinasiid string) (strin
 
 	return result, err
 }
+
+func (s Service) GetSearchDestinasi(ctx context.Context, kategori string, destinasiid string, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasi, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	fmt.Println("offset: ", offset)
+	searchListDestinasiArray, err := s.glodok.GetSearchDestinasi(ctx, kategori, destinasiid, destinasiname, offset, length)
+
+	if err != nil {
+		return searchListDestinasiArray, metadata, errors.Wrap(err, "[Service][GetSearchDestinasi]")
+	}
+
+	total, err = s.glodok.GetCountSearchDestinasi(ctx, kategori, destinasiid, destinasiname)
+
+	if err != nil {
+		return searchListDestinasiArray, metadata, errors.Wrap(err, "[Service][GetCountSearchDestinasi]")
+	}
+	metadata["total_data"] = total
+
+	return searchListDestinasiArray, metadata, nil
+}
+
+func (s Service) UpdateDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi, destinasiid string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.UpdateDestinasi(ctx, destinasi, destinasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][UpdateDestinasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+//tipe transportasi
 
 func (s Service) InsertTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi) (string, error) {
 
@@ -428,4 +480,3 @@ func (s Service) UpdateRuteTransportasi(ctx context.Context, rutetransportasi gl
 
 	return result, err
 }
-

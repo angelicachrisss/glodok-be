@@ -16,10 +16,13 @@ type IglodokSvc interface {
 	GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error)
 	GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error)
 	GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
-	GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
+	GetSearchAdmin(ctx context.Context, adminid string, adminname string,page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
 
 	GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, interface{}, error)
-
+	GetImageDestinasi(ctx context.Context, destinasiid string, destinasikat string) ([]byte, error)
+	GetSearchDestinasi(ctx context.Context, kategori string, destinasiid string, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasi, interface{}, error) 
+	UpdateDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi, destinasiid string) (string, error) 
+	
 	GetTableTipeTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableTipeTransportasi, interface{}, error)
 	GetSearchTipeTransportasi(ctx context.Context, tipetransportasiid string, tipetransportasiname string, page int, length int) ([]glodokEntity.TableTipeTransportasi, interface{}, error)
 

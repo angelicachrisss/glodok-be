@@ -43,10 +43,10 @@ const (
 	qGetCountAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin`
 
 	getSearchAdmin  = "GetSearchAdmin"
-	qGetSearchAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id LIKE ? LIMIT ?, ?`
+	qGetSearchAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id LIKE ? OR admin_name LIKE ? LIMIT ?, ?`
 
 	getCountSearchAdmin  = "GetCountSearchAdmin"
-	qGetCountSearchAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin WHERE admin_id LIKE ?`
+	qGetCountSearchAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin WHERE admin_id LIKE ? OR admin_name LIKE ?`
 
 	//--destinasi
 	getTableDestinasi  = "GetTableDestinasi"
@@ -57,6 +57,15 @@ const (
 
 	fetchLastDestinasiID  = "FetchLastDestinasiID"
 	qFetchLastDestinasiID = `SELECT destinasi_id FROM t_destinasi ORDER BY destinasi_id DESC LIMIT 1`
+
+	getImageDestinasi  = "GetImageDestinasi"
+	qGetImageDestinasi = `SELECT destinasi_gambar from t_destinasi WHERE destinasi_id = ? AND destinasi_kat = ?`
+
+	getSearchDestinasi  = "GetSearchDestinasi"
+	qGetSearchDestinasi = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup,destinasi_jbuka,destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ? AND( destinasi_id LIKE ? OR destinasi_name LIKE ? ) LIMIT ?,?`
+
+	getCountSearchDestinasi  = "GetCountSearchDestinasi"
+	qGetCountSearchDestinasi = `SELECT COUNT(destinasi_id) AS TotalCount FROM t_destinasi WHERE destinasi_kat = ? AND( destinasi_id LIKE ? OR destinasi_name LIKE ? )`
 
 	//--tipetransportasi
 	fetchLastTipeTransportasiID  = "FetchLastTipeTransportasiID"
@@ -107,7 +116,6 @@ const (
 	qGetCountSearchRuteTransportasi = `SELECT COUNT(r.rute_id) AS TotalCount FROM t_rutetransportasi AS r JOIN t_tipetransportasi AS t ON r.tipetransportasi_id = t.tipetransportasi_id WHERE t.tipetransportasi_name LIKE ? 
     OR r.rute_tujuanawal LIKE ? OR r.rute_tujuanakhir LIKE ?`
 
-
 	//------------------------------------------------------------------------
 	//query insert
 	//--admin
@@ -141,6 +149,8 @@ const (
 	updateRuteTransportasi  = "UpdateRuteTransportasi"
 	qUpdateRuteTransportasi = `UPDATE t_rutetransportasi SET tipetransportasi_id = ?, rute_no = ?, rute_tujuanawal = ?, rute_tujuanakhir = ? WHERE rute_id =?`
 
+	updateDestinasi  = "UpdateDestinasi"
+	qUpdateDestinasi = `UPDATE t_destinasi SET destinasi_name =?, destinasi_desc =?, destinasi_gambar =?, destinasi_hbuka =?, destinasi_htutup =?, destinasi_jbuka =?, destinasi_jtutup =?, destinasi_kat =?, destinasi_labelhalal =? WHERE destinasi_id =?`
 	//------------------------------------------------------------------------
 	//query delete
 	deleteAdmin  = "DeleteAdmin"
@@ -171,6 +181,9 @@ var (
 		{fetchLastDestinasiID, qFetchLastDestinasiID},
 		{getTableDestinasi, qGetTableDestinasi},
 		{getCountDestinasi, qGetCountDestinasi},
+		{getImageDestinasi, qGetImageDestinasi},
+		{getSearchDestinasi, qGetSearchDestinasi},
+		{getCountSearchDestinasi, qGetCountSearchDestinasi},
 
 		//---tipetransportasi
 		{fetchLastTipeTransportasiID, qFetchLastTipeTransportasiID},
@@ -186,7 +199,6 @@ var (
 		{getCountTableRuteTransportasi, qGetCountTableRuteTransportasi},
 		{getSearchRuteTransportasi, qGetSearchRuteTransportasi},
 		{getCountSearchRuteTransportasi, qGetCountSearchRuteTransportasi},
-
 	}
 	insertStmt = []statement{
 		//--admin
@@ -202,6 +214,7 @@ var (
 		{updateAdmin, qUpdateAdmin},
 		{updateTipeTransportasi, qUpdateTipeTransportasi},
 		{updateRuteTransportasi, qUpdateRuteTransportasi},
+		{updateDestinasi, qUpdateDestinasi},
 	}
 	deleteStmt = []statement{
 		{deleteAdmin, qDeleteAdmin},

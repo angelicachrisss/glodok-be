@@ -20,11 +20,15 @@ type Data interface {
 	GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error)
 	GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, error)
 	GetCountAdmin(ctx context.Context) (int, error)
-	GetSearchAdmin(ctx context.Context, adminid string, page int, length int) ([]glodokEntity.GetAdmin, error)
-	GetCountSearchAdmin(ctx context.Context, adminid string) (int, error)
+	GetSearchAdmin(ctx context.Context, adminid string, adminname string,page int, length int) ([]glodokEntity.GetAdmin, error)
+	GetCountSearchAdmin(ctx context.Context, adminid string,adminname string) (int, error)
 
 	GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, error)
 	GetCountDestinasi(ctx context.Context, ket string) (int, error)
+	GetImageDestinasi(ctx context.Context, destinasiid string, destinasikat string) ([]byte, error)
+	GetSearchDestinasi(ctx context.Context, kategori string, destinasiid string, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasi, error) 
+	GetCountSearchDestinasi(ctx context.Context, kategori string, destinasiid string, destinasiname string) (int, error) 
+	UpdateDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi, destinasiid string) (string, error)
 
 	GetTableTipeTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableTipeTransportasi, error)
 	GetCountTableTipeTransportasi(ctx context.Context) (int, error)
