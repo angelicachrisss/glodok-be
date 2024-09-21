@@ -33,7 +33,16 @@ func (h *Handler) DeleteGlodok(w http.ResponseWriter, r *http.Request) {
 	switch types {
 	case "deleteadmin":
 		result, err = h.glodokSvc.DeleteAdmin(ctx, (r.FormValue("adminid")))
-
+	case "deletedestinasi":
+		result, err = h.glodokSvc.DeleteDestinasi(ctx, (r.FormValue("destinasiid")))
+	case "deletetipetransportasi":
+		result, err = h.glodokSvc.DeleteTipeTransportasi(ctx, (r.FormValue("tipetransportasiid")))
+	case "deleterutetransportasi":
+		result, err = h.glodokSvc.DeleteRuteTransportasi(ctx, (r.FormValue("ruteid")))
+	case "deletereview":
+		result, err = h.glodokSvc.DeleteReview(ctx, (r.FormValue("reviewid")))
+	case "deleteberita":
+		result, err = h.glodokSvc.DeleteBerita(ctx, (r.FormValue("beritaid")))
 	}
 
 	if err != nil {
