@@ -27,8 +27,8 @@ type TableDestinasi struct {
 	DestinasiHTutup    string    `db:"destinasi_htutup" json:"destinasi_htutup"`
 	DestinasiJBuka     time.Time `db:"destinasi_jbuka" json:"destinasi_jbuka"`
 	DestinasiJTutup    time.Time `db:"destinasi_jtutup" json:"destinasi_jtutup"`
-	DestinasiKet   string `db:"destinasi_kat" json:"destinasi_kat"`
-	DestinasiHalal string `db:"destinasi_labelhalal" json:"destinasi_labelhalal"`
+	DestinasiKet       string    `db:"destinasi_kat" json:"destinasi_kat"`
+	DestinasiHalal     string    `db:"destinasi_labelhalal" json:"destinasi_labelhalal"`
 }
 
 type TableTipeTransportasi struct {
@@ -43,6 +43,10 @@ type TableRuteTransportasi struct {
 	RuteTujuanAwal       string `db:"rute_tujuanawal" json:"rute_tujuanawal"`
 	RuteTujuanAkhir      string `db:"rute_tujuanakhir" json:"rute_tujuanakhir"`
 	TipeTransportasiName string `db:"tipetransportasi_name" json:"tipetransportasi_name"`
+	RuteTurun1           string `db:"rute_turun1" json:"rute_turun1"`
+	RuteTurun2           string `db:"rute_turun2" json:"rute_turun2"`
+	RuteFlagPerbaikan1   string `db:"rute_flagperbaikan1" json:"rute_flagperbaikan1"`
+	RuteFlagPerbaikan2   string `db:"rute_flagperbaikan2" json:"rute_flagperbaikan2"`
 }
 
 type TableReview struct {
@@ -51,4 +55,16 @@ type TableReview struct {
 	Reviewer     string    `db:"reviewer_name" json:"reviewer_name"`
 	ReviewDesc   string    `db:"review_desc" json:"review_desc"`
 	ReviewDate   time.Time `db:"review_date" json:"review_date"`
+}
+
+type TableBerita struct {
+	BeritaID         string    `db:"berita_id" json:"berita_id"`
+	DestinasiID      string    `db:"destinasi_id" json:"destinasi_id"`
+	DestinasiName    string    `db:"destinasi_name" json:"destinasi_name"`
+	BeritaJudul      string    `db:"berita_judul" json:"berita_judul"`
+	BeritaDesc       string    `db:"berita_desc" json:"berita_desc"`
+	BeritaGambar     []byte    `db:"berita_foto" json:"berita_foto"`
+	BeritaGambarURL  string    `json:"berita_foto_url"`
+	BeritaDate       time.Time `db:"berita_date_update" json:"berita_date_update"`
+	BeritaLinkSumber string    `db:"berita_linksumber" json:"berita_linksumber"`
 }

@@ -524,3 +524,140 @@ func (s Service) GetTableReview(ctx context.Context, page int, length int) ([]gl
 	return reviewArray, metadata, nil
 
 }
+
+func (s Service) DeleteReview(ctx context.Context, reviewid string) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteReview(ctx, reviewid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteReview]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+//berita
+func (s Service) GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error) {
+
+	destinasiArray, err := s.glodok.GetDestinasi(ctx)
+
+	if err != nil {
+		return destinasiArray, errors.Wrap(err, "[Service][GetDestinasi]")
+	}
+
+	return destinasiArray, nil
+
+}
+
+func (s Service) InsertBerita(ctx context.Context, berita glodokEntity.TableBerita) (string, error) {
+
+	var (
+		result string
+	)
+	result, err := s.glodok.InsertBerita(ctx, berita)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][InsertBerita]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) DeleteBerita(ctx context.Context, beritaid string) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteBerita(ctx, beritaid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteBerita]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) GetImageBerita(ctx context.Context, beritaid string) ([]byte, error) {
+	image, err := s.glodok.GetImageBerita(ctx, beritaid)
+	if err != nil {
+		return image, errors.Wrap(err, "[SERVICE][GetImageBerita]")
+	}
+
+	return image, err
+}
+
+func (s Service) GetTableBerita(ctx context.Context, page int, length int) ([]glodokEntity.TableBerita, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	beritaArray, err := s.glodok.GetTableBerita(ctx, offset, length)
+
+	if err != nil {
+		return beritaArray, metadata, errors.Wrap(err, "[Service][GetTableDestinasi]")
+	}
+
+	total, err = s.glodok.GetCountBerita(ctx)
+
+	if err != nil {
+		return beritaArray, metadata, errors.Wrap(err, "[Service][GetTableBerita]")
+	}
+	metadata["total_data"] = total
+
+	return beritaArray, metadata, nil
+}
+
+func (s Service) UpdateBerita(ctx context.Context, berita glodokEntity.TableBerita, beritaid string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.UpdateBerita(ctx, berita, beritaid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][UpdateBerita]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) GetSearchBerita(ctx context.Context, beritaid string, destinasiname string, beritajudul string, page int, length int) ([]glodokEntity.TableBerita, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	searchListDestinasiArray, err := s.glodok.GetSearchBerita(ctx, beritaid, destinasiname, beritajudul, offset, length)
+
+	if err != nil {
+		return searchListDestinasiArray, metadata, errors.Wrap(err, "[Service][GetSearchBeria]")
+	}
+
+	total, err = s.glodok.GetCountSearchBerita(ctx, beritaid, destinasiname, beritajudul)
+
+	if err != nil {
+		return searchListDestinasiArray, metadata, errors.Wrap(err, "[Service][GetCountSearchBerita]")
+	}
+	metadata["total_data"] = total
+
+	return searchListDestinasiArray, metadata, nil
+}

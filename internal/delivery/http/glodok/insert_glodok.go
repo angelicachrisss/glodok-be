@@ -195,6 +195,49 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 		json.Unmarshal(body, &InsertReview)
 		result, err = h.glodokSvc.InsertReview(ctx, InsertReview)
 		//-------------------------------------------------------------------------------------------------------------------------
+	case "insertberita":
+		// Memproses bagian dari form-data
+		err := r.ParseMultipartForm(10 << 20) // Maksimum ukuran file 10MB
+		if err != nil {
+			fmt.Println("Error memproses bagian dari form-data:", err)
+			return
+		}
+
+		// Mengambil file dari form-data
+		file, _, err := r.FormFile("berita_foto")
+		if err != nil {
+			fmt.Println("Error mengambil file dari form-data:", err)
+			return
+		}
+		defer file.Close()
+
+		// Membaca isi file ke dalam byte array
+		fileBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Println("Error membaca isi file ke dalam byte array:", err)
+			return
+		}
+
+		// Membaca data JSON yang lain dari form-data
+		TableBerita := glodokEntity.TableBerita{
+			BeritaID: "",
+			DestinasiID: r.FormValue("destinasi_id"),
+			BeritaJudul: r.FormValue("berita_judul"),
+			BeritaDesc: r.FormValue("berita_desc"),
+			BeritaGambar: fileBytes,
+			BeritaLinkSumber: r.FormValue("berita_linksumber"),
+		}
+
+		// Memasukkan data ke dalam database melalui layanan InsertBerita
+		result, err = h.glodokSvc.InsertBerita(ctx, TableBerita)
+		if err != nil {
+			resp.SetError(err, http.StatusInternalServerError)
+			resp.StatusCode = 500
+			log.Printf("[ERROR] %s %s - %s\n", r.Method, r.URL, err.Error())
+			resp.Data = result
+			return
+		}
+
 	}
 
 	if err != nil {

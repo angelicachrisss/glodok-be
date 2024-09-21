@@ -20,14 +20,14 @@ type Data interface {
 	GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error)
 	GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, error)
 	GetCountAdmin(ctx context.Context) (int, error)
-	GetSearchAdmin(ctx context.Context, adminid string, adminname string,page int, length int) ([]glodokEntity.GetAdmin, error)
-	GetCountSearchAdmin(ctx context.Context, adminid string,adminname string) (int, error)
+	GetSearchAdmin(ctx context.Context, adminid string, adminname string, page int, length int) ([]glodokEntity.GetAdmin, error)
+	GetCountSearchAdmin(ctx context.Context, adminid string, adminname string) (int, error)
 
 	GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, error)
 	GetCountDestinasi(ctx context.Context, ket string) (int, error)
 	GetImageDestinasi(ctx context.Context, destinasiid string, destinasikat string) ([]byte, error)
-	GetSearchDestinasi(ctx context.Context, kategori string, destinasiid string, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasi, error) 
-	GetCountSearchDestinasi(ctx context.Context, kategori string, destinasiid string, destinasiname string) (int, error) 
+	GetSearchDestinasi(ctx context.Context, kategori string, destinasiid string, destinasiname string, page int, length int) ([]glodokEntity.TableDestinasi, error)
+	GetCountSearchDestinasi(ctx context.Context, kategori string, destinasiid string, destinasiname string) (int, error)
 	UpdateDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi, destinasiid string) (string, error)
 
 	GetTableTipeTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableTipeTransportasi, error)
@@ -44,6 +44,13 @@ type Data interface {
 	GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error)
 	GetCountTableReview(ctx context.Context) (int, error)
 
+	GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
+	GetTableBerita(ctx context.Context, page int, length int) ([]glodokEntity.TableBerita, error)
+	GetImageBerita(ctx context.Context, beritaid string) ([]byte, error)
+	GetCountBerita(ctx context.Context) (int, error)
+	GetSearchBerita(ctx context.Context, beritaid string, destinasiname string, beritajudul string, page int, length int) ([]glodokEntity.TableBerita, error)
+	GetCountSearchBerita(ctx context.Context, beritaid string, destinasiname string, beritajudul string) (int, error)
+
 	//--------------------------------------------------------------------------------------------------
 	//insert
 	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
@@ -57,16 +64,21 @@ type Data interface {
 
 	InsertReview(ctx context.Context, review glodokEntity.TableReview) (string, error)
 
+	InsertBerita(ctx context.Context, berita glodokEntity.TableBerita) (string, error)
+
 	//update
 	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)
 	UpdateTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi, tipetransportasiid string) (string, error)
 	UpdateRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi, ruteid string) (string, error)
+	UpdateBerita(ctx context.Context, berita glodokEntity.TableBerita, beritaid string) (string, error)
 
 	//delete
 	DeleteAdmin(ctx context.Context, adminid string) (string, error)
 	DeleteDestinasi(ctx context.Context, destinasiid string) (string, error)
 	DeleteTipeTransportasi(ctx context.Context, tipetransportasiid string) (string, error)
 	DeleteRuteTransportasi(ctx context.Context, ruteid string) (string, error)
+	DeleteReview(ctx context.Context, reviewid string) (string, error)
+	DeleteBerita(ctx context.Context, beritaid string) (string, error)
 }
 
 type Service struct {

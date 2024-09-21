@@ -63,11 +63,6 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		json.Unmarshal(body, &rutetransportasi)
 		result, err = h.glodokSvc.UpdateRuteTransportasi(ctx, rutetransportasi, r.FormValue("ruteid"))
-		// case "updatedestinasi":
-		// 	var destinasi glodokEntity.TableDestinasi
-		// 	body, _ := ioutil.ReadAll(r.Body)
-		// 	json.Unmarshal(body, &destinasi)
-		// 	result, err = h.glodokSvc.UpdateDestinasi(ctx, destinasi, r.FormValue("destinasiid"))
 	case "updatedestinasi":
 		// Memproses bagian dari form-data
 		err := r.ParseMultipartForm(10 << 20) // Maksimum ukuran file 10MB
@@ -125,6 +120,50 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 
 		// Memperbarui data ke dalam database melalui layanan UpdateDestinasi
 		result, err = h.glodokSvc.UpdateDestinasi(ctx, TableDestinasi, destinasiID)
+		if err != nil {
+			resp.SetError(err, http.StatusInternalServerError)
+			resp.StatusCode = 500
+			log.Printf("[ERROR] %s %s - %s\n", r.Method, r.URL, err.Error())
+			resp.Data = result
+			return
+		}
+
+	case "updateberita":
+		// Memproses bagian dari form-data
+		err := r.ParseMultipartForm(10 << 20) // Maksimum ukuran file 10MB
+		if err != nil {
+			fmt.Println("Error memproses bagian dari form-data:", err)
+			return
+		}
+
+		// Mengambil file gambar dari form-data
+		file, _, err := r.FormFile("berita_foto")
+		if err != nil {
+			fmt.Println("Error mengambil file dari form-data:", err)
+			return
+		}
+		defer file.Close()
+
+		// Membaca isi file ke dalam byte array
+		fileBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Println("Error membaca isi file ke dalam byte array:", err)
+			return
+		}
+
+		// Membaca data JSON yang lain dari form-data
+		beritaID := r.FormValue("beritaid")
+		TableBerita := glodokEntity.TableBerita{
+			BeritaID:         beritaID,
+			DestinasiID:      r.FormValue("destinasi_id"),
+			BeritaJudul:      r.FormValue("berita_judul"),
+			BeritaDesc:       r.FormValue("berita_desc"),
+			BeritaGambar:     fileBytes,
+			BeritaLinkSumber: r.FormValue("berita_linksumber"),
+		}
+
+		// Memperbarui data ke dalam database melalui layanan UpdateDestinasi
+		result, err = h.glodokSvc.UpdateBerita(ctx, TableBerita, beritaID)
 		if err != nil {
 			resp.SetError(err, http.StatusInternalServerError)
 			resp.StatusCode = 500

@@ -116,8 +116,7 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 	case "getsearchdestinasi":
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetSearchDestinasi(ctx, r.FormValue("kat"),r.FormValue("destinasiid"), r.FormValue("destinasiname"), page, length)
-
+		result, metadata, err = h.glodokSvc.GetSearchDestinasi(ctx, r.FormValue("kat"), r.FormValue("destinasiid"), r.FormValue("destinasiname"), page, length)
 	case "gettipetransportasi":
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
@@ -140,6 +139,68 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
 		result, metadata, err = h.glodokSvc.GetTableReview(ctx, page, length)
+	case "getdestinasidropdown":
+		result, err = h.glodokSvc.GetDestinasi(ctx)
+	case "getimageberita":
+		result, err = h.glodokSvc.GetImageBerita(ctx, r.FormValue("beritaid"))
+		if err != nil {
+			http.Error(w, "Failed to get image data", http.StatusInternalServerError)
+			return
+		}
+
+		// Type assertion
+		imgData, ok := result.([]byte)
+		if !ok {
+			log.Fatal("The result is not of type []byte")
+		}
+
+		// Create a buffer from the image data
+		imgBuffer := bytes.NewReader(imgData)
+
+		// Decode the image data to get the image.Image object
+		img, imgFormat, err := image.Decode(imgBuffer)
+		if err != nil {
+			http.Error(w, "Unable to decode image", http.StatusInternalServerError)
+			return
+		}
+
+		// Set the appropriate header for the image format
+		var contentType string
+		switch imgFormat {
+		case "png":
+			contentType = "image/png"
+		case "jpeg", "jpg":
+			contentType = "image/jpeg"
+		default:
+			http.Error(w, "Unsupported image format", http.StatusUnsupportedMediaType)
+			return
+		}
+		w.Header().Set("Content-Type", contentType)
+
+		// Encode the image to the appropriate format and write it to the response
+		switch imgFormat {
+		case "png":
+			err = png.Encode(w, img)
+		case "jpeg", "jpg":
+			err = jpeg.Encode(w, img, nil)
+		default:
+			http.Error(w, "Unsupported image format", http.StatusUnsupportedMediaType)
+			return
+		}
+
+		if err != nil {
+			http.Error(w, "Unable to encode image", http.StatusInternalServerError)
+			return
+		}
+	case "gettableberita":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetTableBerita(ctx, page, length)
+
+	case "getsearchberita":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetSearchBerita(ctx, r.FormValue("beritaid"), r.FormValue("destinasiname"), r.FormValue("beritajudul"), page, length)
 	}
 
 	if err != nil {

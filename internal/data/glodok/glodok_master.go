@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+
 	"strings"
 	"time"
 
@@ -38,6 +39,11 @@ func generateImageURL(id string, ket string) string {
 	return fmt.Sprintf(url+"/glodok/v1/data?type=getimagedestinasi&destinasiid=%s&ket=%s", id, ket)
 
 	// http://localhost:8080/glodok/v1/data?type=getimagedestinasi&destinasiid=D0002&ket=W
+}
+
+func generateImageURLBerita(id string) string {
+	var url = "http://localhost:8080"
+	return fmt.Sprintf(url+"/glodok/v1/data?type=getimageberita&beritaid=%s", id)
 }
 
 func EnsureDirectory(path string) error {
@@ -815,6 +821,10 @@ func (d Data) InsertRuteTransportasi(ctx context.Context, rutetransportasi glodo
 		rutetransportasi.RuteNoBus,
 		rutetransportasi.RuteTujuanAwal,
 		rutetransportasi.RuteTujuanAkhir,
+		rutetransportasi.RuteTurun1,
+		rutetransportasi.RuteTurun2,
+		rutetransportasi.RuteFlagPerbaikan1,
+		rutetransportasi.RuteFlagPerbaikan2,
 	)
 
 	if err != nil {
@@ -946,6 +956,10 @@ func (d Data) UpdateRuteTransportasi(ctx context.Context, rutetransportasi glodo
 		rutetransportasi.RuteNoBus,
 		rutetransportasi.RuteTujuanAwal,
 		rutetransportasi.RuteTujuanAkhir,
+		rutetransportasi.RuteTurun1,
+		rutetransportasi.RuteTurun2,
+		rutetransportasi.RuteFlagPerbaikan1,
+		rutetransportasi.RuteFlagPerbaikan2,
 		ruteid)
 
 	if err != nil {
@@ -1000,30 +1014,6 @@ func (d Data) InsertReview(ctx context.Context, review glodokEntity.TableReview)
 	result = "Berhasil"
 	return result, nil
 }
-
-// func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error) {
-// 	var (
-// 		review      glodokEntity.TableReview
-// 		reviewArray []glodokEntity.TableReview
-// 		err         error
-// 	)
-
-// 	rows, err := (*d.stmt)[getTableReview].QueryxContext(ctx, page, length)
-// 	if err != nil {
-// 		return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
-// 	}
-
-// 	defer rows.Close()
-
-// 	for rows.Next() {
-// 		if err = rows.StructScan(&review); err != nil {
-// 			return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
-// 		}
-// 		reviewArray = append(reviewArray, review)
-// 	}
-// 	return reviewArray, err
-
-// }
 
 func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error) {
 	var (
@@ -1088,6 +1078,337 @@ func (d Data) GetCountTableReview(ctx context.Context) (int, error) {
 	for rows.Next() {
 		if err = rows.Scan(&total); err != nil {
 			return total, errors.Wrap(err, "[DATA] [GetCountTableReview]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) DeleteReview(ctx context.Context, reviewid string) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteReview].ExecContext(ctx, reviewid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteReview]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+//berita
+
+func (d Data) GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error) {
+	var (
+		destinasi      glodokEntity.TableDestinasi
+		destinasiArray []glodokEntity.TableDestinasi
+		err            error
+	)
+
+	rows, err := (*d.stmt)[getDestinasi].QueryxContext(ctx)
+	if err != nil {
+		return destinasiArray, errors.Wrap(err, "[DATA] [GetDestinasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&destinasi); err != nil {
+			return destinasiArray, errors.Wrap(err, "[DATA] [GetDestinasi]")
+		}
+		destinasiArray = append(destinasiArray, destinasi)
+	}
+	return destinasiArray, err
+
+}
+
+func (d Data) InsertBerita(ctx context.Context, berita glodokEntity.TableBerita) (string, error) {
+	var (
+		err    error
+		result string
+		lastID string
+		newID  string
+	)
+
+	// Fetch the last inserted DestinasiID
+	err = (*d.stmt)[fetchLastBeritaID].QueryRowxContext(ctx).Scan(&lastID)
+	if err != nil && err != sql.ErrNoRows {
+		result = "Gagal mengambil ID terakhir"
+		return result, errors.Wrap(err, "[DATA][fetchLastBeritaID]")
+	}
+
+	// Generate the new DestinasiID
+	if lastID != "" {
+		// Extract the numeric part from lastID and increment it
+		num, _ := strconv.Atoi(lastID[1:])
+		newID = fmt.Sprintf("B%04d", num+1)
+
+	} else {
+		// If there are no previous records, start with D0001
+		newID = "B0001"
+
+	}
+
+	// Assign the new DestinasiID
+	berita.BeritaID = newID
+
+	// Proceed with the insertion
+	_, err = (*d.stmt)[insertBerita].ExecContext(ctx,
+		berita.BeritaID,
+		berita.DestinasiID,
+		berita.BeritaJudul,
+		berita.BeritaDesc,
+		berita.BeritaGambar,
+		berita.BeritaLinkSumber,
+	)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][InsertBerita]")
+	}
+
+	result = "Berhasil"
+	return result, nil
+}
+
+func (d Data) DeleteBerita(ctx context.Context, beritaid string) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteBerita].ExecContext(ctx, beritaid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteBerita]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (d Data) GetTableBerita(ctx context.Context, page int, length int) ([]glodokEntity.TableBerita, error) {
+	var (
+		berita      glodokEntity.TableBerita
+		beritaArray []glodokEntity.TableBerita
+		err         error
+	)
+
+	rows, err := (*d.stmt)[getTableBerita].QueryxContext(ctx, page, length)
+	if err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetTableBerita] - Query failed")
+	}
+	defer rows.Close()
+
+	// Ensure the directory exists
+	imageDir := filepath.Join("public", "images")
+	if err := EnsureDirectory(imageDir); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetTableBerita] - Failed to ensure directory")
+	}
+
+	for rows.Next() {
+		var beritaID string
+		var destinasiID string
+		var destinasiName string
+		var beritaJudul string
+		var beritaDesc string
+		var beritaGambarUrl string
+		var beritaDateRaw []byte // Raw byte slice for date
+		var beritaLinkSumber string
+
+		if err = rows.Scan(&beritaID, &destinasiID, &destinasiName, &beritaJudul, &beritaDesc, &beritaGambarUrl, &beritaDateRaw, &beritaLinkSumber); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetTableBerita] - Failed to scan row")
+		}
+
+		// Convert raw date to time.Time
+		var beritaDate time.Time
+		if beritaDateRaw != nil {
+			beritaDate, err = time.Parse("2006-01-02 15:04:05", string(beritaDateRaw))
+			if err != nil {
+				return beritaArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
+			}
+		}
+
+		// Save image and generate URL
+		filePath := filepath.Join(imageDir, berita.BeritaID+".jpg")
+		if err := saveImageToFile(berita.BeritaGambar, filePath); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetTableBerita] - Failed to save image")
+		}
+
+		berita.BeritaGambarURL = generateImageURLBerita(beritaID)
+
+		berita = glodokEntity.TableBerita{
+			BeritaID:         beritaID,
+			DestinasiID:      destinasiID,
+			DestinasiName:    destinasiName,
+			BeritaJudul:      beritaJudul,
+			BeritaDesc:       beritaDesc,
+			BeritaGambarURL:  berita.BeritaGambarURL,
+			BeritaDate:       beritaDate,
+			BeritaLinkSumber: beritaLinkSumber,
+		}
+
+		beritaArray = append(beritaArray, berita)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetTableBerita] - Row iteration error")
+	}
+
+	return beritaArray, nil
+}
+
+func (d Data) GetImageBerita(ctx context.Context, beritaid string) ([]byte, error) {
+	var image []byte
+	if err := (*d.stmt)[getImageBerita].QueryRowxContext(ctx, beritaid).Scan(&image); err != nil {
+		return image, errors.Wrap(err, "[DATA][GetImageBerita]")
+	}
+
+	return image, nil
+}
+
+func (d Data) GetCountBerita(ctx context.Context) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountTableBerita].QueryxContext(ctx)
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountBerita]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountBerita]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) UpdateBerita(ctx context.Context, berita glodokEntity.TableBerita, beritaid string) (string, error) {
+	var (
+		result string
+		err    error
+	)
+
+	_, err = (*d.stmt)[updateBerita].ExecContext(ctx,
+		berita.DestinasiID,
+		berita.BeritaJudul,
+		berita.BeritaDesc,
+		berita.BeritaGambar,
+		berita.BeritaLinkSumber,
+		beritaid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][UpdateBerita]")
+	}
+
+	result = "Berhasil"
+	return result, nil
+}
+
+func (d Data) GetSearchBerita(ctx context.Context, beritaid string, destinasiname string, beritajudul string, page int, length int) ([]glodokEntity.TableBerita, error) {
+	var (
+		berita      glodokEntity.TableBerita
+		beritaArray []glodokEntity.TableBerita
+		err         error
+	)
+
+	rows, err := (*d.stmt)[getSearchBerita].QueryxContext(ctx, "%"+beritaid+"%", "%"+destinasiname+"%", "%"+beritajudul+"%", page, length)
+	if err != nil {
+		return beritaArray, errors.Wrap(err, "[DATA] [GetSearchBerita]")
+	}
+
+	defer rows.Close()
+
+	// Ensure the directory exists
+	imageDir := filepath.Join("public", "images")
+	if err := EnsureDirectory(imageDir); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetSearchBerita] - Failed to ensure directory")
+	}
+
+	for rows.Next() {
+		var beritaID string
+		var destinasiID string
+		var destinasiName string
+		var beritaJudul string
+		var beritaDesc string
+		var beritaGambarUrl string
+		var beritaDateRaw []byte // Raw byte slice for date
+		var beritaLinkSumber string
+
+		if err = rows.Scan(&beritaID, &destinasiID, &destinasiName, &beritaJudul, &beritaDesc, &beritaGambarUrl, &beritaDateRaw, &beritaLinkSumber); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetTableBerita] - Failed to scan row")
+		}
+
+		// Convert raw date to time.Time
+		var beritaDate time.Time
+		if beritaDateRaw != nil {
+			beritaDate, err = time.Parse("2006-01-02 15:04:05", string(beritaDateRaw))
+			if err != nil {
+				return beritaArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
+			}
+		}
+
+		// Save image and generate URL
+		filePath := filepath.Join(imageDir, berita.BeritaID+".jpg")
+		if err := saveImageToFile(berita.BeritaGambar, filePath); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetTableBerita] - Failed to save image")
+		}
+
+		berita.BeritaGambarURL = generateImageURLBerita(beritaID)
+
+		berita = glodokEntity.TableBerita{
+			BeritaID:         beritaID,
+			DestinasiID:      destinasiID,
+			DestinasiName:    destinasiName,
+			BeritaJudul:      beritaJudul,
+			BeritaDesc:       beritaDesc,
+			BeritaGambarURL:  berita.BeritaGambarURL,
+			BeritaDate:       beritaDate,
+			BeritaLinkSumber: beritaLinkSumber,
+		}
+
+		beritaArray = append(beritaArray, berita)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetSearchBerita] - Row iteration error")
+	}
+
+	return beritaArray, nil
+
+}
+
+func (d Data) GetCountSearchBerita(ctx context.Context, beritaid string, destinasiname string, beritajudul string) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountSearchBerita].QueryxContext(ctx, "%"+beritaid+"%", "%"+destinasiname+"%", "%"+beritajudul+"%")
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountSearchBerita]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountSearchBerita]")
 		}
 
 	}
