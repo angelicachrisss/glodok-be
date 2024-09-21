@@ -480,3 +480,47 @@ func (s Service) UpdateRuteTransportasi(ctx context.Context, rutetransportasi gl
 
 	return result, err
 }
+
+// review
+func (s Service) InsertReview(ctx context.Context, review glodokEntity.TableReview) (string, error) {
+
+	var (
+		result string
+	)
+	result, err := s.glodok.InsertReview(ctx, review)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][InsertReview]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
+
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	reviewArray, err := s.glodok.GetTableReview(ctx, offset, length)
+
+	if err != nil {
+		return reviewArray, metadata, errors.Wrap(err, "[Service][GetTableReview]")
+	}
+
+	total, err = s.glodok.GetCountTableReview(ctx)
+
+	if err != nil {
+		return reviewArray, metadata, errors.Wrap(err, "[Service][GetCountTableReview]")
+	}
+	metadata["total_data"] = total
+
+	return reviewArray, metadata, nil
+
+}

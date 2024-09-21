@@ -757,7 +757,7 @@ func (d Data) UpdateTipeTransportasi(ctx context.Context, tipetransportasi glodo
 	return result, err
 }
 
-//rutetransportasi
+// rutetransportasi
 func (d Data) GetTipeTransportasi(ctx context.Context) ([]glodokEntity.TableTipeTransportasi, error) {
 	var (
 		tipeTransportasi      glodokEntity.TableTipeTransportasi
@@ -955,4 +955,141 @@ func (d Data) UpdateRuteTransportasi(ctx context.Context, rutetransportasi glodo
 
 	result = "Berhasil"
 	return result, err
+}
+
+// review
+func (d Data) InsertReview(ctx context.Context, review glodokEntity.TableReview) (string, error) {
+	var (
+		err    error
+		result string
+		lastID string
+		newID  string
+	)
+
+	err = (*d.stmt)[fetchLastReviewID].QueryRowxContext(ctx).Scan(&lastID)
+	if err != nil && err != sql.ErrNoRows {
+		result = "Gagal mengambil ID terakhir"
+		return result, errors.Wrap(err, "[DATA][InsertReview]")
+	}
+
+	if lastID != "" {
+		// Extract the numeric part from lastID and increment it
+		num, _ := strconv.Atoi(lastID[1:])
+		newID = fmt.Sprintf("U%04d", num+1)
+
+	} else {
+		newID = "U0001"
+
+	}
+
+	review.ReviewID = newID
+
+	// Proceed with the insertion
+	_, err = (*d.stmt)[insertReview].ExecContext(ctx,
+		review.ReviewID,
+		review.ReviewRating,
+		review.Reviewer,
+		review.ReviewDesc,
+	)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][InsertReview]")
+	}
+
+	result = "Berhasil"
+	return result, nil
+}
+
+// func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error) {
+// 	var (
+// 		review      glodokEntity.TableReview
+// 		reviewArray []glodokEntity.TableReview
+// 		err         error
+// 	)
+
+// 	rows, err := (*d.stmt)[getTableReview].QueryxContext(ctx, page, length)
+// 	if err != nil {
+// 		return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
+// 	}
+
+// 	defer rows.Close()
+
+// 	for rows.Next() {
+// 		if err = rows.StructScan(&review); err != nil {
+// 			return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
+// 		}
+// 		reviewArray = append(reviewArray, review)
+// 	}
+// 	return reviewArray, err
+
+// }
+
+func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error) {
+	var (
+		review      glodokEntity.TableReview
+		reviewArray []glodokEntity.TableReview
+		err         error
+	)
+
+	rows, err := (*d.stmt)[getTableReview].QueryxContext(ctx, page, length)
+	if err != nil {
+		return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var reviewID string
+		var reviewRating int
+		var reviewerName string
+		var reviewDesc string
+		var reviewDateRaw []byte // Raw byte slice for date
+
+		if err = rows.Scan(&reviewID, &reviewRating, &reviewerName, &reviewDesc, &reviewDateRaw); err != nil {
+			return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
+		}
+
+		// Convert raw date to time.Time
+		var reviewDate time.Time
+		if reviewDateRaw != nil {
+			reviewDate, err = time.Parse("2006-01-02 15:04:05", string(reviewDateRaw))
+			if err != nil {
+				return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
+			}
+		}
+
+		review = glodokEntity.TableReview{
+			ReviewID:     reviewID,
+			ReviewRating: reviewRating,
+			Reviewer:     reviewerName,
+			ReviewDesc:   reviewDesc,
+			ReviewDate:   reviewDate,
+		}
+
+		reviewArray = append(reviewArray, review)
+	}
+	return reviewArray, err
+}
+
+func (d Data) GetCountTableReview(ctx context.Context) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountReview].QueryxContext(ctx)
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountTableReview]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountTableReview]")
+		}
+
+	}
+	return total, err
 }

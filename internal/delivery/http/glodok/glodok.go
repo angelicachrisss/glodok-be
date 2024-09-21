@@ -30,6 +30,8 @@ type IglodokSvc interface {
 	GetTableRuteTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
 	GetSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
 
+	GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//insert
@@ -41,6 +43,8 @@ type IglodokSvc interface {
 	InsertTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi) (string, error)
 
 	InsertRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi) (string, error)
+
+	InsertReview(ctx context.Context, review glodokEntity.TableReview) (string, error)
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 

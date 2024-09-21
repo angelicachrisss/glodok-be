@@ -44,3 +44,11 @@ type TableRuteTransportasi struct {
 	RuteTujuanAkhir      string `db:"rute_tujuanakhir" json:"rute_tujuanakhir"`
 	TipeTransportasiName string `db:"tipetransportasi_name" json:"tipetransportasi_name"`
 }
+
+type TableReview struct {
+	ReviewID     string    `db:"review_id" json:"review_id"`
+	ReviewRating int       `db:"review_rating" json:"review_rating"`
+	Reviewer     string    `db:"reviewer_name" json:"reviewer_name"`
+	ReviewDesc   string    `db:"review_desc" json:"review_desc"`
+	ReviewDate   time.Time `db:"review_date" json:"review_date"`
+}

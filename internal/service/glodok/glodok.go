@@ -41,6 +41,8 @@ type Data interface {
 	GetSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string, page int, length int) ([]glodokEntity.TableRuteTransportasi, error)
 	GetCountSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string) (int, error)
 
+	GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error)
+	GetCountTableReview(ctx context.Context) (int, error)
 
 	//--------------------------------------------------------------------------------------------------
 	//insert
@@ -53,6 +55,7 @@ type Data interface {
 
 	InsertRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi) (string, error)
 
+	InsertReview(ctx context.Context, review glodokEntity.TableReview) (string, error)
 
 	//update
 	UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error)

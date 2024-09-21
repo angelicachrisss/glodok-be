@@ -116,6 +116,16 @@ const (
 	qGetCountSearchRuteTransportasi = `SELECT COUNT(r.rute_id) AS TotalCount FROM t_rutetransportasi AS r JOIN t_tipetransportasi AS t ON r.tipetransportasi_id = t.tipetransportasi_id WHERE t.tipetransportasi_name LIKE ? 
     OR r.rute_tujuanawal LIKE ? OR r.rute_tujuanakhir LIKE ?`
 
+	//review
+	fetchLastReviewID  = "FetchLastReviewID"
+	qFetchLastReviewID = `SELECT review_id FROM t_review ORDER BY review_id DESC LIMIT 1`
+
+	getTableReview  = "GetTableReview"
+	qGetTableReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date FROM t_review LIMIT ?,?`
+
+	getCountReview  = "GetCountReview"
+	qGetCountReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review`
+
 	//------------------------------------------------------------------------
 	//query insert
 	//--admin
@@ -137,6 +147,10 @@ const (
 	//--rutetransportasi
 	insertRuteTransportasi  = "InsertRuteTransportasi"
 	qInsertRuteTransportasi = `INSERT INTO t_rutetransportasi (rute_id, tipetransportasi_id, rute_no, rute_tujuanawal, rute_tujuanakhir) VALUES (?,?,?,?,?)`
+
+	//review
+	insertReview  = "InsertReview"
+	qInsertReview = `INSERT INTO t_review (review_id, review_rating, reviewer_name, review_desc, review_date) VALUES (?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'))`
 
 	//------------------------------------------------------------------------
 	//query update
@@ -199,16 +213,18 @@ var (
 		{getCountTableRuteTransportasi, qGetCountTableRuteTransportasi},
 		{getSearchRuteTransportasi, qGetSearchRuteTransportasi},
 		{getCountSearchRuteTransportasi, qGetCountSearchRuteTransportasi},
+
+		//review
+		{fetchLastReviewID, qFetchLastReviewID},
+		{getTableReview, qGetTableReview},
+		{getCountReview, qGetCountReview},
 	}
 	insertStmt = []statement{
-		//--admin
 		{insertAdmin, qInsertAdmin},
-		//--destinasi
 		{insertDestinasi, qInsertDestinasi},
-		//--tipetransportasi
 		{insertTipeTransportasi, qInsertTipeTransportasi},
-		//rutetransportasi
 		{insertRuteTransportasi, qInsertRuteTransportasi},
+		{insertReview, qInsertReview},
 	}
 	updateStmt = []statement{
 		{updateAdmin, qUpdateAdmin},
