@@ -84,19 +84,27 @@ func (d Data) InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (str
 		result string
 	)
 
-	// Generate a hashed password
-	hashedPass, err := bcrypt.GenerateFromPassword([]byte(admin.AdminPass), bcrypt.DefaultCost)
-	fmt.Println("hashedpass", len(string(hashedPass)))
-	if err != nil {
-		result = "Gagal"
-		return result, errors.Wrap(err, "[DATA][InsertAdmin] Failed to generate hashed password")
+	var hashedPass string
+
+	// Check if AdminID is "ADMIN" or "admin"
+	if admin.AdminID == "ADMIN" || admin.AdminID == "admin" {
+		// Use the password as is without hashing
+		hashedPass = admin.AdminPass
+	} else {
+		// Generate a hashed password
+		hashedPassBytes, err := bcrypt.GenerateFromPassword([]byte(admin.AdminPass), bcrypt.DefaultCost)
+		if err != nil {
+			result = "Gagal"
+			return result, errors.Wrap(err, "[DATA][InsertAdmin] Failed to generate hashed password")
+		}
+		hashedPass = string(hashedPassBytes)
 	}
 
-	// Insert the hashed password into the database
+	// Insert the password into the database
 	_, err = (*d.stmt)[insertAdmin].ExecContext(ctx,
 		admin.AdminID,
 		admin.AdminNama,
-		string(hashedPass), // Convert the hashed password to a string
+		hashedPass, // Use the hashed or plain password based on the condition
 	)
 
 	if err != nil {
@@ -106,7 +114,7 @@ func (d Data) InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (str
 
 	result = "Berhasil"
 
-	return result, err
+	return result, nil
 }
 
 func (d Data) SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error) {
