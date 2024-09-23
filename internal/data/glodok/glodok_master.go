@@ -407,14 +407,18 @@ func (d Data) GetTableDestinasi(ctx context.Context, ket string, page int, lengt
 		}
 
 		if jbukaStr != "" {
-			destinasi.DestinasiJBuka, err = time.Parse("15:04:05", jbukaStr)
+			jbukaStr = "0001-01-01 " + jbukaStr
+			// destinasi.DestinasiJBuka, err = time.Parse("15:04:05", jbukaStr)
+			destinasi.DestinasiJBuka, err = time.Parse("2006-01-02 15:04:05", jbukaStr)
 			if err != nil {
 				return nil, errors.Wrap(err, "[DATA] [GetTableDestinasi] - Failed to parse destinasi_jbuka")
 			}
 		}
 
 		if jtutupStr != "" {
-			destinasi.DestinasiJTutup, err = time.Parse("15:04:05", jtutupStr)
+			jtutupStr = "0001-01-01 " + jtutupStr
+			// destinasi.DestinasiJTutup, err = time.Parse("15:04:05", jtutupStr)
+			destinasi.DestinasiJTutup, err = time.Parse("2006-01-02 15:04:05", jtutupStr)
 			if err != nil {
 				return nil, errors.Wrap(err, "[DATA] [GetTableDestinasi] - Failed to parse destinasi_jtutup")
 			}
