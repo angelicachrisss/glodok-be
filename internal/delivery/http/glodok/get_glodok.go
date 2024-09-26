@@ -215,6 +215,14 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
 		result, metadata, err = h.glodokSvc.GetSearchBerita(ctx, r.FormValue("beritaid"), r.FormValue("destinasiname"), r.FormValue("beritajudul"), page, length)
+
+		//for masyarakat
+	case "getalldestinasibykategori":
+		result, metadata, err = h.glodokSvc.GetAllDestinasiByKategori(ctx, r.FormValue("ket"))
+	case "getsearchdestinasibykategori":
+		result, err = h.glodokSvc.GetSearchDestinasiByKategori(ctx, r.FormValue("ket"), r.FormValue("destinasiname"))
+	case "getdestinasibyid":
+		result, err = h.glodokSvc.GetDestinasiByID(ctx, r.FormValue("destinasiid"))
 	}
 
 	if err != nil {

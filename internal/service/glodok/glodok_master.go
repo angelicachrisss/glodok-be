@@ -616,7 +616,7 @@ func (s Service) GetSearchReviewByRating(ctx context.Context, rating int, review
 	return searchListReviewArray, metadata, nil
 }
 
-//berita
+// berita
 func (s Service) GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error) {
 
 	destinasiArray, err := s.glodok.GetDestinasi(ctx)
@@ -683,7 +683,7 @@ func (s Service) GetTableBerita(ctx context.Context, page int, length int) ([]gl
 	beritaArray, err := s.glodok.GetTableBerita(ctx, offset, length)
 
 	if err != nil {
-		return beritaArray, metadata, errors.Wrap(err, "[Service][GetTableDestinasi]")
+		return beritaArray, metadata, errors.Wrap(err, "[Service][GetTableBerita]")
 	}
 
 	total, err = s.glodok.GetCountBerita(ctx)
@@ -735,3 +735,52 @@ func (s Service) GetSearchBerita(ctx context.Context, beritaid string, destinasi
 
 	return searchListDestinasiArray, metadata, nil
 }
+
+// for masyarakat
+func (s Service) GetAllDestinasiByKategori(ctx context.Context, ket string) ([]glodokEntity.TableDestinasi, interface{}, error) {
+	var (
+		total int
+		// destinasiArrayFinish []glodokEntity.TableDestinasi
+	)
+
+	metadata := make(map[string]interface{})
+
+	destinasiArray, err := s.glodok.GetAllDestinasiByKategori(ctx, ket)
+
+	if err != nil {
+		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetAllDestinasiByKategori]")
+	}
+
+	total, err = s.glodok.GetCountDestinasi(ctx, ket)
+
+	if err != nil {
+		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetCountDestinasi]")
+	}
+	metadata["total_data"] = total
+
+	return destinasiArray, metadata, nil
+}
+
+func (s Service) GetSearchDestinasiByKategori(ctx context.Context, kategori string, destinasiname string) ([]glodokEntity.TableDestinasi, error) {
+
+	searchListDestinasiArray, err := s.glodok.GetSearchDestinasiByKategori(ctx, kategori, destinasiname)
+
+	if err != nil {
+		return searchListDestinasiArray, errors.Wrap(err, "[Service][GetSearchDestinasiByKategori]")
+	}
+
+	return searchListDestinasiArray, nil
+}
+
+func (s Service) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
+
+	searchListDestinasiArray, err := s.glodok.GetDestinasiByID(ctx, destinasiid)
+
+	if err != nil {
+		return searchListDestinasiArray, errors.Wrap(err, "[Service][GetDestinasiByID]")
+	}
+
+	return searchListDestinasiArray, nil
+}
+
+

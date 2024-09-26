@@ -266,6 +266,16 @@ const (
 
 	deleteBerita  = "DeleteBerita"
 	qDeleteBerita = `DELETE FROM t_berita WHERE berita_id =?`
+
+	//FOR MASYARAKAT
+	getAllDestinasiByKategori  = "GetAllDestinasiByKategori"
+	qGetAllDestinasiByKategori = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup,destinasi_jbuka,destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ? `
+
+	getSearchDestinasiByKategori  = "GetSearchDestinasiByKategori"
+	qGetSearchDestinasiByKategori = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup, destinasi_jbuka, destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ?  AND (destinasi_name LIKE ?)`
+
+	getDestinasiByID  = "GetDestinasiByID"
+	qGetDestinasiByID = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup, destinasi_jbuka, destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_id = ?`
 )
 
 var (
@@ -321,6 +331,11 @@ var (
 		{getImageBerita, qGetImageBerita},
 		{getSearchBerita, qSearchBerita},
 		{getCountSearchBerita, qCountSearchBerita},
+
+		//for masyarakat
+		{getAllDestinasiByKategori, qGetAllDestinasiByKategori},
+		{getSearchDestinasiByKategori, qGetSearchDestinasiByKategori},
+		{getDestinasiByID, qGetDestinasiByID},
 	}
 	insertStmt = []statement{
 		{insertAdmin, qInsertAdmin},
