@@ -128,11 +128,40 @@ const (
 	fetchLastReviewID  = "FetchLastReviewID"
 	qFetchLastReviewID = `SELECT review_id FROM t_review ORDER BY review_id DESC LIMIT 1`
 
+	//-get all
 	getTableReview  = "GetTableReview"
 	qGetTableReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date FROM t_review ORDER BY review_date DESC LIMIT ?,? `
 
 	getCountReview  = "GetCountReview"
 	qGetCountReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review`
+
+	getSearchTableReview  = "GetSearchTableReview"
+	qGetSearchTableReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date 
+	FROM t_review 
+	WHERE review_id LIKE ? OR reviewer_name LIKE ?
+	ORDER BY review_id DESC 
+	LIMIT ?,?`
+
+	getCountSearchReview  = "GetCountSearchReview"
+	qGetCountSearchReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_id LIKE ? OR reviewer_name LIKE ?`
+
+	//-by rating
+	getTableReviewByRating  = "GetTableReviewByRating"
+	qGetTableReviewByRating = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date FROM t_review WHERE review_rating = ? LIMIT ?,?`
+
+	getCountReviewByRating  = "GetCountReviewByRating"
+	qGetCountReviewByRating = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_rating = ?`
+
+	getSearchReviewByRating  = "GetSearchReviewByRating"
+	qGetSearchReviewByRating = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date 
+	FROM t_review 
+	WHERE review_rating = ? AND (review_id LIKE ? OR reviewer_name LIKE ?) 
+	ORDER BY review_id DESC 
+	LIMIT ?,?`
+
+	getCountSearchReviewByRating  = "GetCountSearchReviewByRating"
+	qGetCountSearchReviewByRating = `SELECT COUNT(review_id) AS TotalCount
+	FROM t_review WHERE review_rating = ? AND (review_id LIKE ? OR reviewer_name LIKE ?)`
 
 	//berita
 	getDestinasi  = "GetDestinasi"
@@ -277,6 +306,12 @@ var (
 		{fetchLastReviewID, qFetchLastReviewID},
 		{getTableReview, qGetTableReview},
 		{getCountReview, qGetCountReview},
+		{getSearchTableReview, qGetSearchTableReview},
+		{getCountSearchReview, qGetCountSearchReview},
+		{getTableReviewByRating, qGetTableReviewByRating},
+		{getCountReviewByRating, qGetCountReviewByRating},
+		{getSearchReviewByRating, qGetSearchReviewByRating},
+		{getCountSearchReviewByRating, qGetCountSearchReviewByRating},
 
 		//berita
 		{getDestinasi, qGetDestinasi},

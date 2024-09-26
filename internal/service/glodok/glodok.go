@@ -43,6 +43,12 @@ type Data interface {
 
 	GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error)
 	GetCountTableReview(ctx context.Context) (int, error)
+	GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error)
+	GetCountSearchReview(ctx context.Context, reviewid string, reviewer string) (int, error)
+	GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, error)
+	GetCountTableReviewByRating(ctx context.Context, rating int) (int, error)
+	GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error)
+	GetCountSearchReviewByRating(ctx context.Context, rating int , reviewid string, reviewer string) (int, error) 
 
 	GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 	GetTableBerita(ctx context.Context, page int, length int) ([]glodokEntity.TableBerita, error)

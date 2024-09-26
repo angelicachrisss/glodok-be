@@ -31,6 +31,9 @@ type IglodokSvc interface {
 	GetSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
 
 	GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+	GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) 
+	GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+	GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) 
 
 	GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 	GetImageBerita(ctx context.Context, beritaid string) ([]byte, error)
