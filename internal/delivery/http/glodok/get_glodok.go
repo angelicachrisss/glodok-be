@@ -139,6 +139,20 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
 		result, metadata, err = h.glodokSvc.GetTableReview(ctx, page, length)
+	case "getsearchreview":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetSearchReview(ctx, r.FormValue("reviewid"), r.FormValue("reviewer"), page, length)
+	case "getreviewbyrating":
+		rating, _ := strconv.Atoi(r.FormValue("rating"))
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetTableReviewByRating(ctx, rating, page, length)
+	case "getsearchreviewbyrating":
+		rating, _ := strconv.Atoi(r.FormValue("rating"))
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetSearchReviewByRating(ctx, rating, r.FormValue("reviewid"), r.FormValue("reviewer"), page, length)
 	case "getdestinasidropdown":
 		result, err = h.glodokSvc.GetDestinasi(ctx)
 	case "getimageberita":
