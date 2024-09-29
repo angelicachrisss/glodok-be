@@ -737,41 +737,6 @@ func (s Service) GetSearchBerita(ctx context.Context, beritaid string, destinasi
 }
 
 // for masyarakat
-func (s Service) GetAllDestinasiByKategori(ctx context.Context, ket string) ([]glodokEntity.TableDestinasi, interface{}, error) {
-	var (
-		total int
-		// destinasiArrayFinish []glodokEntity.TableDestinasi
-	)
-
-	metadata := make(map[string]interface{})
-
-	destinasiArray, err := s.glodok.GetAllDestinasiByKategori(ctx, ket)
-
-	if err != nil {
-		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetAllDestinasiByKategori]")
-	}
-
-	total, err = s.glodok.GetCountDestinasi(ctx, ket)
-
-	if err != nil {
-		return destinasiArray, metadata, errors.Wrap(err, "[Service][GetCountDestinasi]")
-	}
-	metadata["total_data"] = total
-
-	return destinasiArray, metadata, nil
-}
-
-func (s Service) GetSearchDestinasiByKategori(ctx context.Context, kategori string, destinasiname string) ([]glodokEntity.TableDestinasi, error) {
-
-	searchListDestinasiArray, err := s.glodok.GetSearchDestinasiByKategori(ctx, kategori, destinasiname)
-
-	if err != nil {
-		return searchListDestinasiArray, errors.Wrap(err, "[Service][GetSearchDestinasiByKategori]")
-	}
-
-	return searchListDestinasiArray, nil
-}
-
 func (s Service) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
 
 	searchListDestinasiArray, err := s.glodok.GetDestinasiByID(ctx, destinasiid)
@@ -783,4 +748,37 @@ func (s Service) GetDestinasiByID(ctx context.Context, destinasiid string) ([]gl
 	return searchListDestinasiArray, nil
 }
 
+func (s Service) GetAllDestinasi(ctx context.Context, kategori string, labelhalal string, destinasiname string) ([]glodokEntity.TableDestinasi, error) {
 
+	searchListDestinasiArray, err := s.glodok.GetAllDestinasi(ctx, kategori, labelhalal, destinasiname)
+
+	if err != nil {
+		return searchListDestinasiArray, errors.Wrap(err, "[Service][GetAllDestinasi]")
+	}
+
+	return searchListDestinasiArray, nil
+}
+
+func (s Service) GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	searchListReviewArray, err := s.glodok.GetAllReview(ctx, rating, offset, length)
+
+	if err != nil {
+		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetAllReview]")
+	}
+
+	total, err = s.glodok.GetCountAllReview(ctx, rating)
+
+	if err != nil {
+		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetCountAllReview]")
+	}
+	metadata["total_data"] = total
+
+	return searchListReviewArray, metadata, nil
+}

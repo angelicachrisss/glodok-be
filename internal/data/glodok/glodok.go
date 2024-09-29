@@ -223,10 +223,6 @@ const (
 	insertRuteTransportasi  = "InsertRuteTransportasi"
 	qInsertRuteTransportasi = `INSERT INTO t_rutetransportasi (rute_id, tipetransportasi_id, rute_no, rute_tujuanawal, rute_tujuanakhir, rute_turun1, rute_turun2, rute_flagperbaikan1, rute_flagperbaikan2) VALUES (?,?,?,?,?,?,?,?,?)`
 
-	//review
-	insertReview  = "InsertReview"
-	qInsertReview = `INSERT INTO t_review (review_id, review_rating, reviewer_name, review_desc, review_date) VALUES (?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'))`
-
 	//berita
 	insertBerita  = "InsertBerita"
 	qInsertBerita = `INSERT INTO t_berita (berita_id, destinasi_id, berita_judul, berita_desc, berita_foto, berita_date_update, berita_linksumber) VALUES (?,?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'),?)`
@@ -268,14 +264,23 @@ const (
 	qDeleteBerita = `DELETE FROM t_berita WHERE berita_id =?`
 
 	//FOR MASYARAKAT
-	getAllDestinasiByKategori  = "GetAllDestinasiByKategori"
-	qGetAllDestinasiByKategori = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka,destinasi_htutup,destinasi_jbuka,destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ? `
-
-	getSearchDestinasiByKategori  = "GetSearchDestinasiByKategori"
-	qGetSearchDestinasiByKategori = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup, destinasi_jbuka, destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ?  AND (destinasi_name LIKE ?)`
-
+	//destinasi
 	getDestinasiByID  = "GetDestinasiByID"
 	qGetDestinasiByID = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup, destinasi_jbuka, destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_id = ?`
+
+	getAllDestinasi  = "GetAllDestinasi"
+	qGetAllDestinasi = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup, destinasi_jbuka, destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ? AND destinasi_labelhalal LIKE ? AND (destinasi_name LIKE ?)`
+
+	//review
+	insertReview  = "InsertReview"
+	qInsertReview = `INSERT INTO t_review (review_id, review_rating, reviewer_name, review_desc, review_date) VALUES (?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'))`
+
+	getAllReview  = "GetAllReview"
+	qGetAllReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date 
+	FROM t_review WHERE review_rating LIKE ? ORDER BY review_id DESC LIMIT ?,? `
+
+	getCountAllReview  = `GetCountAllReview`
+	qGetCountAllReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_rating LIKE ?`
 )
 
 var (
@@ -333,9 +338,10 @@ var (
 		{getCountSearchBerita, qCountSearchBerita},
 
 		//for masyarakat
-		{getAllDestinasiByKategori, qGetAllDestinasiByKategori},
-		{getSearchDestinasiByKategori, qGetSearchDestinasiByKategori},
 		{getDestinasiByID, qGetDestinasiByID},
+		{getAllDestinasi, qGetAllDestinasi},
+		{getAllReview, qGetAllReview},
+		{getCountAllReview, qGetCountAllReview},
 	}
 	insertStmt = []statement{
 		{insertAdmin, qInsertAdmin},

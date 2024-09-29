@@ -87,9 +87,10 @@ type Data interface {
 	DeleteBerita(ctx context.Context, beritaid string) (string, error)
 
 	//for masyarakat
-	GetAllDestinasiByKategori(ctx context.Context, ket string) ([]glodokEntity.TableDestinasi, error)
-	GetSearchDestinasiByKategori(ctx context.Context, kategori string, destinasiname string) ([]glodokEntity.TableDestinasi, error)
 	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)
+	GetAllDestinasi(ctx context.Context, kategori string, labelhalal string, destinasiname string) ([]glodokEntity.TableDestinasi, error)
+	GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, error)
+	GetCountAllReview(ctx context.Context, rating string) (int, error)
 }
 
 type Service struct {
