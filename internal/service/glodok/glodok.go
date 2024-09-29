@@ -48,7 +48,7 @@ type Data interface {
 	GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, error)
 	GetCountTableReviewByRating(ctx context.Context, rating int) (int, error)
 	GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error)
-	GetCountSearchReviewByRating(ctx context.Context, rating int , reviewid string, reviewer string) (int, error) 
+	GetCountSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string) (int, error)
 
 	GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 	GetTableBerita(ctx context.Context, page int, length int) ([]glodokEntity.TableBerita, error)
@@ -85,6 +85,12 @@ type Data interface {
 	DeleteRuteTransportasi(ctx context.Context, ruteid string) (string, error)
 	DeleteReview(ctx context.Context, reviewid string) (string, error)
 	DeleteBerita(ctx context.Context, beritaid string) (string, error)
+
+	//for masyarakat
+	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)
+	GetAllDestinasi(ctx context.Context, kategori string, labelhalal string, destinasiname string) ([]glodokEntity.TableDestinasi, error)
+	GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, error)
+	GetCountAllReview(ctx context.Context, rating string) (int, error)
 }
 
 type Service struct {
