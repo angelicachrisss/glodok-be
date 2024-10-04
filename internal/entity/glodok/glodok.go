@@ -10,7 +10,6 @@ import "time"
 
 type GetAdmin struct {
 	AdminID   string `db:"admin_id" json:"admin_id"`
-	AdminNama string `db:"admin_name" json:"admin_name"`
 	AdminPass string `db:"admin_pass" json:"admin_pass"`
 }
 

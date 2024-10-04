@@ -24,23 +24,6 @@ func (s Service) GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error) 
 
 }
 
-func (s Service) InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error) {
-
-	var (
-		result string
-	)
-	result, err := s.glodok.InsertAdmin(ctx, admin)
-
-	if err != nil {
-		result = "Gagal"
-		return result, errors.Wrap(err, "[Service][InsertKaryawan]")
-	}
-
-	result = "Berhasil"
-
-	return result, err
-}
-
 func (s Service) SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error) {
 	var (
 		result string
@@ -68,57 +51,6 @@ func (s Service) GetAdminbyID(ctx context.Context, adminid string) ([]glodokEnti
 
 	return adminArray, nil
 
-}
-
-func (s Service) GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error) {
-
-	var (
-		total int
-	)
-
-	metadata := make(map[string]interface{})
-
-	offset := page * length
-	adminArray, err := s.glodok.GetTableAdmin(ctx, offset, length)
-
-	if err != nil {
-		return adminArray, metadata, errors.Wrap(err, "[Service][GetTableAdmin]")
-	}
-
-	total, err = s.glodok.GetCountAdmin(ctx)
-
-	if err != nil {
-		return adminArray, metadata, errors.Wrap(err, "[Service][GetCountAdmin]")
-	}
-	metadata["total_data"] = total
-
-	return adminArray, metadata, nil
-
-}
-
-func (s Service) GetSearchAdmin(ctx context.Context, adminid string, adminname string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error) {
-	var (
-		total int
-	)
-
-	metadata := make(map[string]interface{})
-
-	offset := page * length
-	fmt.Println("offset: ", offset)
-	searchListAdminArray, err := s.glodok.GetSearchAdmin(ctx, adminid, adminname, offset, length)
-
-	if err != nil {
-		return searchListAdminArray, metadata, errors.Wrap(err, "[Service][GetSearchAdmin]")
-	}
-
-	total, err = s.glodok.GetCountSearchAdmin(ctx, adminid, adminname)
-
-	if err != nil {
-		return searchListAdminArray, metadata, errors.Wrap(err, "[Service][GetSearchAdmin]")
-	}
-	metadata["total_data"] = total
-
-	return searchListAdminArray, metadata, nil
 }
 
 func (s Service) DeleteAdmin(ctx context.Context, adminid string) (string, error) {

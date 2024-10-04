@@ -31,22 +31,10 @@ const (
 	// query get
 	//--admin
 	getAdmin  = "GetAdmin"
-	qGetAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin`
-
-	getTableAdmin  = "GetTableAdmin"
-	qGetTableAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin LIMIT ?,?`
+	qGetAdmin = `SELECT admin_id, admin_pass FROM t_admin`
 
 	getAdminbyID  = "GetAdminByID"
-	qGetAdminByID = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id =?`
-
-	getCountAdmin  = "GetCountAdmin"
-	qGetCountAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin`
-
-	getSearchAdmin  = "GetSearchAdmin"
-	qGetSearchAdmin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id LIKE ? OR admin_name LIKE ? LIMIT ?, ?`
-
-	getCountSearchAdmin  = "GetCountSearchAdmin"
-	qGetCountSearchAdmin = `SELECT COUNT(admin_id) AS TotalCount FROM t_admin WHERE admin_id LIKE ? OR admin_name LIKE ?`
+	qGetAdminByID = `SELECT admin_id, admin_pass FROM t_admin WHERE admin_id =?`
 
 	//--destinasi
 	getTableDestinasi  = "GetTableDestinasi"
@@ -204,11 +192,8 @@ const (
 	//------------------------------------------------------------------------
 	//query insert
 	//--admin
-	insertAdmin  = "InsertAdmin"
-	qInsertAdmin = `INSERT INTO t_admin (admin_id, admin_name, admin_pass) VALUES (?,?,?)`
-
 	submitLogin  = "SubmitLogin"
-	qSubmitLogin = `SELECT admin_id, admin_name, admin_pass FROM t_admin WHERE admin_id = ?`
+	qSubmitLogin = `SELECT admin_id, admin_pass FROM t_admin WHERE admin_id = ?`
 
 	//--destinasi
 	insertDestinasi  = "InsertDestinasi"
@@ -230,7 +215,7 @@ const (
 	//------------------------------------------------------------------------
 	//query update
 	updateAdmin  = "UpdateAdmin"
-	qUpdateAdmin = `UPDATE t_admin SET admin_name =?, admin_pass =? WHERE admin_id =?`
+	qUpdateAdmin = `UPDATE t_admin SET admin_pass =? WHERE admin_id =?`
 
 	updateTipeTransportasi  = "UpdateTipeTransportasi"
 	qUpdateTipeTransportasi = `UPDATE t_tipetransportasi SET tipetransportasi_name =?  WHERE tipetransportasi_id =?`
@@ -289,10 +274,6 @@ var (
 		{getAdmin, qGetAdmin},
 		{submitLogin, qSubmitLogin},
 		{getAdminbyID, qGetAdminByID},
-		{getTableAdmin, qGetTableAdmin},
-		{getCountAdmin, qGetCountAdmin},
-		{getSearchAdmin, qGetSearchAdmin},
-		{getCountSearchAdmin, qGetCountSearchAdmin},
 
 		//---destinasi
 		{fetchLastDestinasiID, qFetchLastDestinasiID},
@@ -344,7 +325,6 @@ var (
 		{getCountAllReview, qGetCountAllReview},
 	}
 	insertStmt = []statement{
-		{insertAdmin, qInsertAdmin},
 		{insertDestinasi, qInsertDestinasi},
 		{insertTipeTransportasi, qInsertTipeTransportasi},
 		{insertRuteTransportasi, qInsertRuteTransportasi},

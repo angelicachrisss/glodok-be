@@ -8,8 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-
 	"strings"
+
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -79,44 +79,50 @@ func (d Data) GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error) {
 	return adminArray, err
 }
 
-func (d Data) InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error) {
-	var (
-		err    error
-		result string
-	)
+// func (d Data) SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error) {
+// 	var (
+// 		err    error
+// 		result string
+// 		admin  glodokEntity.GetAdmin
+// 	)
 
-	var hashedPass string
+// 	// Query the admin data
+// 	err = (*d.stmt)[submitLogin].QueryRowxContext(ctx, adminid).StructScan(&admin)
+// 	if err != nil {
+// 		if err == sql.ErrNoRows {
+// 			result = "Admin not found"
+// 		} else {
+// 			result = "Failed to query admin"
+// 		}
+// 		return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
+// 	}
 
-	// Check if AdminID is "ADMIN" or "admin"
-	if admin.AdminID == "ADMIN" || admin.AdminID == "admin" {
-		// Use the password as is without hashing
-		hashedPass = admin.AdminPass
-	} else {
-		// Generate a hashed password
-		hashedPassBytes, err := bcrypt.GenerateFromPassword([]byte(admin.AdminPass), bcrypt.DefaultCost)
-		if err != nil {
-			result = "Gagal"
-			return result, errors.Wrap(err, "[DATA][InsertAdmin] Failed to generate hashed password")
-		}
-		hashedPass = string(hashedPassBytes)
-	}
+// 	// Check if the stored password is hashed or plaintext
+// 	if len(admin.AdminPass) > 0 && admin.AdminPass[0] == '$' {
+// 		// Assuming a hashed password starts with '$'
+// 		// Proceed with hashed password comparison
+// 		err = bcrypt.CompareHashAndPassword([]byte(admin.AdminPass), []byte(adminpass))
+// 		if err != nil {
+// 			result = "Invalid password"
+// 			fmt.Println("error", err)
+// 			return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
+// 		}
+// 	} else {
+// 		// Compare plaintext password directly
+// 		if admin.AdminPass == adminpass {
+// 			// Login successful
+// 			result = "Login successful"
+// 			return result, nil
+// 		} else {
+// 			result = "Invalid password"
+// 			err = errors.New("password does not match")
+// 			return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
+// 		}
+// 	}
 
-	// Insert the password into the database
-	_, err = (*d.stmt)[insertAdmin].ExecContext(ctx,
-		admin.AdminID,
-		admin.AdminNama,
-		hashedPass, // Use the hashed or plain password based on the condition
-	)
-
-	if err != nil {
-		result = "Gagal"
-		return result, errors.Wrap(err, "[DATA][InsertAdmin]")
-	}
-
-	result = "Berhasil"
-
-	return result, nil
-}
+// 	result = "Login successful"
+// 	return result, nil
+// }
 
 func (d Data) SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error) {
 	var (
@@ -125,6 +131,7 @@ func (d Data) SubmitLogin(ctx context.Context, adminid string, adminpass string)
 		admin  glodokEntity.GetAdmin
 	)
 
+	// Query the admin data
 	err = (*d.stmt)[submitLogin].QueryRowxContext(ctx, adminid).StructScan(&admin)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -135,28 +142,28 @@ func (d Data) SubmitLogin(ctx context.Context, adminid string, adminpass string)
 		return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
 	}
 
-	// Check if the adminid is "ADMIN" or "admin"
-	if strings.EqualFold(adminid, "ADMIN") {
-		// Compare the plain text password directly
-		if admin.AdminPass == adminpass {
-			result = "Login successful"
-		} else {
-			result = "Invalid password"
-			err = errors.New("password does not match")
-			return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
-		}
-	} else {
-		// Proceed with hashed password comparison for other adminids
+	// Check if the stored password is hashed or plaintext
+	if strings.HasPrefix(admin.AdminPass, "$2a$") || strings.HasPrefix(admin.AdminPass, "$2b$") || strings.HasPrefix(admin.AdminPass, "$2y$") {
+		// Proceed with hashed password comparison
 		err = bcrypt.CompareHashAndPassword([]byte(admin.AdminPass), []byte(adminpass))
 		if err != nil {
 			result = "Invalid password"
 			fmt.Println("error", err)
 			return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
 		}
-
-		result = "Login successful"
+	} else {
+		// Compare plaintext password directly
+		if admin.AdminPass == adminpass {
+			result = "Login successful"
+			return result, nil
+		} else {
+			result = "Invalid password"
+			err = errors.New("password does not match")
+			return result, errors.Wrap(err, "[DATA] [SubmitLogin]")
+		}
 	}
 
+	result = "Login successful"
 	return result, nil
 }
 
@@ -183,97 +190,6 @@ func (d Data) GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.
 	return adminArray, err
 }
 
-func (d Data) GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, error) {
-	var (
-		admin      glodokEntity.GetAdmin
-		adminArray []glodokEntity.GetAdmin
-		err        error
-	)
-
-	rows, err := (*d.stmt)[getTableAdmin].QueryxContext(ctx, page, length)
-	if err != nil {
-		return adminArray, errors.Wrap(err, "[DATA] [GetTableAdmin]")
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		if err = rows.StructScan(&admin); err != nil {
-			return adminArray, errors.Wrap(err, "[DATA] [GetTableAdmin]")
-		}
-		adminArray = append(adminArray, admin)
-	}
-	return adminArray, err
-}
-
-func (d Data) GetCountAdmin(ctx context.Context) (int, error) {
-	var (
-		err   error
-		total int
-	)
-
-	rows, err := (*d.stmt)[getCountAdmin].QueryxContext(ctx)
-	if err != nil {
-		return total, errors.Wrap(err, "[DATA] [GetCountAdmin]")
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		if err = rows.Scan(&total); err != nil {
-			return total, errors.Wrap(err, "[DATA] [GetCountAdmin]")
-		}
-
-	}
-	return total, err
-}
-
-func (d Data) GetSearchAdmin(ctx context.Context, adminid string, adminname string, page int, length int) ([]glodokEntity.GetAdmin, error) {
-	var (
-		admin      glodokEntity.GetAdmin
-		adminArray []glodokEntity.GetAdmin
-		err        error
-	)
-
-	rows, err := (*d.stmt)[getSearchAdmin].QueryxContext(ctx, "%"+adminid+"%", "%"+adminname+"%", page, length)
-	fmt.Println("pagelength", page, length)
-	if err != nil {
-		return adminArray, errors.Wrap(err, "[DATA] [GetSearchAdmin]")
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		if err = rows.StructScan(&admin); err != nil {
-			return adminArray, errors.Wrap(err, "[DATA] [GetSearchAdmin]")
-		}
-		adminArray = append(adminArray, admin)
-	}
-	return adminArray, err
-}
-
-func (d Data) GetCountSearchAdmin(ctx context.Context, adminid string, adminname string) (int, error) {
-	var (
-		err   error
-		total int
-	)
-
-	rows, err := (*d.stmt)[getCountSearchAdmin].QueryxContext(ctx, "%"+adminid+"%", "%"+adminname+"%")
-	if err != nil {
-		return total, errors.Wrap(err, "[DATA] [GetCountSearchAdmin]")
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		if err = rows.Scan(&total); err != nil {
-			return total, errors.Wrap(err, "[DATA] [GetCountSearchAdmin]")
-		}
-
-	}
-	return total, err
-}
-
 func (d Data) DeleteAdmin(ctx context.Context, adminid string) (string, error) {
 	var (
 		err    error
@@ -292,29 +208,60 @@ func (d Data) DeleteAdmin(ctx context.Context, adminid string) (string, error) {
 	return result, err
 }
 
+// func (d Data) UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error) {
+// 	var (
+// 		result string
+// 		err    error
+// 	)
+
+// 	// Generate a hashed password
+// 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(admin.AdminPass), bcrypt.DefaultCost)
+// 	if err != nil {
+// 		result = "Failed to generate hashed password"
+// 		return result, errors.Wrap(err, "[DATA][UpdateAdmin]")
+// 	}
+
+// 	// Update the hashed password in the database
+// 	_, err = (*d.stmt)[updateAdmin].ExecContext(ctx, string(hashedPass), adminid)
+
+// 	if err != nil {
+// 		result = "Gagal"
+// 		return result, errors.Wrap(err, "[DATA][UpdateAdmin]")
+// 	}
+
+// 	result = "Berhasil"
+// 	return result, err
+// }
+
 func (d Data) UpdateAdmin(ctx context.Context, admin glodokEntity.GetAdmin, adminid string) (string, error) {
-	var (
-		result string
-		err    error
-	)
+	var result string
 
-	// Generate a hashed password
-	hashedPass, err := bcrypt.GenerateFromPassword([]byte(admin.AdminPass), bcrypt.DefaultCost)
-	if err != nil {
-		result = "Failed to generate hashed password"
-		return result, errors.Wrap(err, "[DATA][UpdateAdmin]")
-	}
+	// Check if the password is "admin" or "ADMIN"
+	if admin.AdminPass == "admin" || admin.AdminPass == "ADMIN" {
+		// Update the password as-is (no hashing)
+		_, err := (*d.stmt)[updateAdmin].ExecContext(ctx, admin.AdminPass, adminid)
+		if err != nil {
+			result = "Gagal"
+			return result, errors.Wrap(err, "[DATA][UpdateAdmin]")
+		}
+	} else {
+		// Generate a hashed password
+		hashedPass, err := bcrypt.GenerateFromPassword([]byte(admin.AdminPass), bcrypt.DefaultCost)
+		if err != nil {
+			result = "Failed to generate hashed password"
+			return result, errors.Wrap(err, "[DATA][UpdateAdmin]")
+		}
 
-	// Update the hashed password in the database
-	_, err = (*d.stmt)[updateAdmin].ExecContext(ctx, admin.AdminNama, string(hashedPass), adminid)
-
-	if err != nil {
-		result = "Gagal"
-		return result, errors.Wrap(err, "[DATA][UpdateAdmin]")
+		// Update the hashed password in the database
+		_, err = (*d.stmt)[updateAdmin].ExecContext(ctx, string(hashedPass), adminid)
+		if err != nil {
+			result = "Gagal"
+			return result, errors.Wrap(err, "[DATA][UpdateAdmin]")
+		}
 	}
 
 	result = "Berhasil"
-	return result, err
+	return result, nil
 }
 
 // destinasi

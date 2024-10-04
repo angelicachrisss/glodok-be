@@ -50,14 +50,6 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		result, err = h.glodokSvc.GetAdmin(ctx)
 	case "getadminbyid":
 		result, err = h.glodokSvc.GetAdminbyID(ctx, r.FormValue("adminid"))
-	case "gettableadmin":
-		page, _ := strconv.Atoi(r.FormValue("page"))
-		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetTableAdmin(ctx, page, length)
-	case "getsearchadmin":
-		page, _ := strconv.Atoi(r.FormValue("page"))
-		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetSearchAdmin(ctx, r.FormValue("adminid"), r.FormValue("adminname"), page, length)
 	case "getdestinasi":
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
