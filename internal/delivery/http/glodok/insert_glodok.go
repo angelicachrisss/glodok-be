@@ -214,11 +214,11 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 
 		// Membaca data JSON yang lain dari form-data
 		TableBerita := glodokEntity.TableBerita{
-			BeritaID: "",
-			DestinasiID: r.FormValue("destinasi_id"),
-			BeritaJudul: r.FormValue("berita_judul"),
-			BeritaDesc: r.FormValue("berita_desc"),
-			BeritaGambar: fileBytes,
+			BeritaID:         "",
+			DestinasiID:      r.FormValue("destinasi_id"),
+			BeritaJudul:      r.FormValue("berita_judul"),
+			BeritaDesc:       r.FormValue("berita_desc"),
+			BeritaGambar:     fileBytes,
 			BeritaLinkSumber: r.FormValue("berita_linksumber"),
 		}
 
@@ -231,6 +231,16 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 			resp.Data = result
 			return
 		}
+		//-------------------------------------------------------------------------------------------------------------------------
+		//jenis destinasi
+	case "insertjenisdestinasi":
+		var (
+			InsertJenisDestinasi glodokEntity.TableJenisDestinasi
+		)
+
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &InsertJenisDestinasi)
+		result, err = h.glodokSvc.InsertJenisDestinasi(ctx, InsertJenisDestinasi)
 
 	}
 

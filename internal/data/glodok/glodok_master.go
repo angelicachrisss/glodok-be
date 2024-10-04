@@ -1583,6 +1583,129 @@ func (d Data) GetCountSearchBerita(ctx context.Context, beritaid string, destina
 	return total, err
 }
 
+//jenis destinasi
+func (d Data) InsertJenisDestinasi(ctx context.Context, jenisdestinasi glodokEntity.TableJenisDestinasi) (string, error) {
+	var (
+		err    error
+		result string
+		lastID string
+		newID  string
+	)
+
+	err = (*d.stmt)[fetchJenisDestinasiID].QueryRowxContext(ctx).Scan(&lastID)
+	if err != nil && err != sql.ErrNoRows {
+		result = "Gagal mengambil ID terakhir"
+		return result, errors.Wrap(err, "[DATA][InsertJenisDestinasi]")
+	}
+
+	if lastID != "" {
+		// Extract the numeric part from lastID and increment it
+		num, _ := strconv.Atoi(lastID[1:])
+		newID = fmt.Sprintf("J%04d", num+1)
+
+	} else {
+		newID = "J0001"
+
+	}
+
+	jenisdestinasi.JenisDestinasiID = newID
+
+	// Proceed with the insertion
+	_, err = (*d.stmt)[insertJenisDestinasi].ExecContext(ctx,
+		jenisdestinasi.JenisDestinasiID,
+		jenisdestinasi.JenisDestinasiKat,
+	)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][InsertJenisDestinasi]")
+	}
+
+	result = "Berhasil"
+	return result, nil
+}
+
+func (d Data) GetTableJenisDestinasi(ctx context.Context, jenisdestinasiid string, jenisdestinasiket string, page int, length int) ([]glodokEntity.TableJenisDestinasi, error) {
+	var (
+		jenisDestinasi      glodokEntity.TableJenisDestinasi
+		jenisDestinasiArray []glodokEntity.TableJenisDestinasi
+		err                   error
+	)
+
+	rows, err := (*d.stmt)[getTableJenisDestinasi].QueryxContext(ctx, "%"+jenisdestinasiid+"%", "%"+jenisdestinasiket+"%", page, length)
+	fmt.Println("pagelength", page, length)
+	if err != nil {
+		return jenisDestinasiArray, errors.Wrap(err, "[DATA] [GetTableJenisDestinasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&jenisDestinasi); err != nil {
+			return jenisDestinasiArray, errors.Wrap(err, "[DATA] [GetTableJenisDestinasi]")
+		}
+		jenisDestinasiArray = append(jenisDestinasiArray, jenisDestinasi)
+	}
+	return jenisDestinasiArray, err
+}
+
+func (d Data) GetCountTableJenisDestinasi(ctx context.Context, jenisdestinasiid string, jenisdestinasiket string) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountTableJenisDestinasi].QueryxContext(ctx, "%"+jenisdestinasiid+"%", "%"+jenisdestinasiket+"%")
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountTableJenisDestinasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountSearchTipeTransportasi]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) UpdateJenisDestinasi(ctx context.Context, jenisdestinasi glodokEntity.TableJenisDestinasi, jenisdestinasiid string) (string, error) {
+	var (
+		result string
+		err    error
+	)
+
+	_, err = (*d.stmt)[updateJenisDestinasi].ExecContext(ctx, jenisdestinasi.JenisDestinasiKat, jenisdestinasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][UpdateJenisDestinasi]")
+	}
+
+	result = "Berhasil"
+	return result, err
+}
+
+func (d Data) DeleteJenisDestinasi(ctx context.Context, destinasiid string) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteJenisDestinasi].ExecContext(ctx, destinasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteJenisDestinasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
 // FOR MASYARAKAT
 func (d Data) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
 	var (

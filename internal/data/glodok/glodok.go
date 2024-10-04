@@ -189,6 +189,16 @@ const (
 	getCountSearchBerita = "GetCountSearchBerita"
 	qCountSearchBerita   = `SELECT COUNT(b.berita_id) as TotalCount FROM t_berita AS b JOIN t_destinasi AS d ON b.destinasi_id = d.destinasi_id WHERE b.berita_id LIKE ? OR d.destinasi_name LIKE ? OR b.berita_judul LIKE ?`
 
+	//jenisdestinasi
+	fetchJenisDestinasiID  = "FetchJenisDestinasiID"
+	qFetchJenisDestinasiID = `SELECT jenisdestinasi_id FROM t_jenisdestinasi ORDER BY jenisdestinasi_id DESC LIMIT 1`
+
+	getTableJenisDestinasi  = "GetTableJenisDestinasi"
+	qGetTableJenisDestinasi = `SELECT jenisdestinasi_id, jenisdestinasi_kat  FROM t_jenisdestinasi WHERE jenisdestinasi_id LIKE ? OR jenisdestinasi_kat LIKE ? LIMIT ?,?`
+
+	getCountTableJenisDestinasi  = `GetCountTableJenisDestinasi`
+	qGetCountTableJenisDestinasi = `SELECT COUNT(jenisdestinasi_id) AS TotalCount FROM t_jenisdestinasi WHERE jenisdestinasi_id LIKE ? OR jenisdestinasi_kat LIKE ?`
+
 	//------------------------------------------------------------------------
 	//query insert
 	//--admin
@@ -212,6 +222,10 @@ const (
 	insertBerita  = "InsertBerita"
 	qInsertBerita = `INSERT INTO t_berita (berita_id, destinasi_id, berita_judul, berita_desc, berita_foto, berita_date_update, berita_linksumber) VALUES (?,?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'),?)`
 
+	//jenisdestinasi
+	insertJenisDestinasi  = "InsertJenisDestinasi"
+	qInsertJenisDestinasi = `INSERT INTO t_jenisdestinasi (jenisdestinasi_id, jenisdestinasi_kat) VALUES (?,?)`
+
 	//------------------------------------------------------------------------
 	//query update
 	updateAdmin  = "UpdateAdmin"
@@ -228,6 +242,10 @@ const (
 
 	updateBerita  = "UpdateBerita"
 	qUpdateBerita = `UPDATE t_berita SET destinasi_id = ?, berita_judul = ?, berita_desc = ?, berita_foto= ?, berita_date_update=CONVERT_TZ(NOW(), '+00:00', '+07:00'), berita_linksumber=? WHERE berita_id=?`
+
+	updateJenisDestinasi  = "UpdateJenisDestinasi"
+	qUpdateJenisDestinasi = `UPDATE t_jenisdestinasi SET jenisdestinasi_kat = ?  WHERE jenisdestinasi_id =?`
+
 	//------------------------------------------------------------------------
 	//query delete
 	deleteAdmin  = "DeleteAdmin"
@@ -247,6 +265,9 @@ const (
 
 	deleteBerita  = "DeleteBerita"
 	qDeleteBerita = `DELETE FROM t_berita WHERE berita_id =?`
+
+	deleteJenisDestinasi  = "DeleteJenisDestinasi"
+	qDeleteJenisDestinasi = `DELETE FROM t_jenisdestinasi WHERE jenisdestinasi_id =?`
 
 	//FOR MASYARAKAT
 	//destinasi
@@ -318,6 +339,11 @@ var (
 		{getSearchBerita, qSearchBerita},
 		{getCountSearchBerita, qCountSearchBerita},
 
+		//jenisdestinasi
+		{fetchJenisDestinasiID, qFetchJenisDestinasiID},
+		{getTableJenisDestinasi, qGetTableJenisDestinasi},
+		{getCountTableJenisDestinasi, qGetCountTableJenisDestinasi},
+
 		//for masyarakat
 		{getDestinasiByID, qGetDestinasiByID},
 		{getAllDestinasi, qGetAllDestinasi},
@@ -330,6 +356,7 @@ var (
 		{insertRuteTransportasi, qInsertRuteTransportasi},
 		{insertReview, qInsertReview},
 		{insertBerita, qInsertBerita},
+		{insertJenisDestinasi, qInsertJenisDestinasi},
 	}
 	updateStmt = []statement{
 		{updateAdmin, qUpdateAdmin},
@@ -337,6 +364,7 @@ var (
 		{updateRuteTransportasi, qUpdateRuteTransportasi},
 		{updateDestinasi, qUpdateDestinasi},
 		{updateBerita, qUpdateBerita},
+		{updateJenisDestinasi, qUpdateJenisDestinasi},
 	}
 	deleteStmt = []statement{
 		{deleteAdmin, qDeleteAdmin},
@@ -345,6 +373,7 @@ var (
 		{deleteRuteTransportasi, qDeleteRuteTransportasi},
 		{deleteReview, qDeleteReview},
 		{deleteBerita, qDeleteBerita},
+		{deleteJenisDestinasi, qDeleteJenisDestinasi},
 	}
 )
 

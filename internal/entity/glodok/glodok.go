@@ -67,3 +67,8 @@ type TableBerita struct {
 	BeritaDate       time.Time `db:"berita_date_update" json:"berita_date_update"`
 	BeritaLinkSumber string    `db:"berita_linksumber" json:"berita_linksumber"`
 }
+
+type TableJenisDestinasi struct {
+	JenisDestinasiID  string `db:"jenisdestinasi_id" json:"jenisdestinasi_id"`
+	JenisDestinasiKat string `db:"jenisdestinasi_kat" json:"jenisdestinasi_kat"`
+}

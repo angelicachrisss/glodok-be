@@ -196,7 +196,6 @@ func (s Service) UpdateDestinasi(ctx context.Context, destinasi glodokEntity.Tab
 }
 
 //tipe transportasi
-
 func (s Service) InsertTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi) (string, error) {
 
 	var (
@@ -666,6 +665,81 @@ func (s Service) GetSearchBerita(ctx context.Context, beritaid string, destinasi
 	metadata["total_data"] = total
 
 	return searchListDestinasiArray, metadata, nil
+}
+
+//jenis destinasi
+func (s Service) InsertJenisDestinasi(ctx context.Context, jenisdestinasi glodokEntity.TableJenisDestinasi) (string, error) {
+
+	var (
+		result string
+	)
+	result, err := s.glodok.InsertJenisDestinasi(ctx, jenisdestinasi)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][InsertJenisDestinasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) GetTableJenisDestinasi(ctx context.Context, jenisdestinasiid string, jenisdestinasiket string, page int, length int) ([]glodokEntity.TableJenisDestinasi, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	listJenisDestinasi, err := s.glodok.GetTableJenisDestinasi(ctx, jenisdestinasiid, jenisdestinasiket, offset, length)
+
+	if err != nil {
+		return listJenisDestinasi, metadata, errors.Wrap(err, "[Service][GetTableJenisDestinasi]")
+	}
+
+	total, err = s.glodok.GetCountTableJenisDestinasi(ctx, jenisdestinasiid, jenisdestinasiket)
+
+	if err != nil {
+		return listJenisDestinasi, metadata, errors.Wrap(err, "[Service][GetCountTableJenisDestinasi]")
+	}
+	metadata["total_data"] = total
+
+	return listJenisDestinasi, metadata, nil
+}
+
+func (s Service) UpdateJenisDestinasi(ctx context.Context, jenisdestinasi glodokEntity.TableJenisDestinasi, jenisdestinasiid string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.UpdateJenisDestinasi(ctx, jenisdestinasi, jenisdestinasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][UpdateJenisDestinasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) DeleteJenisDestinasi(ctx context.Context, jenisdestinasiid string) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteJenisDestinasi(ctx, jenisdestinasiid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteJenisDestinasi]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
 }
 
 // for masyarakat
