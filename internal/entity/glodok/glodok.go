@@ -10,7 +10,6 @@ import "time"
 
 type GetAdmin struct {
 	AdminID   string `db:"admin_id" json:"admin_id"`
-	AdminNama string `db:"admin_name" json:"admin_name"`
 	AdminPass string `db:"admin_pass" json:"admin_pass"`
 }
 
@@ -67,4 +66,9 @@ type TableBerita struct {
 	BeritaGambarURL  string    `json:"berita_foto_url"`
 	BeritaDate       time.Time `db:"berita_date_update" json:"berita_date_update"`
 	BeritaLinkSumber string    `db:"berita_linksumber" json:"berita_linksumber"`
+}
+
+type TableJenisDestinasi struct {
+	JenisDestinasiID  string `db:"jenisdestinasi_id" json:"jenisdestinasi_id"`
+	JenisDestinasiKat string `db:"jenisdestinasi_kat" json:"jenisdestinasi_kat"`
 }

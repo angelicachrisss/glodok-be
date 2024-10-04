@@ -15,8 +15,6 @@ type IglodokSvc interface {
 	// get
 	GetAdmin(ctx context.Context) ([]glodokEntity.GetAdmin, error)
 	GetAdminbyID(ctx context.Context, adminid string) ([]glodokEntity.GetAdmin, error)
-	GetTableAdmin(ctx context.Context, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
-	GetSearchAdmin(ctx context.Context, adminid string, adminname string, page int, length int) ([]glodokEntity.GetAdmin, interface{}, error)
 
 	GetTableDestinasi(ctx context.Context, ket string, page int, length int) ([]glodokEntity.TableDestinasi, interface{}, error)
 	GetImageDestinasi(ctx context.Context, destinasiid string, destinasikat string) ([]byte, error)
@@ -39,11 +37,12 @@ type IglodokSvc interface {
 	GetImageBerita(ctx context.Context, beritaid string) ([]byte, error)
 	GetTableBerita(ctx context.Context, page int, length int) ([]glodokEntity.TableBerita, interface{}, error)
 	GetSearchBerita(ctx context.Context, beritaid string, destinasiname string, beritajudul string, page int, length int) ([]glodokEntity.TableBerita, interface{}, error)
+	
+	GetTableJenisDestinasi(ctx context.Context, jenisdestinasiid string, jenisdestinasiket string, page int, length int) ([]glodokEntity.TableJenisDestinasi, interface{}, error)
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//insert
-	InsertAdmin(ctx context.Context, admin glodokEntity.GetAdmin) (string, error)
 	SubmitLogin(ctx context.Context, adminid string, adminpass string) (string, error)
 
 	InsertDestinasi(ctx context.Context, destinasi glodokEntity.TableDestinasi) (string, error)
@@ -56,6 +55,8 @@ type IglodokSvc interface {
 
 	InsertBerita(ctx context.Context, berita glodokEntity.TableBerita) (string, error)
 
+	InsertJenisDestinasi(ctx context.Context, jenisdestinasi glodokEntity.TableJenisDestinasi) (string, error) 
+
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//update
@@ -63,6 +64,7 @@ type IglodokSvc interface {
 	UpdateTipeTransportasi(ctx context.Context, tipetransportasi glodokEntity.TableTipeTransportasi, tipetransportasiid string) (string, error)
 	UpdateRuteTransportasi(ctx context.Context, rutetransportasi glodokEntity.TableRuteTransportasi, ruteid string) (string, error)
 	UpdateBerita(ctx context.Context, berita glodokEntity.TableBerita, beritaid string) (string, error)
+	UpdateJenisDestinasi(ctx context.Context, jenisdestinasi glodokEntity.TableJenisDestinasi, jenisdestinasiid string) (string, error) 
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 
@@ -73,6 +75,7 @@ type IglodokSvc interface {
 	DeleteRuteTransportasi(ctx context.Context, ruteid string) (string, error)
 	DeleteReview(ctx context.Context, reviewid string) (string, error)
 	DeleteBerita(ctx context.Context, beritaid string) (string, error)
+	DeleteJenisDestinasi(ctx context.Context, jenisdestinasiid string) (string, error) 
 
 	//for masyarakat
 	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)

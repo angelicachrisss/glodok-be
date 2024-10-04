@@ -171,6 +171,11 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 			resp.Data = result
 			return
 		}
+	case "updatejenisdestinasi":
+		var jenisdestinasi glodokEntity.TableJenisDestinasi
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &jenisdestinasi)
+		result, err = h.glodokSvc.UpdateJenisDestinasi(ctx, jenisdestinasi, r.FormValue("jenisdestinasiid"))
 	}
 
 	if err != nil {
