@@ -106,11 +106,14 @@ type IglodokSvc interface {
 	DeleteRuteByPemberhentian(ctx context.Context) (string, error)
 
 	//for masyarakat
-	// GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)
-	// GetAllDestinasi(ctx context.Context, kategori string, labelhalal string, destinasiname string) ([]glodokEntity.TableDestinasi, error)
+	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)
+	GetAllDestinasi(ctx context.Context, jenisdestinasiid string, destinasiname string) ([]glodokEntity.TableDestinasi, error)
 	GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
 	GetFotoBerandaML(ctx context.Context) ([]glodokEntity.TableFotoBeranda, error)
-	GetVideoBerandaML(ctx context.Context) ([]glodokEntity.TableVideoBeranda, error) 
+	GetVideoBerandaML(ctx context.Context) ([]glodokEntity.TableVideoBeranda, error)
+	GetTransportasiML(ctx context.Context, perbaikanyn string) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
+	GetBeritaML(ctx context.Context, judul string, page int, length int) ([]glodokEntity.TableBerita, interface{}, error)
+	GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodokEntity.TableBerita, error)
 }
 
 type (

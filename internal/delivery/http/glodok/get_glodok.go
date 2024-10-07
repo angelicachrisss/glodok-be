@@ -4,6 +4,7 @@ import (
 	// "internal/itoa"
 
 	"bytes"
+	"fmt"
 	httpHelper "glodok-be/internal/delivery/http"
 	"glodok-be/pkg/response"
 	"image"
@@ -298,10 +299,10 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		result, metadata, err = h.glodokSvc.GetTablePemberhentianTransportasi(ctx, r.FormValue("pemberhentianid"), r.FormValue("tipetransportasiname"), r.FormValue("pemberhentianname"), page, length)
 
 		//for masyarakat
-	// case "getdestinasibyid":
-	// 	result, err = h.glodokSvc.GetDestinasiByID(ctx, r.FormValue("destinasiid"))
-	// case "getalldestinasi":
-	// 	result, err = h.glodokSvc.GetAllDestinasi(ctx, r.FormValue("ket"), r.FormValue("labelhalal"), r.FormValue("destinasiname"))
+	case "getdestinasibyid":
+		result, err = h.glodokSvc.GetDestinasiByID(ctx, r.FormValue("destinasiid"))
+	case "getalldestinasi":
+		result, err = h.glodokSvc.GetAllDestinasi(ctx, r.FormValue("jenisdestinasiid"), r.FormValue("destinasiname"))
 	case "getallreview":
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
@@ -311,6 +312,15 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		result, err = h.glodokSvc.GetFotoBerandaML(ctx)
 	case "getvideoberandaml":
 		result, err = h.glodokSvc.GetVideoBerandaML(ctx)
+	case "gettransportasiml":
+		fmt.Println("tes", r.FormValue("perbaikanyn"))
+		result, metadata, err = h.glodokSvc.GetTransportasiML(ctx, r.FormValue("perbaikanyn"))
+	case "getberitaml":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetBeritaML(ctx, r.FormValue("judul"), page, length)
+	case "getberitabyid":
+		result, err = h.glodokSvc.GetBeritaMLByID(ctx, r.FormValue("beritaid"))
 
 	}
 

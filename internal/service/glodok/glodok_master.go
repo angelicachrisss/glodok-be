@@ -1222,27 +1222,27 @@ func (s Service) GetMaps(ctx context.Context) (glodokEntity.TableMaps, error) {
 }
 
 // for masyarakat
-// func (s Service) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
+func (s Service) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
 
-// 	searchListDestinasiArray, err := s.glodok.GetDestinasiByID(ctx, destinasiid)
+	searchListDestinasiArray, err := s.glodok.GetDestinasiByID(ctx, destinasiid)
 
-// 	if err != nil {
-// 		return searchListDestinasiArray, errors.Wrap(err, "[Service][GetDestinasiByID]")
-// 	}
+	if err != nil {
+		return searchListDestinasiArray, errors.Wrap(err, "[Service][GetDestinasiByID]")
+	}
 
-// 	return searchListDestinasiArray, nil
-// }
+	return searchListDestinasiArray, nil
+}
 
-// func (s Service) GetAllDestinasi(ctx context.Context, kategori string, labelhalal string, destinasiname string) ([]glodokEntity.TableDestinasi, error) {
+func (s Service) GetAllDestinasi(ctx context.Context, jenisdestinasiid string, destinasiname string) ([]glodokEntity.TableDestinasi, error) {
 
-// 	searchListDestinasiArray, err := s.glodok.GetAllDestinasi(ctx, kategori, labelhalal, destinasiname)
+	searchListDestinasiArray, err := s.glodok.GetAllDestinasi(ctx, jenisdestinasiid, destinasiname)
 
-// 	if err != nil {
-// 		return searchListDestinasiArray, errors.Wrap(err, "[Service][GetAllDestinasi]")
-// 	}
+	if err != nil {
+		return searchListDestinasiArray, errors.Wrap(err, "[Service][GetAllDestinasi]")
+	}
 
-// 	return searchListDestinasiArray, nil
-// }
+	return searchListDestinasiArray, nil
+}
 
 func (s Service) GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
 	var (
@@ -1287,4 +1287,64 @@ func (s Service) GetVideoBerandaML(ctx context.Context) ([]glodokEntity.TableVid
 	}
 
 	return listVideoBeranda, nil
+}
+
+func (s Service) GetTransportasiML(ctx context.Context, perbaikanyn string) ([]glodokEntity.TableRuteTransportasi, interface{}, error) {
+
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	ruteTransportasiArray, err := s.glodok.GetTransportasiML(ctx, perbaikanyn)
+
+	if err != nil {
+		return ruteTransportasiArray, metadata, errors.Wrap(err, "[Service][GetTransportasiML]")
+	}
+
+	total, err = s.glodok.GetCountTransportasiML(ctx, perbaikanyn)
+
+	if err != nil {
+		return ruteTransportasiArray, metadata, errors.Wrap(err, "[Service][GetCountTransportasiML]")
+	}
+	metadata["total_data"] = total
+
+	return ruteTransportasiArray, metadata, nil
+
+}
+
+func (s Service) GetBeritaML(ctx context.Context, judul string, page int, length int) ([]glodokEntity.TableBerita, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	beritaArray, err := s.glodok.GetBeritaML(ctx, judul, offset, length)
+
+	if err != nil {
+		return beritaArray, metadata, errors.Wrap(err, "[Service][GetBeritaML]")
+	}
+
+	total, err = s.glodok.GetCountBeritaML(ctx, judul)
+
+	if err != nil {
+		return beritaArray, metadata, errors.Wrap(err, "[Service][GetCountBeritaML]")
+	}
+	metadata["total_data"] = total
+
+	return beritaArray, metadata, nil
+}
+
+func (s Service) GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodokEntity.TableBerita, error) {
+
+	beritaArray, err := s.glodok.GetBeritaMLByID(ctx, beritaid)
+
+	if err != nil {
+		return beritaArray, errors.Wrap(err, "[Service][GetBeritaMLByID]")
+	}
+
+	return beritaArray, nil
 }

@@ -2557,133 +2557,131 @@ func (d Data) GetMaps(ctx context.Context) (glodokEntity.TableMaps, error) {
 }
 
 // FOR MASYARAKAT
-// func (d Data) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
-// 	var (
-// 		// destinasi      glodokEntity.TableDestinasi
-// 		destinasiArray []glodokEntity.TableDestinasi
-// 		err            error
-// 	)
+func (d Data) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
+	var (
+		// destinasi      glodokEntity.TableDestinasi
+		destinasiArray []glodokEntity.TableDestinasi
+		err            error
+	)
 
-// 	rows, err := (*d.stmt)[getDestinasiByID].QueryxContext(ctx, destinasiid)
-// 	if err != nil {
-// 		return destinasiArray, errors.Wrap(err, "[DATA] [GetDestinasiByID]")
-// 	}
+	rows, err := (*d.stmt)[getDestinasiByID].QueryxContext(ctx, destinasiid)
+	if err != nil {
+		return destinasiArray, errors.Wrap(err, "[DATA] [GetDestinasiByID]")
+	}
 
-// 	defer rows.Close()
+	defer rows.Close()
 
-// 	// Ensure the directory exists
-// 	imageDir := filepath.Join("public", "images")
-// 	if err := EnsureDirectory(imageDir); err != nil {
-// 		return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to ensure directory")
-// 	}
+	// Ensure the directory exists
+	imageDir := filepath.Join("public", "images")
+	if err := EnsureDirectory(imageDir); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to ensure directory")
+	}
 
-// 	for rows.Next() {
-// 		var destinasi glodokEntity.TableDestinasi
-// 		var jbukaStr, jtutupStr string
+	for rows.Next() {
+		var destinasi glodokEntity.TableDestinasi
+		var jbukaStr, jtutupStr string
 
-// 		if err = rows.Scan(&destinasi.DestinasiID, &destinasi.DestinasiName, &destinasi.DestinasiDesc,
-// 			&destinasi.DestinasiAlamat, &destinasi.DestinasiGambarURL,
-// 			&destinasi.DestinasiLang, &destinasi.DestinasiLong, &destinasi.DestinasiHBuka,
-// 			&destinasi.DestinasiHTutup, &jbukaStr, &jtutupStr, &destinasi.DestinasiKet,
-// 			&destinasi.DestinasiHalal); err != nil {
-// 			return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to scan row")
-// 		}
+		if err = rows.Scan(&destinasi.DestinasiID, &destinasi.JenisDestinasiID, &destinasi.JenisDestinasiKat, &destinasi.DestinasiName,
+			&destinasi.DestinasiDesc, &destinasi.DestinasiAlamat, &destinasi.DestinasiGambarURL, &destinasi.DestinasiLang,
+			&destinasi.DestinasiLong, &destinasi.DestinasiHBuka, &destinasi.DestinasiHTutup,
+			&jbukaStr, &jtutupStr, &destinasi.DestinasiHalal, &destinasi.DestinasiOtentik, &destinasi.DestinasiAktif); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to scan row")
+		}
 
-// 		if jbukaStr != "" {
-// 			destinasi.DestinasiJBuka, err = time.Parse("15:04:05", jbukaStr)
-// 			if err != nil {
-// 				return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to parse destinasi_jbuka")
-// 			}
-// 		}
+		if jbukaStr != "" {
+			destinasi.DestinasiJBuka, err = time.Parse("15:04:05", jbukaStr)
+			if err != nil {
+				return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to parse destinasi_jbuka")
+			}
+		}
 
-// 		if jtutupStr != "" {
-// 			destinasi.DestinasiJTutup, err = time.Parse("15:04:05", jtutupStr)
-// 			if err != nil {
-// 				return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to parse destinasi_jtutup")
-// 			}
-// 		}
+		if jtutupStr != "" {
+			destinasi.DestinasiJTutup, err = time.Parse("15:04:05", jtutupStr)
+			if err != nil {
+				return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to parse destinasi_jtutup")
+			}
+		}
 
-// 		// Save image and generate URL
-// 		filePath := filepath.Join(imageDir, destinasi.DestinasiID+".jpg")
-// 		if err := saveImageToFile(destinasi.DestinasiGambar, filePath); err != nil {
-// 			return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to save image")
-// 		}
+		// Save image and generate URL
+		filePath := filepath.Join(imageDir, destinasi.DestinasiID+".jpg")
+		if err := saveImageToFile(destinasi.DestinasiGambar, filePath); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Failed to save image")
+		}
 
-// 		destinasi.DestinasiGambarURL = generateImageURL(destinasi.DestinasiID, destinasi.DestinasiKet)
-// 		destinasiArray = append(destinasiArray, destinasi)
-// 	}
+		destinasi.DestinasiGambarURL = generateImageURL(destinasi.DestinasiID)
+		destinasiArray = append(destinasiArray, destinasi)
+	}
 
-// 	if err = rows.Err(); err != nil {
-// 		return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Row iteration error")
-// 	}
+	if err = rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetDestinasiByID] - Row iteration error")
+	}
 
-// 	return destinasiArray, nil
+	return destinasiArray, nil
 
-// }
+}
 
-// func (d Data) GetAllDestinasi(ctx context.Context, kategori string, labelhalal string, destinasiname string) ([]glodokEntity.TableDestinasi, error) {
-// 	var (
-// 		// destinasi      glodokEntity.TableDestinasi
-// 		destinasiArray []glodokEntity.TableDestinasi
-// 		err            error
-// 	)
+func (d Data) GetAllDestinasi(ctx context.Context, jenisdestinasiid string, destinasiname string) ([]glodokEntity.TableDestinasi, error) {
+	var (
+		// destinasi      glodokEntity.TableDestinasi
+		destinasiArray []glodokEntity.TableDestinasi
+		err            error
+	)
 
-// 	rows, err := (*d.stmt)[getAllDestinasi].QueryxContext(ctx, kategori, "%"+labelhalal+"%", "%"+destinasiname+"%")
-// 	if err != nil {
-// 		return destinasiArray, errors.Wrap(err, "[DATA] [GetAllDestinasi]")
-// 	}
+	rows, err := (*d.stmt)[getAllDestinasi].QueryxContext(ctx, jenisdestinasiid, "%"+destinasiname+"%")
+	if err != nil {
+		return destinasiArray, errors.Wrap(err, "[DATA] [GetAllDestinasi]")
+	}
 
-// 	defer rows.Close()
+	defer rows.Close()
 
-// 	// Ensure the directory exists
-// 	imageDir := filepath.Join("public", "images")
-// 	if err := EnsureDirectory(imageDir); err != nil {
-// 		return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to ensure directory")
-// 	}
+	// Ensure the directory exists
+	imageDir := filepath.Join("public", "images")
+	if err := EnsureDirectory(imageDir); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to ensure directory")
+	}
 
-// 	for rows.Next() {
-// 		var destinasi glodokEntity.TableDestinasi
-// 		var jbukaStr, jtutupStr string
+	for rows.Next() {
+		var destinasi glodokEntity.TableDestinasi
+		var jbukaStr, jtutupStr string
 
-// 		if err = rows.Scan(&destinasi.DestinasiID, &destinasi.DestinasiName, &destinasi.DestinasiDesc,
-// 			&destinasi.DestinasiAlamat, &destinasi.DestinasiGambarURL,
-// 			&destinasi.DestinasiLang, &destinasi.DestinasiLong, &destinasi.DestinasiHBuka,
-// 			&destinasi.DestinasiHTutup, &jbukaStr, &jtutupStr, &destinasi.DestinasiKet,
-// 			&destinasi.DestinasiHalal); err != nil {
-// 			return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to scan row")
-// 		}
+		if err = rows.Scan(&destinasi.DestinasiID, &destinasi.JenisDestinasiID, &destinasi.JenisDestinasiKat, &destinasi.DestinasiName,
+			&destinasi.DestinasiDesc, &destinasi.DestinasiAlamat, &destinasi.DestinasiGambarURL, &destinasi.DestinasiLang,
+			&destinasi.DestinasiLong, &destinasi.DestinasiHBuka, &destinasi.DestinasiHTutup,
+			&jbukaStr, &jtutupStr, &destinasi.DestinasiHalal, &destinasi.DestinasiOtentik, &destinasi.DestinasiAktif); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to scan row")
+		}
 
-// 		if jbukaStr != "" {
-// 			destinasi.DestinasiJBuka, err = time.Parse("15:04:05", jbukaStr)
-// 			if err != nil {
-// 				return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to parse destinasi_jbuka")
-// 			}
-// 		}
+		if jbukaStr != "" {
+			destinasi.DestinasiJBuka, err = time.Parse("15:04:05", jbukaStr)
+			if err != nil {
+				return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to parse destinasi_jbuka")
+			}
+		}
 
-// 		if jtutupStr != "" {
-// 			destinasi.DestinasiJTutup, err = time.Parse("15:04:05", jtutupStr)
-// 			if err != nil {
-// 				return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to parse destinasi_jtutup")
-// 			}
-// 		}
+		if jtutupStr != "" {
+			destinasi.DestinasiJTutup, err = time.Parse("15:04:05", jtutupStr)
+			if err != nil {
+				return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to parse destinasi_jtutup")
+			}
+		}
 
-// 		// Save image and generate URL
-// 		filePath := filepath.Join(imageDir, destinasi.DestinasiID+".jpg")
-// 		if err := saveImageToFile(destinasi.DestinasiGambar, filePath); err != nil {
-// 			return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to save image")
-// 		}
+		// Save image and generate URL
+		filePath := filepath.Join(imageDir, destinasi.DestinasiID+".jpg")
+		if err := saveImageToFile(destinasi.DestinasiGambar, filePath); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Failed to save image")
+		}
 
-// 		destinasi.DestinasiGambarURL = generateImageURL(destinasi.DestinasiID, destinasi.DestinasiKet)
-// 		destinasiArray = append(destinasiArray, destinasi)
-// 	}
+		destinasi.DestinasiGambarURL = generateImageURL(destinasi.DestinasiID)
+		destinasiArray = append(destinasiArray, destinasi)
+	}
 
-// 	if err = rows.Err(); err != nil {
-// 		return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Row iteration error")
-// 	}
+	if err = rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetAllDestinasi] - Row iteration error")
+	}
 
-// 	return destinasiArray, nil
+	return destinasiArray, nil
 
-// }
+}
 
 func (d Data) GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, error) {
 	var (
@@ -2825,4 +2823,210 @@ func (d Data) GetVideoBerandaML(ctx context.Context) ([]glodokEntity.TableVideoB
 		videoBerandaArray = append(videoBerandaArray, videoBeranda)
 	}
 	return videoBerandaArray, err
+}
+
+func (d Data) GetTransportasiML(ctx context.Context, perbaikanyn string) ([]glodokEntity.TableRuteTransportasi, error) {
+	var (
+		ruteTransportasi      glodokEntity.TableRuteTransportasi
+		ruteTransportasiArray []glodokEntity.TableRuteTransportasi
+		err                   error
+	)
+
+	rows, err := (*d.stmt)[getTransportasiML].QueryxContext(ctx, "%"+perbaikanyn+"%")
+	if err != nil {
+		return ruteTransportasiArray, errors.Wrap(err, "[DATA] [GetTransportasiML]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&ruteTransportasi); err != nil {
+			return ruteTransportasiArray, errors.Wrap(err, "[DATA] [GetTransportasiML]")
+		}
+		ruteTransportasiArray = append(ruteTransportasiArray, ruteTransportasi)
+	}
+	return ruteTransportasiArray, err
+
+}
+
+func (d Data) GetCountTransportasiML(ctx context.Context, perbaikanyn string) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountTransportasiML].QueryxContext(ctx, "%"+perbaikanyn+"%")
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountTransportasiML]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountTransportasiML]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) GetBeritaML(ctx context.Context, judul string, page int, length int) ([]glodokEntity.TableBerita, error) {
+	var (
+		berita      glodokEntity.TableBerita
+		beritaArray []glodokEntity.TableBerita
+		err         error
+	)
+
+	rows, err := (*d.stmt)[getBeritaML].QueryxContext(ctx, "%"+judul+"%", page, length)
+	if err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetBeritaML] - Query failed")
+	}
+	defer rows.Close()
+
+	// Ensure the directory exists
+	imageDir := filepath.Join("public", "images")
+	if err := EnsureDirectory(imageDir); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetBeritaML] - Failed to ensure directory")
+	}
+
+	for rows.Next() {
+		var beritaID string
+		var destinasiID string
+		var beritaJudul string
+		var beritaDesc string
+		var beritaGambarUrl string
+		var beritaDateRaw []byte // Raw byte slice for date
+		var beritaLinkSumber string
+
+		if err = rows.Scan(&beritaID, &destinasiID, &beritaJudul, &beritaDesc, &beritaGambarUrl, &beritaDateRaw, &beritaLinkSumber); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetBeritaML] - Failed to scan row")
+		}
+
+		// Convert raw date to time.Time
+		var beritaDate time.Time
+		if beritaDateRaw != nil {
+			beritaDate, err = time.Parse("2006-01-02 15:04:05", string(beritaDateRaw))
+			if err != nil {
+				return beritaArray, errors.Wrap(err, "[DATA] [GetBeritaML] parsing date")
+			}
+		}
+
+		// Save image and generate URL
+		filePath := filepath.Join(imageDir, berita.BeritaID+".jpg")
+		if err := saveImageToFile(berita.BeritaGambar, filePath); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetBeritaML] - Failed to save image")
+		}
+
+		berita.BeritaGambarURL = generateImageURLBerita(beritaID)
+
+		berita = glodokEntity.TableBerita{
+			BeritaID:         beritaID,
+			DestinasiID:      destinasiID,
+			BeritaJudul:      beritaJudul,
+			BeritaDesc:       beritaDesc,
+			BeritaGambarURL:  berita.BeritaGambarURL,
+			BeritaDate:       beritaDate,
+			BeritaLinkSumber: beritaLinkSumber,
+		}
+
+		beritaArray = append(beritaArray, berita)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetBeritaML] - Row iteration error")
+	}
+
+	return beritaArray, nil
+}
+
+func (d Data) GetCountBeritaML(ctx context.Context, judul string) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountBeritaML].QueryxContext(ctx, "%"+judul+"%")
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountBeritaML]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountBeritaML]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodokEntity.TableBerita, error) {
+	var (
+		berita      glodokEntity.TableBerita
+		beritaArray []glodokEntity.TableBerita
+		err         error
+	)
+
+	rows, err := (*d.stmt)[getBeritaMLByID].QueryxContext(ctx, beritaid)
+	if err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetBeritaMLByID] - Query failed")
+	}
+	defer rows.Close()
+
+	// Ensure the directory exists
+	imageDir := filepath.Join("public", "images")
+	if err := EnsureDirectory(imageDir); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetBeritaMLByID] - Failed to ensure directory")
+	}
+
+	for rows.Next() {
+		var beritaID string
+		var destinasiID string
+		var beritaJudul string
+		var beritaDesc string
+		var beritaGambarUrl string
+		var beritaDateRaw []byte // Raw byte slice for date
+		var beritaLinkSumber string
+
+		if err = rows.Scan(&beritaID, &destinasiID, &beritaJudul, &beritaDesc, &beritaGambarUrl, &beritaDateRaw, &beritaLinkSumber); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetBeritaMLByID] - Failed to scan row")
+		}
+
+		// Convert raw date to time.Time
+		var beritaDate time.Time
+		if beritaDateRaw != nil {
+			beritaDate, err = time.Parse("2006-01-02 15:04:05", string(beritaDateRaw))
+			if err != nil {
+				return beritaArray, errors.Wrap(err, "[DATA] [GetBeritaMLByID] parsing date")
+			}
+		}
+
+		// Save image and generate URL
+		filePath := filepath.Join(imageDir, berita.BeritaID+".jpg")
+		if err := saveImageToFile(berita.BeritaGambar, filePath); err != nil {
+			return nil, errors.Wrap(err, "[DATA] [GetBeritaMLByID] - Failed to save image")
+		}
+
+		berita.BeritaGambarURL = generateImageURLBerita(beritaID)
+
+		berita = glodokEntity.TableBerita{
+			BeritaID:         beritaID,
+			DestinasiID:      destinasiID,
+			BeritaJudul:      beritaJudul,
+			BeritaDesc:       beritaDesc,
+			BeritaGambarURL:  berita.BeritaGambarURL,
+			BeritaDate:       beritaDate,
+			BeritaLinkSumber: beritaLinkSumber,
+		}
+
+		beritaArray = append(beritaArray, berita)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, errors.Wrap(err, "[DATA] [GetBeritaMLByID] - Row iteration error")
+	}
+
+	return beritaArray, nil
 }

@@ -539,11 +539,17 @@ const (
 
 	//FOR MASYARAKAT
 	//destinasi
-	// getDestinasiByID  = "GetDestinasiByID"
-	// qGetDestinasiByID = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup, destinasi_jbuka, destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_id = ?`
+	getDestinasiByID  = "GetDestinasiByID"
+	qGetDestinasiByID = `SELECT d.destinasi_id, d.jenisdestinasi_id, j.jenisdestinasi_kat, d.destinasi_name, d.destinasi_desc, d.destinasi_alamat, d.destinasi_gambar, d.destinasi_lang, d.destinasi_long, d.destinasi_hbuka, d.destinasi_htutup, d.destinasi_jbuka, d.destinasi_jtutup, d.destinasi_labelhalalyn, d.destinasi_otentikyn, d.destinasi_aktifyn 
+	FROM t_destinasi AS d 
+	JOIN t_jenisdestinasi AS j ON d.jenisdestinasi_id = j.jenisdestinasi_id COLLATE utf8mb4_unicode_ci
+	WHERE d.destinasi_id = ?`
 
-	// getAllDestinasi  = "GetAllDestinasi"
-	// qGetAllDestinasi = `SELECT destinasi_id, destinasi_name, destinasi_desc, destinasi_alamat, destinasi_gambar, destinasi_lang, destinasi_long,destinasi_hbuka, destinasi_htutup, destinasi_jbuka, destinasi_jtutup, destinasi_kat, destinasi_labelhalal FROM t_destinasi WHERE destinasi_kat = ? AND destinasi_labelhalal LIKE ? AND (destinasi_name LIKE ?)`
+	getAllDestinasi  = "GetAllDestinasi"
+	qGetAllDestinasi = `SELECT d.destinasi_id, d.jenisdestinasi_id, j.jenisdestinasi_kat, d.destinasi_name, d.destinasi_desc, d.destinasi_alamat, d.destinasi_gambar, d.destinasi_lang, d.destinasi_long, d.destinasi_hbuka, d.destinasi_htutup, d.destinasi_jbuka, d.destinasi_jtutup, d.destinasi_labelhalalyn, d.destinasi_otentikyn, d.destinasi_aktifyn 
+	FROM t_destinasi AS d 
+	JOIN t_jenisdestinasi AS j ON d.jenisdestinasi_id = j.jenisdestinasi_id COLLATE utf8mb4_unicode_ci
+	WHERE d.jenisdestinasi_id = ? AND d.destinasi_aktifyn = "Y" AND (d.destinasi_name LIKE ?)`
 
 	//review
 	insertReview  = "InsertReview"
@@ -563,6 +569,77 @@ const (
 	//video
 	getVideoBerandaML  = "GetVideoBerandaML"
 	qGetVideoBerandaML = `SELECT videoberanda_id, videoberanda_link FROM t_videoberanda`
+
+	//transportasi
+	getTransportasiML  = "GetTransportasiML"
+	qGetTransportasiML = `SELECT 
+    r.rute_id,
+    r.tipetransportasi_id,
+    tt.tipetransportasi_name,
+    r.pemberhentian_id,
+    tp.pemberhentian_name,
+	tp.pemberhentian_perbaikanyn,
+    r.tujuan_id,
+    tu.tujuan_awal,
+    tu.tujuan_akhir,
+    r.rute_no
+	FROM 
+    t_rutetransportasi r
+	JOIN 
+    t_tipetransportasi tt ON r.tipetransportasi_id = tt.tipetransportasi_id
+	JOIN 
+    t_tujuan tu ON r.tujuan_id = tu.tujuan_id
+	JOIN 
+    t_pemberhentian tp ON r.pemberhentian_id = tp.pemberhentian_id WHERE tp.pemberhentian_perbaikanyn LIKE ?`
+
+	getCountTransportasiML  = "GetCountTransportasiML"
+	qGetCountTransportasiML = `SELECT 
+	COUNT(r.rute_id) AS TotalCount
+	FROM 
+    t_rutetransportasi r
+	JOIN 
+    t_tipetransportasi tt ON r.tipetransportasi_id = tt.tipetransportasi_id
+	JOIN 
+    t_tujuan tu ON r.tujuan_id = tu.tujuan_id
+	JOIN 
+    t_pemberhentian tp ON r.pemberhentian_id = tp.pemberhentian_id WHERE tp.pemberhentian_perbaikanyn LIKE ?`
+
+	// getBeritaML  = "GetBeritaML"
+	// qGetBeritaML = `SELECT
+	// b.berita_id,
+	// b.destinasi_id,
+	// d.destinasi_name,
+	// b.berita_judul,
+	// b.berita_desc,
+	// b.berita_foto,
+	// b.berita_date_update,
+	// b.berita_linksumber FROM t_berita AS b JOIN t_destinasi AS d ON b.destinasi_id = d.destinasi_id WHERE b.berita_judul LIKE ? ORDER BY b.berita_id DESC LIMIT ?,?`
+
+	// getCountBeritaML  = "GetCountBeritaML"
+	// qGetCountBeritaML = `SELECT COUNT(berita_id) AS TotalCount FROM t_berita WHERE berita_judul LIKE ?`
+
+	getBeritaML  = "GetBeritaML"
+	qGetBeritaML = `SELECT
+	berita_id,
+	destinasi_id,
+	berita_judul,
+	berita_desc,
+	berita_foto,
+	berita_date_update,
+	berita_linksumber FROM t_berita WHERE berita_judul LIKE ? ORDER BY berita_id DESC LIMIT ?,?`
+
+	getCountBeritaML  = "GetCountBeritaML"
+	qGetCountBeritaML = `SELECT COUNT(berita_id) AS TotalCount FROM t_berita WHERE berita_judul LIKE ?`
+
+	getBeritaMLByID  = "GetBeritaMLByID"
+	qGetBeritaMLByID = `SELECT
+	berita_id,
+	destinasi_id,
+	berita_judul,
+	berita_desc,
+	berita_foto,
+	berita_date_update,
+	berita_linksumber FROM t_berita WHERE berita_id=?`
 )
 
 var (
@@ -659,12 +736,17 @@ var (
 		{getCountTablePemberhentianTransportasi, qGetCountTablePemberhentianTransportasi},
 
 		//for masyarakat
-		// {getDestinasiByID, qGetDestinasiByID},
-		// {getAllDestinasi, qGetAllDestinasi},
+		{getDestinasiByID, qGetDestinasiByID},
+		{getAllDestinasi, qGetAllDestinasi},
 		{getAllReview, qGetAllReview},
 		{getCountAllReview, qGetCountAllReview},
 		{getFotoBerandaML, qGetFotoBerandaML},
 		{getVideoBerandaML, qGetVideoBerandaML},
+		{getTransportasiML, qGetTransportasiML},
+		{getCountTransportasiML, qGetCountTransportasiML},
+		{getBeritaML, qGetBeritaML},
+		{getCountBeritaML, qGetCountBeritaML},
+		{getBeritaMLByID, qGetBeritaMLByID},
 	}
 	insertStmt = []statement{
 		{insertDestinasi, qInsertDestinasi},
