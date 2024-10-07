@@ -306,8 +306,9 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 	case "getallreview":
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetAllReview(ctx, r.FormValue("rating"), page, length)
-
+		result, metadata, err = h.glodokSvc.GetAllReview(ctx, r.FormValue("destinasiid"), r.FormValue("rating"), page, length)
+	case "getavgreview":
+		result, metadata, err = h.glodokSvc.GetAvgReview(ctx, r.FormValue("destinasiid"))
 	case "getfotoberandaml":
 		result, err = h.glodokSvc.GetFotoBerandaML(ctx)
 	case "getvideoberandaml":
@@ -321,6 +322,10 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		result, metadata, err = h.glodokSvc.GetBeritaML(ctx, r.FormValue("judul"), page, length)
 	case "getberitabyid":
 		result, err = h.glodokSvc.GetBeritaMLByID(ctx, r.FormValue("beritaid"))
+	case "getjenisdestinasiml":
+		result, err = h.glodokSvc.GetJenisDestinasiML(ctx)
+	case "getdestinasiddml":
+		result, err = h.glodokSvc.GetDestinasiDDML(ctx)
 
 	}
 

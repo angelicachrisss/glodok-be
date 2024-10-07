@@ -1244,7 +1244,7 @@ func (s Service) GetAllDestinasi(ctx context.Context, jenisdestinasiid string, d
 	return searchListDestinasiArray, nil
 }
 
-func (s Service) GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
+func (s Service) GetAllReview(ctx context.Context, destinasiid string, rating string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
 	var (
 		total int
 	)
@@ -1252,13 +1252,13 @@ func (s Service) GetAllReview(ctx context.Context, rating string, page int, leng
 	metadata := make(map[string]interface{})
 
 	offset := page * length
-	searchListReviewArray, err := s.glodok.GetAllReview(ctx, rating, offset, length)
+	searchListReviewArray, err := s.glodok.GetAllReview(ctx, destinasiid, rating, offset, length)
 
 	if err != nil {
 		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetAllReview]")
 	}
 
-	total, err = s.glodok.GetCountAllReview(ctx, rating)
+	total, err = s.glodok.GetCountAllReview(ctx, destinasiid, rating)
 
 	if err != nil {
 		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetCountAllReview]")
@@ -1347,4 +1347,49 @@ func (s Service) GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodok
 	}
 
 	return beritaArray, nil
+}
+
+func (s Service) GetJenisDestinasiML(ctx context.Context) ([]glodokEntity.TableJenisDestinasi, error) {
+
+	jenisDestinasiArray, err := s.glodok.GetJenisDestinasiML(ctx)
+
+	if err != nil {
+		return jenisDestinasiArray, errors.Wrap(err, "[Service][GetJenisDestinasiML]")
+	}
+
+	return jenisDestinasiArray, nil
+
+}
+
+func (s Service) GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error) {
+
+	destinasiArray, err := s.glodok.GetDestinasiDDML(ctx)
+
+	if err != nil {
+		return destinasiArray, errors.Wrap(err, "[Service][GetDestinasiDDML]")
+	}
+
+	return destinasiArray, nil
+
+}
+
+func (s Service) GetAvgReview(ctx context.Context, destinasiid string) (float64, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	avg, err := s.glodok.GetAvgReview(ctx, destinasiid)
+
+	if err != nil {
+		return avg, metadata, errors.Wrap(err, "[Service][GetAvgReview]")
+	}
+
+	total, err = s.glodok.GetCountAllReview(ctx, destinasiid, "")
+
+	metadata["total_data"] = total
+
+	return avg, metadata, nil
+
 }

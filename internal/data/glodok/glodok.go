@@ -309,7 +309,7 @@ const (
 	b.berita_linksumber FROM t_berita AS b JOIN t_destinasi AS d ON b.destinasi_id = d.destinasi_id LIMIT ?,?`
 
 	getCountTableBerita  = "GetCountTableBerita"
-	qGetCountTableBerita = "SELECT COUNT(berita_id) AS TotalCount FROM t_berita"
+	qGetCountTableBerita = "SELECT COUNT(b.berita_id) as TotalCount FROM t_berita AS b JOIN t_destinasi AS d ON b.destinasi_id = d.destinasi_id"
 
 	getImageBerita  = "GetImageBerita"
 	qGetImageBerita = `SELECT berita_foto from t_berita WHERE berita_id = ?`
@@ -553,14 +553,17 @@ const (
 
 	//review
 	insertReview  = "InsertReview"
-	qInsertReview = `INSERT INTO t_review (review_id, review_rating, reviewer_name, review_desc, review_date) VALUES (?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'))`
+	qInsertReview = `INSERT INTO t_review (review_id, destinasi_id, review_rating, reviewer_name, review_desc, review_date) VALUES (?,?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'))`
 
 	getAllReview  = "GetAllReview"
-	qGetAllReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date 
-	FROM t_review WHERE review_rating LIKE ? ORDER BY review_id DESC LIMIT ?,? `
+	qGetAllReview = `SELECT review_id, destinasi_id, review_rating, reviewer_name, review_desc, review_date 
+	FROM t_review WHERE destinasi_id = ? AND review_rating LIKE ? ORDER BY review_id DESC LIMIT ?,?`
 
 	getCountAllReview  = `GetCountAllReview`
-	qGetCountAllReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_rating LIKE ?`
+	qGetCountAllReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE destinasi_id = ? AND review_rating LIKE ?`
+
+	getAvgReview  = "GetAvgReview"
+	qGetAvgReview = `SELECT AVG(review_rating) AS AverageRating FROM t_review WHERE destinasi_id = ?`
 
 	//foto
 	getFotoBerandaML  = "GetFotoBerandaML"
@@ -604,32 +607,32 @@ const (
 	JOIN 
     t_pemberhentian tp ON r.pemberhentian_id = tp.pemberhentian_id WHERE tp.pemberhentian_perbaikanyn LIKE ?`
 
+	getBeritaML  = "GetBeritaML"
+	qGetBeritaML = `SELECT
+	b.berita_id,
+	b.destinasi_id,
+	d.destinasi_name,
+	b.berita_judul,
+	b.berita_desc,
+	b.berita_foto,
+	b.berita_date_update,
+	b.berita_linksumber FROM t_berita AS b JOIN t_destinasi AS d ON b.destinasi_id = d.destinasi_id WHERE b.berita_judul LIKE ? ORDER BY b.berita_id DESC LIMIT ?,?`
+
+	getCountBeritaML  = "GetCountBeritaML"
+	qGetCountBeritaML = `SELECT COUNT(b.berita_id) AS TotalCount FROM t_berita AS b JOIN t_destinasi AS d ON b.destinasi_id = d.destinasi_id WHERE berita_judul LIKE ?`
+
 	// getBeritaML  = "GetBeritaML"
 	// qGetBeritaML = `SELECT
-	// b.berita_id,
-	// b.destinasi_id,
-	// d.destinasi_name,
-	// b.berita_judul,
-	// b.berita_desc,
-	// b.berita_foto,
-	// b.berita_date_update,
-	// b.berita_linksumber FROM t_berita AS b JOIN t_destinasi AS d ON b.destinasi_id = d.destinasi_id WHERE b.berita_judul LIKE ? ORDER BY b.berita_id DESC LIMIT ?,?`
+	// berita_id,
+	// destinasi_id,
+	// berita_judul,
+	// berita_desc,
+	// berita_foto,
+	// berita_date_update,
+	// berita_linksumber FROM t_berita WHERE berita_judul LIKE ? ORDER BY berita_id DESC LIMIT ?,?`
 
 	// getCountBeritaML  = "GetCountBeritaML"
 	// qGetCountBeritaML = `SELECT COUNT(berita_id) AS TotalCount FROM t_berita WHERE berita_judul LIKE ?`
-
-	getBeritaML  = "GetBeritaML"
-	qGetBeritaML = `SELECT
-	berita_id,
-	destinasi_id,
-	berita_judul,
-	berita_desc,
-	berita_foto,
-	berita_date_update,
-	berita_linksumber FROM t_berita WHERE berita_judul LIKE ? ORDER BY berita_id DESC LIMIT ?,?`
-
-	getCountBeritaML  = "GetCountBeritaML"
-	qGetCountBeritaML = `SELECT COUNT(berita_id) AS TotalCount FROM t_berita WHERE berita_judul LIKE ?`
 
 	getBeritaMLByID  = "GetBeritaMLByID"
 	qGetBeritaMLByID = `SELECT
@@ -640,6 +643,14 @@ const (
 	berita_foto,
 	berita_date_update,
 	berita_linksumber FROM t_berita WHERE berita_id=?`
+
+	getJenisDestinasiML  = "GetJenisDestinasiML"
+	qGetJenisDestinasiML = `SELECT jd.jenisdestinasi_id, jd.jenisdestinasi_kat
+	FROM t_jenisdestinasi jd
+	JOIN t_destinasi d ON jd.jenisdestinasi_id COLLATE utf8mb4_unicode_ci = d.jenisdestinasi_id COLLATE utf8mb4_unicode_ci`
+
+	getDestinasiDDML  = "GetDestinasiDDML"
+	qGetDestinasiDDML = `SELECT destinasi_id, destinasi_name FROM t_destinasi WHERE destinasi_aktifyn = "Y"`
 )
 
 var (
@@ -739,6 +750,7 @@ var (
 		{getDestinasiByID, qGetDestinasiByID},
 		{getAllDestinasi, qGetAllDestinasi},
 		{getAllReview, qGetAllReview},
+		{getAvgReview, qGetAvgReview},
 		{getCountAllReview, qGetCountAllReview},
 		{getFotoBerandaML, qGetFotoBerandaML},
 		{getVideoBerandaML, qGetVideoBerandaML},
@@ -747,6 +759,8 @@ var (
 		{getBeritaML, qGetBeritaML},
 		{getCountBeritaML, qGetCountBeritaML},
 		{getBeritaMLByID, qGetBeritaMLByID},
+		{getJenisDestinasiML, qGetJenisDestinasiML},
+		{getDestinasiDDML, qGetDestinasiDDML},
 	}
 	insertStmt = []statement{
 		{insertDestinasi, qInsertDestinasi},

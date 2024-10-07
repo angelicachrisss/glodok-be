@@ -108,12 +108,16 @@ type IglodokSvc interface {
 	//for masyarakat
 	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)
 	GetAllDestinasi(ctx context.Context, jenisdestinasiid string, destinasiname string) ([]glodokEntity.TableDestinasi, error)
-	GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+	GetAllReview(ctx context.Context, destinasiid string, rating string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+	// GetAvgReview(ctx context.Context, destinasiid string) (float64, error)
+	GetAvgReview(ctx context.Context, destinasiid string) (float64, interface{}, error)
 	GetFotoBerandaML(ctx context.Context) ([]glodokEntity.TableFotoBeranda, error)
 	GetVideoBerandaML(ctx context.Context) ([]glodokEntity.TableVideoBeranda, error)
 	GetTransportasiML(ctx context.Context, perbaikanyn string) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
 	GetBeritaML(ctx context.Context, judul string, page int, length int) ([]glodokEntity.TableBerita, interface{}, error)
 	GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodokEntity.TableBerita, error)
+	GetJenisDestinasiML(ctx context.Context) ([]glodokEntity.TableJenisDestinasi, error)
+	GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 }
 
 type (

@@ -32,23 +32,25 @@ func saveImageToFile(imageBytes []byte, filePath string) error {
 	return nil
 }
 
+var url = "http://localhost:8080"
+
 // Fungsi untuk menghasilkan URL gambar
 func generateImageURL(id string) string {
 	// var url = "https://whole-doors-clap.loca.lt"
-	var url = "http://localhost:8080"
+	// var url = "http://localhost:8080"
 	return fmt.Sprintf(url+"/glodok/v1/data?type=getimagedestinasi&destinasiid=%s", id)
 
 }
 
 func generateImageURLBerita(id string) string {
 	// var url = "https://whole-doors-clap.loca.lt"
-	var url = "http://localhost:8080"
+	// var url = "http://localhost:8080"
 	return fmt.Sprintf(url+"/glodok/v1/data?type=getimageberita&beritaid=%s", id)
 }
 
 func generateImageURLFotoBeranda(id string) string {
 	// var url = "https://whole-doors-clap.loca.lt"
-	var url = "http://localhost:8080"
+	// var url = "http://localhost:8080"
 	return fmt.Sprintf(url+"/glodok/v1/data?type=getimagefotoberanda&fotoberandaid=%s", id)
 }
 
@@ -1235,6 +1237,7 @@ func (d Data) InsertReview(ctx context.Context, review glodokEntity.TableReview)
 	// Proceed with the insertion
 	_, err = (*d.stmt)[insertReview].ExecContext(ctx,
 		review.ReviewID,
+		review.DestinasiID,
 		review.ReviewRating,
 		review.Reviewer,
 		review.ReviewDesc,
@@ -2683,7 +2686,7 @@ func (d Data) GetAllDestinasi(ctx context.Context, jenisdestinasiid string, dest
 
 }
 
-func (d Data) GetAllReview(ctx context.Context, rating string, page int, length int) ([]glodokEntity.TableReview, error) {
+func (d Data) GetAllReview(ctx context.Context, destinasiid string, rating string, page int, length int) ([]glodokEntity.TableReview, error) {
 	var (
 		review      glodokEntity.TableReview
 		reviewArray []glodokEntity.TableReview
@@ -2693,7 +2696,7 @@ func (d Data) GetAllReview(ctx context.Context, rating string, page int, length 
 	// // Convert the integer rating to a string before concatenation
 	// ratingStr := strconv.Itoa(rating)
 
-	rows, err := (*d.stmt)[getAllReview].QueryxContext(ctx, "%"+rating+"%", page, length)
+	rows, err := (*d.stmt)[getAllReview].QueryxContext(ctx, destinasiid, "%"+rating+"%", page, length)
 	if err != nil {
 		return reviewArray, errors.Wrap(err, "[DATA] [GetAllReview]")
 	}
@@ -2702,12 +2705,13 @@ func (d Data) GetAllReview(ctx context.Context, rating string, page int, length 
 
 	for rows.Next() {
 		var reviewID string
+		var destinasiID string
 		var reviewRating int
 		var reviewerName string
 		var reviewDesc string
 		var reviewDateRaw []byte // Raw byte slice for date
 
-		if err = rows.Scan(&reviewID, &reviewRating, &reviewerName, &reviewDesc, &reviewDateRaw); err != nil {
+		if err = rows.Scan(&reviewID, &destinasiID, &reviewRating, &reviewerName, &reviewDesc, &reviewDateRaw); err != nil {
 			return reviewArray, errors.Wrap(err, "[DATA] [GetAllReview]")
 		}
 
@@ -2722,6 +2726,7 @@ func (d Data) GetAllReview(ctx context.Context, rating string, page int, length 
 
 		review = glodokEntity.TableReview{
 			ReviewID:     reviewID,
+			DestinasiID:  destinasiID,
 			ReviewRating: reviewRating,
 			Reviewer:     reviewerName,
 			ReviewDesc:   reviewDesc,
@@ -2733,7 +2738,7 @@ func (d Data) GetAllReview(ctx context.Context, rating string, page int, length 
 	return reviewArray, err
 }
 
-func (d Data) GetCountAllReview(ctx context.Context, rating string) (int, error) {
+func (d Data) GetCountAllReview(ctx context.Context, destinasiid string, rating string) (int, error) {
 	var (
 		err   error
 		total int
@@ -2742,7 +2747,7 @@ func (d Data) GetCountAllReview(ctx context.Context, rating string) (int, error)
 	// // Convert the integer rating to a string before concatenation
 	// ratingStr := strconv.Itoa(rating)
 
-	rows, err := (*d.stmt)[getCountAllReview].QueryxContext(ctx, "%"+rating+"%")
+	rows, err := (*d.stmt)[getCountAllReview].QueryxContext(ctx, destinasiid, "%"+rating+"%")
 	if err != nil {
 		return total, errors.Wrap(err, "[DATA] [GetCountAllReview]")
 	}
@@ -2893,13 +2898,14 @@ func (d Data) GetBeritaML(ctx context.Context, judul string, page int, length in
 	for rows.Next() {
 		var beritaID string
 		var destinasiID string
+		var destinasiName string
 		var beritaJudul string
 		var beritaDesc string
 		var beritaGambarUrl string
 		var beritaDateRaw []byte // Raw byte slice for date
 		var beritaLinkSumber string
 
-		if err = rows.Scan(&beritaID, &destinasiID, &beritaJudul, &beritaDesc, &beritaGambarUrl, &beritaDateRaw, &beritaLinkSumber); err != nil {
+		if err = rows.Scan(&beritaID, &destinasiID, &destinasiName, &beritaJudul, &beritaDesc, &beritaGambarUrl, &beritaDateRaw, &beritaLinkSumber); err != nil {
 			return nil, errors.Wrap(err, "[DATA] [GetBeritaML] - Failed to scan row")
 		}
 
@@ -3029,4 +3035,105 @@ func (d Data) GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodokEnt
 	}
 
 	return beritaArray, nil
+}
+
+func (d Data) GetJenisDestinasiML(ctx context.Context) ([]glodokEntity.TableJenisDestinasi, error) {
+	var (
+		jenisDestinasi      glodokEntity.TableJenisDestinasi
+		jenisDestinasiArray []glodokEntity.TableJenisDestinasi
+		err                 error
+	)
+
+	rows, err := (*d.stmt)[getJenisDestinasiML].QueryxContext(ctx)
+	if err != nil {
+		return jenisDestinasiArray, errors.Wrap(err, "[DATA] [GetJenisDestinasi]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&jenisDestinasi); err != nil {
+			return jenisDestinasiArray, errors.Wrap(err, "[DATA] [GetJenisDestinasi]")
+		}
+		jenisDestinasiArray = append(jenisDestinasiArray, jenisDestinasi)
+	}
+	return jenisDestinasiArray, err
+
+}
+
+func (d Data) GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error) {
+	var (
+		destinasi      glodokEntity.TableDestinasi
+		destinasiArray []glodokEntity.TableDestinasi
+		err            error
+	)
+
+	rows, err := (*d.stmt)[getDestinasiDDML].QueryxContext(ctx)
+	if err != nil {
+		return destinasiArray, errors.Wrap(err, "[DATA] [GetDestinasiDDML]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&destinasi); err != nil {
+			return destinasiArray, errors.Wrap(err, "[DATA] [GetDestinasiDDML]")
+		}
+		destinasiArray = append(destinasiArray, destinasi)
+	}
+	return destinasiArray, err
+
+}
+
+// func (d Data) GetAvgReview(ctx context.Context, destinasiid string) (float64, error) {
+// 	var (
+// 		err           error
+// 		averageRating interface{} // Use interface{} to handle any type
+// 	)
+
+// 	// Execute the query to get the average rating
+// 	rows, err := (*d.stmt)[getAvgReview].QueryxContext(ctx, destinasiid)
+// 	if err != nil {
+// 		return 0, errors.Wrap(err, "[DATA] [GetAvgReview]")
+// 	}
+// 	defer rows.Close()
+
+// 	// Scan the result into averageRating
+// 	if rows.Next() {
+// 		if err = rows.Scan(&averageRating); err != nil {
+// 			return 0, errors.Wrap(err, "[DATA] [GetAvgReview]")
+// 		}
+// 	}
+
+// 	// Convert to float64
+// 	switch v := averageRating.(type) {
+// 	case int:
+// 		return float64(v), nil
+// 	case float64:
+// 		return v, nil
+// 	default:
+// 		return 0, errors.New("unexpected type for average rating")
+// 	}
+// }
+
+func (d Data) GetAvgReview(ctx context.Context, destinasiid string) (float64, error) {
+	var (
+		err           error
+		averageRating float64
+	)
+
+	rows, err := (*d.stmt)[getAvgReview].QueryxContext(ctx, destinasiid)
+	if err != nil {
+		return 0.0, errors.Wrap(err, "[DATA] [GetAvgReview]")
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		if err = rows.Scan(&averageRating); err != nil {
+			return 0.0, errors.Wrap(err, "[DATA] [GetAvgReview]")
+		}
+	}
+
+	// Return the average rating as a float64.
+	return averageRating, nil
 }

@@ -53,6 +53,7 @@ type TableRuteTransportasi struct {
 
 type TableReview struct {
 	ReviewID     string    `db:"review_id" json:"review_id"`
+	DestinasiID  string    `db:"destinasi_id" json:"destinasi_id"`
 	ReviewRating int       `db:"review_rating" json:"review_rating"`
 	Reviewer     string    `db:"reviewer_name" json:"reviewer_name"`
 	ReviewDesc   string    `db:"review_desc" json:"review_desc"`
