@@ -3119,7 +3119,7 @@ func (d Data) GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestina
 func (d Data) GetAvgReview(ctx context.Context, destinasiid string) (float64, error) {
 	var (
 		err           error
-		averageRating float64
+		averageRating sql.NullFloat64
 	)
 
 	rows, err := (*d.stmt)[getAvgReview].QueryxContext(ctx, destinasiid)
@@ -3134,6 +3134,11 @@ func (d Data) GetAvgReview(ctx context.Context, destinasiid string) (float64, er
 		}
 	}
 
-	// Return the average rating as a float64.
-	return averageRating, nil
+	// Check if averageRating is valid (not NULL)
+	if averageRating.Valid {
+		return averageRating.Float64, nil // Return the average rating as a float64
+	}
+
+	// If it's NULL, you can decide how to handle it (return 0, an error, etc.)
+	return 0.0, nil // or return an error if that makes more sense in your context
 }
