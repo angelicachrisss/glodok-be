@@ -10,12 +10,13 @@ import "time"
 
 type GetAdmin struct {
 	AdminID   string `db:"admin_id" json:"admin_id"`
-	AdminNama string `db:"admin_name" json:"admin_name"`
 	AdminPass string `db:"admin_pass" json:"admin_pass"`
 }
 
 type TableDestinasi struct {
 	DestinasiID        string    `db:"destinasi_id" json:"destinasi_id"`
+	JenisDestinasiID   string    `db:"jenisdestinasi_id" json:"jenisdestinasi_id"`
+	JenisDestinasiKat  string    `db:"jenisdestinasi_kat" json:"jenisdestinasi_kat"`
 	DestinasiName      string    `db:"destinasi_name" json:"destinasi_name"`
 	DestinasiDesc      string    `db:"destinasi_desc" json:"destinasi_desc"`
 	DestinasiAlamat    string    `db:"destinasi_alamat" json:"destinasi_alamat"`
@@ -27,8 +28,9 @@ type TableDestinasi struct {
 	DestinasiHTutup    string    `db:"destinasi_htutup" json:"destinasi_htutup"`
 	DestinasiJBuka     time.Time `db:"destinasi_jbuka" json:"destinasi_jbuka"`
 	DestinasiJTutup    time.Time `db:"destinasi_jtutup" json:"destinasi_jtutup"`
-	DestinasiKet       string    `db:"destinasi_kat" json:"destinasi_kat"`
-	DestinasiHalal     string    `db:"destinasi_labelhalal" json:"destinasi_labelhalal"`
+	DestinasiHalal     string    `db:"destinasi_labelhalalyn" json:"destinasi_labelhalalyn"`
+	DestinasiOtentik   string    `db:"destinasi_otentikyn" json:"destinasi_otentikyn"`
+	DestinasiAktif     string    `db:"destinasi_aktifyn" json:"destinasi_aktifyn"`
 }
 
 type TableTipeTransportasi struct {
@@ -37,20 +39,21 @@ type TableTipeTransportasi struct {
 }
 
 type TableRuteTransportasi struct {
-	RuteID               string `db:"rute_id" json:"rute_id"`
-	TipeTransportasiID   string `db:"tipetransportasi_id" json:"tipetransportasi_id"`
-	RuteNoBus            string `db:"rute_no" json:"rute_no"`
-	RuteTujuanAwal       string `db:"rute_tujuanawal" json:"rute_tujuanawal"`
-	RuteTujuanAkhir      string `db:"rute_tujuanakhir" json:"rute_tujuanakhir"`
-	TipeTransportasiName string `db:"tipetransportasi_name" json:"tipetransportasi_name"`
-	RuteTurun1           string `db:"rute_turun1" json:"rute_turun1"`
-	RuteTurun2           string `db:"rute_turun2" json:"rute_turun2"`
-	RuteFlagPerbaikan1   string `db:"rute_flagperbaikan1" json:"rute_flagperbaikan1"`
-	RuteFlagPerbaikan2   string `db:"rute_flagperbaikan2" json:"rute_flagperbaikan2"`
+	RuteID                   string `db:"rute_id" json:"rute_id"`
+	TipeTransportasiID       string `db:"tipetransportasi_id" json:"tipetransportasi_id"`
+	TipeTransportasiName     string `db:"tipetransportasi_name" json:"tipetransportasi_name"`
+	TujuanID                 string `db:"tujuan_id" json:"tujuan_id"`
+	TujuanAwal               string `db:"tujuan_awal" json:"tujuan_awal"`
+	TujuanAkhir              string `db:"tujuan_akhir" json:"tujuan_akhir"`
+	PemberhentianID          string `db:"pemberhentian_id" json:"pemberhentian_id"`
+	PemberhentianNama        string `db:"pemberhentian_name" json:"pemberhentian_name"`
+	PemberhentianPerbaikanYN string `db:"pemberhentian_perbaikanyn" json:"pemberhentian_perbaikanyn"`
+	RuteNoBus                string `db:"rute_no" json:"rute_no"`
 }
 
 type TableReview struct {
 	ReviewID     string    `db:"review_id" json:"review_id"`
+	DestinasiID  string    `db:"destinasi_id" json:"destinasi_id"`
 	ReviewRating int       `db:"review_rating" json:"review_rating"`
 	Reviewer     string    `db:"reviewer_name" json:"reviewer_name"`
 	ReviewDesc   string    `db:"review_desc" json:"review_desc"`
@@ -67,4 +70,44 @@ type TableBerita struct {
 	BeritaGambarURL  string    `json:"berita_foto_url"`
 	BeritaDate       time.Time `db:"berita_date_update" json:"berita_date_update"`
 	BeritaLinkSumber string    `db:"berita_linksumber" json:"berita_linksumber"`
+}
+
+type TableJenisDestinasi struct {
+	JenisDestinasiID  string `db:"jenisdestinasi_id" json:"jenisdestinasi_id"`
+	JenisDestinasiKat string `db:"jenisdestinasi_kat" json:"jenisdestinasi_kat"`
+}
+
+type TableSejarahBeranda struct {
+	SejarahBerandaIsi string `db:"sejarahberanda_isi" json:"sejarahberanda_isi"`
+}
+
+type TableFotoBeranda struct {
+	FotoBerandaID     string `db:"fotoberanda_id" json:"fotoberanda_id"`
+	FotoBerandaGambar []byte `db:"fotoberanda_gambar" json:"fotoberanda_gambar"`
+	FotoBerandaURL    string `json:"fotoberanda_gambar_url"`
+}
+
+type TableVideoBeranda struct {
+	VideoBerandaID   string `db:"videoberanda_id" json:"videoberanda_id"`
+	VideoBerandaLink string `db:"videoberanda_link" json:"videoberanda_link"`
+}
+
+type TableTujuan struct {
+	TujuanID             string `db:"tujuan_id" json:"tujuan_id"`
+	TujuanAwal           string `db:"tujuan_awal" json:"tujuan_awal"`
+	TujuanAkhir          string `db:"tujuan_akhir" json:"tujuan_akhir"`
+	TipeTransportasiID   string `db:"tipetransportasi_id" json:"tipetransportasi_id"`
+	TipeTransportasiName string `db:"tipetransportasi_name" json:"tipetransportasi_name"`
+}
+
+type TablePemberhentian struct {
+	PemberhentianID          string `db:"pemberhentian_id" json:"pemberhentian_id"`
+	PemberhentianNama        string `db:"pemberhentian_name" json:"pemberhentian_name"`
+	TipeTransportasiID       string `db:"tipetransportasi_id" json:"tipetransportasi_id"`
+	TipeTransportasiName     string `db:"tipetransportasi_name" json:"tipetransportasi_name"`
+	PemberhentianPerbaikanYN string `db:"pemberhentian_perbaikanyn" json:"pemberhentian_perbaikanyn"`
+}
+
+type TableMaps struct {
+	MapsLink string `db:"maps_link" json:"maps_link"`
 }

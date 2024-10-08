@@ -26,7 +26,6 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 		resp  response.Response
 		types string
 
-		InsertAdmin glodokEntity.GetAdmin
 		// InsertTipeTransportasi glodokEntity.TableTipeTransportasi
 		// TableDestinasi glodokEntity.TableDestinasi
 	)
@@ -44,11 +43,6 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 	types = r.FormValue("type")
 	switch types {
 	//admin
-	case "insertadmin":
-		body, _ := ioutil.ReadAll(r.Body)
-		json.Unmarshal(body, &InsertAdmin)
-		result, err = h.glodokSvc.InsertAdmin(ctx, InsertAdmin)
-
 	case "submitlogin":
 		result, err = h.glodokSvc.SubmitLogin(ctx, r.FormValue("adminid"), r.FormValue("adminpass"))
 
@@ -137,19 +131,21 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 
 		// Membaca data JSON yang lain dari form-data
 		TableDestinasi := glodokEntity.TableDestinasi{
-			DestinasiID:     "",
-			DestinasiName:   r.FormValue("destinasi_name"),
-			DestinasiDesc:   r.FormValue("destinasi_desc"),
-			DestinasiAlamat: r.FormValue("destinasi_alamat"),
-			DestinasiLang:   destinasiLang,
-			DestinasiLong:   destinasiLong,
-			DestinasiHBuka:  r.FormValue("destinasi_hbuka"),
-			DestinasiHTutup: r.FormValue("destinasi_htutup"),
-			DestinasiJBuka:  jamBuka,
-			DestinasiJTutup: jamTutup,
-			DestinasiKet:    r.FormValue("destinasi_kat"),
-			DestinasiHalal:  r.FormValue("destinasi_labelhalal"),
-			DestinasiGambar: fileBytes, // Menyimpan byte array gambar ke struct
+			DestinasiID:      "",
+			JenisDestinasiID: r.FormValue("jenisdestinasi_id"),
+			DestinasiName:    r.FormValue("destinasi_name"),
+			DestinasiDesc:    r.FormValue("destinasi_desc"),
+			DestinasiAlamat:  r.FormValue("destinasi_alamat"),
+			DestinasiLang:    destinasiLang,
+			DestinasiLong:    destinasiLong,
+			DestinasiHBuka:   r.FormValue("destinasi_hbuka"),
+			DestinasiHTutup:  r.FormValue("destinasi_htutup"),
+			DestinasiJBuka:   jamBuka,
+			DestinasiJTutup:  jamTutup,
+			DestinasiHalal:   r.FormValue("destinasi_labelhalalyn"),
+			DestinasiOtentik: r.FormValue("destinasi_otentikyn"),
+			DestinasiAktif:   r.FormValue("destinasi_aktifyn"),
+			DestinasiGambar:  fileBytes, // Menyimpan byte array gambar ke struct
 		}
 
 		// Memasukkan data ke dalam database melalui layanan InsertDestinasi
@@ -220,11 +216,11 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 
 		// Membaca data JSON yang lain dari form-data
 		TableBerita := glodokEntity.TableBerita{
-			BeritaID: "",
-			DestinasiID: r.FormValue("destinasi_id"),
-			BeritaJudul: r.FormValue("berita_judul"),
-			BeritaDesc: r.FormValue("berita_desc"),
-			BeritaGambar: fileBytes,
+			BeritaID:         "",
+			DestinasiID:      r.FormValue("destinasi_id"),
+			BeritaJudul:      r.FormValue("berita_judul"),
+			BeritaDesc:       r.FormValue("berita_desc"),
+			BeritaGambar:     fileBytes,
 			BeritaLinkSumber: r.FormValue("berita_linksumber"),
 		}
 
@@ -237,6 +233,81 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 			resp.Data = result
 			return
 		}
+		//-------------------------------------------------------------------------------------------------------------------------
+		//jenis destinasi
+	case "insertjenisdestinasi":
+		var (
+			InsertJenisDestinasi glodokEntity.TableJenisDestinasi
+		)
+
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &InsertJenisDestinasi)
+		result, err = h.glodokSvc.InsertJenisDestinasi(ctx, InsertJenisDestinasi)
+	case "insertfotoberanda":
+		// Memproses bagian dari form-data
+		err := r.ParseMultipartForm(10 << 20) // Maksimum ukuran file 10MB
+		if err != nil {
+			fmt.Println("Error memproses bagian dari form-data:", err)
+			return
+		}
+
+		// Mengambil file dari form-data
+		file, _, err := r.FormFile("fotoberanda_gambar")
+		if err != nil {
+			fmt.Println("Error mengambil file dari form-data:", err)
+			return
+		}
+		defer file.Close()
+
+		// Membaca isi file ke dalam byte array
+		fileBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Println("Error membaca isi file ke dalam byte array:", err)
+			return
+		}
+
+		// Membaca data JSON yang lain dari form-data
+		TableFotoBeranda := glodokEntity.TableFotoBeranda{
+			FotoBerandaID:     "",
+			FotoBerandaGambar: fileBytes,
+		}
+
+		// Memasukkan data ke dalam database melalui layanan InsertFotoBeranda
+		result, err = h.glodokSvc.InsertFotoBeranda(ctx, TableFotoBeranda)
+		if err != nil {
+			resp.SetError(err, http.StatusInternalServerError)
+			resp.StatusCode = 500
+			log.Printf("[ERROR] %s %s - %s\n", r.Method, r.URL, err.Error())
+			resp.Data = result
+			return
+		}
+		//-------------------------------------------------------------------------------------------------------------------------
+	case "insertvideoberanda":
+		var (
+			InsertVideoBeranda glodokEntity.TableVideoBeranda
+		)
+
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &InsertVideoBeranda)
+		result, err = h.glodokSvc.InsertVideoBeranda(ctx, InsertVideoBeranda)
+
+	case "inserttujuantransportasi":
+		var (
+			InsertTujuanTransportasi glodokEntity.TableTujuan
+		)
+
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &InsertTujuanTransportasi)
+		result, err = h.glodokSvc.InsertTujuanTransportasi(ctx, InsertTujuanTransportasi)
+
+	case "insertpemberhentiantransportasi":
+		var (
+			InsertPemberhentianTransportasi glodokEntity.TablePemberhentian
+		)
+
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &InsertPemberhentianTransportasi)
+		result, err = h.glodokSvc.InsertPemberhentianTransportasi(ctx, InsertPemberhentianTransportasi)
 
 	}
 

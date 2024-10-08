@@ -7,9 +7,9 @@ import (
 	"fmt"
 	httpHelper "glodok-be/internal/delivery/http"
 	"io/ioutil"
+	"time"
 
 	// "strconv"
-	"time"
 
 	// glodokEntity "glodok-be/internal/entity/glodok"
 	"glodok-be/pkg/response"
@@ -63,6 +63,11 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		json.Unmarshal(body, &rutetransportasi)
 		result, err = h.glodokSvc.UpdateRuteTransportasi(ctx, rutetransportasi, r.FormValue("ruteid"))
+	case "updatestatusdestinasi":
+		var destinasi glodokEntity.TableDestinasi
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &destinasi)
+		result, err = h.glodokSvc.UpdateStatusDestinasi(ctx, destinasi, r.FormValue("destinasiid"))
 	case "updatedestinasi":
 		// Memproses bagian dari form-data
 		err := r.ParseMultipartForm(10 << 20) // Maksimum ukuran file 10MB
@@ -106,16 +111,16 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 		// Membaca data JSON yang lain dari form-data
 		destinasiID := r.FormValue("destinasiid")
 		TableDestinasi := glodokEntity.TableDestinasi{
-			DestinasiID:     destinasiID,
-			DestinasiName:   r.FormValue("destinasi_name"),
-			DestinasiDesc:   r.FormValue("destinasi_desc"),
-			DestinasiHBuka:  r.FormValue("destinasi_hbuka"),
-			DestinasiHTutup: r.FormValue("destinasi_htutup"),
-			DestinasiJBuka:  jamBuka,
-			DestinasiJTutup: jamTutup,
-			DestinasiKet:    r.FormValue("destinasi_kat"),
-			DestinasiHalal:  r.FormValue("destinasi_labelhalal"),
-			DestinasiGambar: fileBytes, // Menyimpan byte array gambar ke struct
+			DestinasiID:      destinasiID,
+			DestinasiName:    r.FormValue("destinasi_name"),
+			DestinasiDesc:    r.FormValue("destinasi_desc"),
+			DestinasiHBuka:   r.FormValue("destinasi_hbuka"),
+			DestinasiHTutup:  r.FormValue("destinasi_htutup"),
+			DestinasiJBuka:   jamBuka,
+			DestinasiJTutup:  jamTutup,
+			DestinasiHalal:   r.FormValue("destinasi_labelhalalyn"),
+			DestinasiOtentik: r.FormValue("destinasi_otentikyn"),
+			DestinasiGambar:  fileBytes, // Menyimpan byte array gambar ke struct
 		}
 
 		// Memperbarui data ke dalam database melalui layanan UpdateDestinasi
@@ -171,6 +176,32 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 			resp.Data = result
 			return
 		}
+	case "updatejenisdestinasi":
+		var jenisdestinasi glodokEntity.TableJenisDestinasi
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &jenisdestinasi)
+		result, err = h.glodokSvc.UpdateJenisDestinasi(ctx, jenisdestinasi, r.FormValue("jenisdestinasiid"))
+	case "updatesejarahberanda":
+		var sejarahberanda glodokEntity.TableSejarahBeranda
+		body, _ := ioutil.ReadAll(r.Body)
+		fmt.Println("sejarahberanda: ", sejarahberanda)
+		json.Unmarshal(body, &sejarahberanda)
+		result, err = h.glodokSvc.UpdateSejarahBeranda(ctx, sejarahberanda)
+	case "updatemaps":
+		var maps glodokEntity.TableMaps
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &maps)
+		result, err = h.glodokSvc.UpdateMaps(ctx, maps, r.FormValue("isi"))
+	case "updatetujuan":
+		var tujuan glodokEntity.TableTujuan
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &tujuan)
+		result, err = h.glodokSvc.UpdateTujuan(ctx, tujuan, r.FormValue("tujuanid"))
+	case "updatepemberhentian":
+		var pemberhentian glodokEntity.TablePemberhentian
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &pemberhentian)
+		result, err = h.glodokSvc.UpdatePemberhentian(ctx, pemberhentian, r.FormValue("pemberhentianid"))
 	}
 
 	if err != nil {
