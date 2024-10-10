@@ -1238,9 +1238,10 @@ func (d Data) InsertReview(ctx context.Context, review glodokEntity.TableReview)
 	_, err = (*d.stmt)[insertReview].ExecContext(ctx,
 		review.ReviewID,
 		review.DestinasiID,
+		review.UserID,
 		review.ReviewRating,
-		review.Reviewer,
 		review.ReviewDesc,
+		review.ReviewAnon,
 	)
 
 	if err != nil {
@@ -1289,7 +1290,6 @@ func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodo
 		review = glodokEntity.TableReview{
 			ReviewID:     reviewID,
 			ReviewRating: reviewRating,
-			Reviewer:     reviewerName,
 			ReviewDesc:   reviewDesc,
 			ReviewDate:   reviewDate,
 		}
@@ -1377,7 +1377,6 @@ func (d Data) GetSearchReview(ctx context.Context, reviewid string, reviewer str
 		review = glodokEntity.TableReview{
 			ReviewID:     reviewID,
 			ReviewRating: reviewRating,
-			Reviewer:     reviewer,
 			ReviewDesc:   reviewDesc,
 			ReviewDate:   reviewDate,
 		}
@@ -1446,7 +1445,6 @@ func (d Data) GetTableReviewByRating(ctx context.Context, rating int, page int, 
 		review = glodokEntity.TableReview{
 			ReviewID:     reviewID,
 			ReviewRating: reviewRating,
-			Reviewer:     reviewerName,
 			ReviewDesc:   reviewDesc,
 			ReviewDate:   reviewDate,
 		}
@@ -1515,7 +1513,6 @@ func (d Data) GetSearchReviewByRating(ctx context.Context, rating int, reviewid 
 		review = glodokEntity.TableReview{
 			ReviewID:     reviewID,
 			ReviewRating: reviewRating,
-			Reviewer:     reviewer,
 			ReviewDesc:   reviewDesc,
 			ReviewDate:   reviewDate,
 		}
@@ -2706,12 +2703,14 @@ func (d Data) GetAllReview(ctx context.Context, destinasiid string, rating strin
 	for rows.Next() {
 		var reviewID string
 		var destinasiID string
+		var userID string
+		var userName string
 		var reviewRating int
-		var reviewerName string
 		var reviewDesc string
+		var reviewAnon string
 		var reviewDateRaw []byte // Raw byte slice for date
 
-		if err = rows.Scan(&reviewID, &destinasiID, &reviewRating, &reviewerName, &reviewDesc, &reviewDateRaw); err != nil {
+		if err = rows.Scan(&reviewID, &destinasiID, &userID, &userName, &reviewRating, &reviewDesc, &reviewDateRaw, &reviewAnon); err != nil {
 			return reviewArray, errors.Wrap(err, "[DATA] [GetAllReview]")
 		}
 
@@ -2727,10 +2726,12 @@ func (d Data) GetAllReview(ctx context.Context, destinasiid string, rating strin
 		review = glodokEntity.TableReview{
 			ReviewID:     reviewID,
 			DestinasiID:  destinasiID,
+			UserID:       userID,
+			UserName:     userName,
 			ReviewRating: reviewRating,
-			Reviewer:     reviewerName,
 			ReviewDesc:   reviewDesc,
 			ReviewDate:   reviewDate,
+			ReviewAnon:   reviewAnon,
 		}
 
 		reviewArray = append(reviewArray, review)
@@ -3143,7 +3144,7 @@ func (d Data) GetAvgReview(ctx context.Context, destinasiid string) (float64, er
 	return 0.0, nil // or return an error if that makes more sense in your context
 }
 
-//user
+// user
 func (d Data) InsertUser(ctx context.Context, user glodokEntity.TableUser) (string, error) {
 	var (
 		err    error

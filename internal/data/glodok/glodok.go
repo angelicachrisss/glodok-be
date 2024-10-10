@@ -257,38 +257,38 @@ const (
 
 	//-get all
 	getTableReview  = "GetTableReview"
-	qGetTableReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date FROM t_review ORDER BY review_date DESC LIMIT ?,? `
+	qGetTableReview = `SELECT review_id, review_rating, review_desc, review_date FROM t_review ORDER BY review_date DESC LIMIT ?,? `
 
 	getCountReview  = "GetCountReview"
 	qGetCountReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review`
 
 	getSearchTableReview  = "GetSearchTableReview"
-	qGetSearchTableReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date 
+	qGetSearchTableReview = `SELECT review_id, review_rating, review_desc, review_date 
 	FROM t_review 
-	WHERE review_id LIKE ? OR reviewer_name LIKE ?
+	WHERE review_id LIKE ? 
 	ORDER BY review_id DESC 
 	LIMIT ?,?`
 
 	getCountSearchReview  = "GetCountSearchReview"
-	qGetCountSearchReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_id LIKE ? OR reviewer_name LIKE ?`
+	qGetCountSearchReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_id LIKE ?`
 
 	//-by rating
 	getTableReviewByRating  = "GetTableReviewByRating"
-	qGetTableReviewByRating = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date FROM t_review WHERE review_rating = ? LIMIT ?,?`
+	qGetTableReviewByRating = `SELECT review_id, review_rating, review_desc, review_date FROM t_review WHERE review_rating = ? LIMIT ?,?`
 
 	getCountReviewByRating  = "GetCountReviewByRating"
 	qGetCountReviewByRating = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_rating = ?`
 
 	getSearchReviewByRating  = "GetSearchReviewByRating"
-	qGetSearchReviewByRating = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date 
+	qGetSearchReviewByRating = `SELECT review_id, review_rating review_desc, review_date 
 	FROM t_review 
-	WHERE review_rating = ? AND (review_id LIKE ? OR reviewer_name LIKE ?) 
+	WHERE review_rating = ? AND (review_id LIKE ?) 
 	ORDER BY review_id DESC 
 	LIMIT ?,?`
 
 	getCountSearchReviewByRating  = "GetCountSearchReviewByRating"
 	qGetCountSearchReviewByRating = `SELECT COUNT(review_id) AS TotalCount
-	FROM t_review WHERE review_rating = ? AND (review_id LIKE ? OR reviewer_name LIKE ?)`
+	FROM t_review WHERE review_rating = ? AND (review_id LIKE ?)`
 
 	//berita
 	getDestinasi  = "GetDestinasi"
@@ -553,11 +553,16 @@ const (
 
 	//review
 	insertReview  = "InsertReview"
-	qInsertReview = `INSERT INTO t_review (review_id, destinasi_id, review_rating, reviewer_name, review_desc, review_date) VALUES (?,?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'))`
+	qInsertReview = `INSERT INTO t_review (review_id, destinasi_id, user_id, review_rating, review_desc, review_date, review_anonyn) VALUES (?,?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'),?)`
 
 	getAllReview  = "GetAllReview"
-	qGetAllReview = `SELECT review_id, destinasi_id, review_rating, reviewer_name, review_desc, review_date 
-	FROM t_review WHERE destinasi_id = ? AND review_rating LIKE ? ORDER BY review_id DESC LIMIT ?,?`
+	qGetAllReview = `SELECT r.review_id, r.destinasi_id, r.user_id, u.user_name, r.review_rating, r.review_desc, r.review_date, r.review_anonyn 
+	FROM t_review AS r 
+	JOIN t_user AS u ON u.user_id COLLATE utf8mb4_unicode_ci = r.user_id COLLATE utf8mb4_unicode_ci 
+	WHERE r.destinasi_id COLLATE utf8mb4_unicode_ci = ? 
+	AND r.review_rating LIKE ?
+	ORDER BY r.review_id DESC 
+	LIMIT ?,?`
 
 	getCountAllReview  = `GetCountAllReview`
 	qGetCountAllReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE destinasi_id = ? AND review_rating LIKE ?`
