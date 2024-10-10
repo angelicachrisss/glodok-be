@@ -139,6 +139,8 @@ type Data interface {
 	GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodokEntity.TableBerita, error)
 	GetJenisDestinasiML(ctx context.Context) ([]glodokEntity.TableJenisDestinasi, error)
 	GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
+	InsertUser(ctx context.Context, user glodokEntity.TableUser) (string, error)
+	SubmitLoginML(ctx context.Context, userid string, pass string) (string, error)
 }
 
 type Service struct {

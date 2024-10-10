@@ -73,6 +73,7 @@ type IglodokSvc interface {
 	InsertVideoBeranda(ctx context.Context, videoberanda glodokEntity.TableVideoBeranda) (string, error)
 	InsertTujuanTransportasi(ctx context.Context, tujuan glodokEntity.TableTujuan) (string, error)
 	InsertPemberhentianTransportasi(ctx context.Context, pemberhentian glodokEntity.TablePemberhentian) (string, error)
+	InsertUser(ctx context.Context, user glodokEntity.TableUser) (string, error)
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 
@@ -118,6 +119,7 @@ type IglodokSvc interface {
 	GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodokEntity.TableBerita, error)
 	GetJenisDestinasiML(ctx context.Context) ([]glodokEntity.TableJenisDestinasi, error)
 	GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
+	SubmitLoginML(ctx context.Context, userid string, pass string) (string, error)
 }
 
 type (

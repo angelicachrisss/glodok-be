@@ -3142,3 +3142,56 @@ func (d Data) GetAvgReview(ctx context.Context, destinasiid string) (float64, er
 	// If it's NULL, you can decide how to handle it (return 0, an error, etc.)
 	return 0.0, nil // or return an error if that makes more sense in your context
 }
+
+//user
+func (d Data) InsertUser(ctx context.Context, user glodokEntity.TableUser) (string, error) {
+	var (
+		err    error
+		result string
+	)
+	// Generate a hashed password
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(user.UserPass), bcrypt.DefaultCost)
+	fmt.Println("hashedpass", len(string(hashedPass)))
+	fmt.Println("pass", user.UserPass)
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][InsertUser] Failed to generate hashed password")
+	}
+	// Insert the hashed password into the database
+	_, err = (*d.stmt)[insertUser].ExecContext(ctx,
+		user.UserID,
+		user.UserName,
+		string(hashedPass), // Convert the hashed password to a string
+	)
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][InsertUser]")
+	}
+	result = "Berhasil"
+	return result, err
+}
+
+func (d Data) SubmitLoginML(ctx context.Context, userid string, pass string) (string, error) {
+	var (
+		err    error
+		result string
+		user   glodokEntity.TableUser
+	)
+	err = (*d.stmt)[submitLoginML].QueryRowxContext(ctx, userid).StructScan(&user)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			result = "user not found"
+		} else {
+			result = "Failed to query user"
+		}
+		return result, errors.Wrap(err, "[DATA] [SubmitLoginML1]")
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.UserPass), []byte(pass))
+	fmt.Println("pass", user.UserPass)
+	if err != nil {
+		result = "Invalid password"
+		return result, errors.Wrap(err, "[DATA] [SubmitLoginML2]")
+	}
+	result = "Login successful"
+	return result, nil
+}

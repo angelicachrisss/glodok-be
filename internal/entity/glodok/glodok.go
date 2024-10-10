@@ -111,3 +111,9 @@ type TablePemberhentian struct {
 type TableMaps struct {
 	MapsLink string `db:"maps_link" json:"maps_link"`
 }
+
+type TableUser struct {
+	UserID   string `db:"user_id" json:"user_id"`
+	UserName string `db:"user_name" json:"user_name"`
+	UserPass string `db:"user_pass" json:"user_pass"`
+}
