@@ -308,6 +308,16 @@ func (h *Handler) InsertGlodok(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		json.Unmarshal(body, &InsertPemberhentianTransportasi)
 		result, err = h.glodokSvc.InsertPemberhentianTransportasi(ctx, InsertPemberhentianTransportasi)
+	case "insertuser":
+		var (
+			InsertUser glodokEntity.TableUser
+		)
+
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &InsertUser)
+		result, err = h.glodokSvc.InsertUser(ctx, InsertUser)
+	case "submitloginml":
+		result, err = h.glodokSvc.SubmitLoginML(ctx, r.FormValue("username"), r.FormValue("pass"))
 
 	}
 

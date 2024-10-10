@@ -651,6 +651,13 @@ const (
 
 	getDestinasiDDML  = "GetDestinasiDDML"
 	qGetDestinasiDDML = `SELECT destinasi_id, destinasi_name FROM t_destinasi WHERE destinasi_aktifyn = "Y"`
+
+	//user
+	insertUser  = "InsertUser"
+	qInsertUser = `INSERT INTO t_user (user_id, user_name, user_pass) VALUES (?,?,?)`
+
+	submitLoginML  = "SubmitLoginML"
+	qSubmitLoginML = `SELECT user_id, user_name, user_pass FROM t_user WHERE user_id = ?`
 )
 
 var (
@@ -761,6 +768,7 @@ var (
 		{getBeritaMLByID, qGetBeritaMLByID},
 		{getJenisDestinasiML, qGetJenisDestinasiML},
 		{getDestinasiDDML, qGetDestinasiDDML},
+		{submitLoginML, qSubmitLoginML},
 	}
 	insertStmt = []statement{
 		{insertDestinasi, qInsertDestinasi},
@@ -773,6 +781,7 @@ var (
 		{insertVideoBeranda, qInsertVideoBeranda},
 		{insertTujuanTransportasi, qInsertTujuanTransportasi},
 		{insertPemberhentianTransportasi, qInsertPemberhentianTransportasi},
+		{insertUser, qInsertUser},
 	}
 	updateStmt = []statement{
 		{updateAdmin, qUpdateAdmin},

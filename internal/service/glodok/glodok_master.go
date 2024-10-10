@@ -1393,3 +1393,30 @@ func (s Service) GetAvgReview(ctx context.Context, destinasiid string) (float64,
 	return avg, metadata, nil
 
 }
+
+func (s Service) InsertUser(ctx context.Context, user glodokEntity.TableUser) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.InsertUser(ctx, user)
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][InsertUser]")
+	}
+	result = "Berhasil"
+	return result, err
+}
+
+func (s Service) SubmitLoginML(ctx context.Context, userid string, pass string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.SubmitLoginML(ctx, userid, pass)
+	if err != nil {
+		result = "Gagal Login"
+		fmt.Println("result", result)
+		return result, errors.Wrap(err, "[Service][SubmitLoginML]")
+	}
+	result = "Berhasil Login"
+	return result, err
+}
