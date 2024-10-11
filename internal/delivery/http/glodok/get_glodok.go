@@ -145,21 +145,21 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 	case "getreview":
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetTableReview(ctx, page, length)
-	case "getsearchreview":
-		page, _ := strconv.Atoi(r.FormValue("page"))
-		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetSearchReview(ctx, r.FormValue("reviewid"), r.FormValue("reviewer"), page, length)
-	case "getreviewbyrating":
-		rating, _ := strconv.Atoi(r.FormValue("rating"))
-		page, _ := strconv.Atoi(r.FormValue("page"))
-		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetTableReviewByRating(ctx, rating, page, length)
-	case "getsearchreviewbyrating":
-		rating, _ := strconv.Atoi(r.FormValue("rating"))
-		page, _ := strconv.Atoi(r.FormValue("page"))
-		length, _ := strconv.Atoi(r.FormValue("length"))
-		result, metadata, err = h.glodokSvc.GetSearchReviewByRating(ctx, rating, r.FormValue("reviewid"), r.FormValue("reviewer"), page, length)
+		result, metadata, err = h.glodokSvc.GetTableReview(ctx, r.FormValue("destinasiid"), r.FormValue("userid"), page, length)
+	// case "getsearchreview":
+	// 	page, _ := strconv.Atoi(r.FormValue("page"))
+	// 	length, _ := strconv.Atoi(r.FormValue("length"))
+	// 	result, metadata, err = h.glodokSvc.GetSearchReview(ctx, r.FormValue("reviewid"), r.FormValue("reviewer"), page, length)
+	// case "getreviewbyrating":
+	// 	rating, _ := strconv.Atoi(r.FormValue("rating"))
+	// 	page, _ := strconv.Atoi(r.FormValue("page"))
+	// 	length, _ := strconv.Atoi(r.FormValue("length"))
+	// 	result, metadata, err = h.glodokSvc.GetTableReviewByRating(ctx, rating, page, length)
+	// case "getsearchreviewbyrating":
+	// 	rating, _ := strconv.Atoi(r.FormValue("rating"))
+	// 	page, _ := strconv.Atoi(r.FormValue("page"))
+	// 	length, _ := strconv.Atoi(r.FormValue("length"))
+	// 	result, metadata, err = h.glodokSvc.GetSearchReviewByRating(ctx, rating, r.FormValue("reviewid"), r.FormValue("reviewer"), page, length)
 	case "getdestinasidropdown":
 		result, err = h.glodokSvc.GetDestinasi(ctx)
 	case "getimageberita":
@@ -297,6 +297,10 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		page, _ := strconv.Atoi(r.FormValue("page"))
 		length, _ := strconv.Atoi(r.FormValue("length"))
 		result, metadata, err = h.glodokSvc.GetTablePemberhentianTransportasi(ctx, r.FormValue("pemberhentianid"), r.FormValue("tipetransportasiname"), r.FormValue("pemberhentianname"), page, length)
+	case "gettableuser":
+		page, _ := strconv.Atoi(r.FormValue("page"))
+		length, _ := strconv.Atoi(r.FormValue("length"))
+		result, metadata, err = h.glodokSvc.GetTableUser(ctx, r.FormValue("userid"), r.FormValue("username"), page, length)
 
 		//for masyarakat
 	case "getdestinasibyid":

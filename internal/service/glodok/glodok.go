@@ -47,14 +47,14 @@ type Data interface {
 	GetSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string, page int, length int) ([]glodokEntity.TableRuteTransportasi, error)
 	GetCountSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string) (int, error)
 
-	GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error)
-	GetCountTableReview(ctx context.Context) (int, error)
-	GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error)
-	GetCountSearchReview(ctx context.Context, reviewid string, reviewer string) (int, error)
-	GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, error)
-	GetCountTableReviewByRating(ctx context.Context, rating int) (int, error)
-	GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error)
-	GetCountSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string) (int, error)
+	GetTableReview(ctx context.Context, destinasiid string, userid string, page int, length int) ([]glodokEntity.TableReview, error)
+	GetCountTableReview(ctx context.Context, destinasiid string, userid string) (int, error)
+	// GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error)
+	// GetCountSearchReview(ctx context.Context, reviewid string, reviewer string) (int, error)
+	// GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, error)
+	// GetCountTableReviewByRating(ctx context.Context, rating int) (int, error)
+	// GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error)
+	// GetCountSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string) (int, error)
 
 	GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 	GetTableBerita(ctx context.Context, page int, length int) ([]glodokEntity.TableBerita, error)
@@ -82,6 +82,9 @@ type Data interface {
 
 	GetTablePemberhentianTransportasi(ctx context.Context, pemberhentianid string, tipetransportasiname string, pemberhentianname string, page int, length int) ([]glodokEntity.TablePemberhentian, error)
 	GetCountTablePemberhentianTransportasi(ctx context.Context, pemberhentianid string, tipetransportasiname string, pemberhentianname string) (int, error)
+
+	GetTableUser(ctx context.Context, userid string, username string, page int, length int) ([]glodokEntity.TableUser, error)
+	GetCountTableUser(ctx context.Context, userid string, username string) (int, error)
 
 	//--------------------------------------------------------------------------------------------------
 	//insert
@@ -123,6 +126,7 @@ type Data interface {
 	DeleteTujuan(ctx context.Context, tujuanid string) (string, error)
 	DeletePemberhentian(ctx context.Context, pemberhentianid string) (string, error)
 	DeleteRuteByPemberhentian(ctx context.Context) (string, error)
+	DeleteUser(ctx context.Context, userid string) (string, error)
 
 	//for masyarakat
 	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)

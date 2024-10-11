@@ -1253,14 +1253,14 @@ func (d Data) InsertReview(ctx context.Context, review glodokEntity.TableReview)
 	return result, nil
 }
 
-func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, error) {
+func (d Data) GetTableReview(ctx context.Context, destinasiid string, userid string, page int, length int) ([]glodokEntity.TableReview, error) {
 	var (
 		review      glodokEntity.TableReview
 		reviewArray []glodokEntity.TableReview
 		err         error
 	)
 
-	rows, err := (*d.stmt)[getTableReview].QueryxContext(ctx, page, length)
+	rows, err := (*d.stmt)[getTableReview].QueryxContext(ctx, "%"+destinasiid+"%", "%"+userid+"%", page, length)
 	if err != nil {
 		return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
 	}
@@ -1269,12 +1269,15 @@ func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodo
 
 	for rows.Next() {
 		var reviewID string
+		var destinasiID string
+		var userID string
+		var userName string
 		var reviewRating int
-		var reviewerName string
 		var reviewDesc string
 		var reviewDateRaw []byte // Raw byte slice for date
+		var reviewAnon string
 
-		if err = rows.Scan(&reviewID, &reviewRating, &reviewerName, &reviewDesc, &reviewDateRaw); err != nil {
+		if err = rows.Scan(&reviewID, &destinasiID, &userID, &userName, &reviewRating, &reviewDesc, &reviewDateRaw, &reviewAnon); err != nil {
 			return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
 		}
 
@@ -1289,9 +1292,13 @@ func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodo
 
 		review = glodokEntity.TableReview{
 			ReviewID:     reviewID,
+			DestinasiID:  destinasiID,
+			UserID:       userID,
+			UserName:     userName,
 			ReviewRating: reviewRating,
 			ReviewDesc:   reviewDesc,
 			ReviewDate:   reviewDate,
+			ReviewAnon:   reviewAnon,
 		}
 
 		reviewArray = append(reviewArray, review)
@@ -1299,13 +1306,13 @@ func (d Data) GetTableReview(ctx context.Context, page int, length int) ([]glodo
 	return reviewArray, err
 }
 
-func (d Data) GetCountTableReview(ctx context.Context) (int, error) {
+func (d Data) GetCountTableReview(ctx context.Context, destinasiid string, userid string) (int, error) {
 	var (
 		err   error
 		total int
 	)
 
-	rows, err := (*d.stmt)[getCountReview].QueryxContext(ctx)
+	rows, err := (*d.stmt)[getCountTableReview].QueryxContext(ctx, "%"+destinasiid+"%", "%"+userid+"%")
 	if err != nil {
 		return total, errors.Wrap(err, "[DATA] [GetCountTableReview]")
 	}
@@ -1339,210 +1346,210 @@ func (d Data) DeleteReview(ctx context.Context, reviewid string) (string, error)
 	return result, err
 }
 
-func (d Data) GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error) {
-	var (
-		review      glodokEntity.TableReview
-		reviewArray []glodokEntity.TableReview
-		err         error
-	)
+// func (d Data) GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error) {
+// 	var (
+// 		review      glodokEntity.TableReview
+// 		reviewArray []glodokEntity.TableReview
+// 		err         error
+// 	)
 
-	rows, err := (*d.stmt)[getSearchTableReview].QueryxContext(ctx, "%"+reviewid+"%", "%"+reviewer+"%", page, length)
-	fmt.Println("pagelength", page, length)
-	if err != nil {
-		return reviewArray, errors.Wrap(err, "[DATA] [GetSearchReview]")
-	}
+// 	rows, err := (*d.stmt)[getSearchTableReview].QueryxContext(ctx, "%"+reviewid+"%", "%"+reviewer+"%", page, length)
+// 	fmt.Println("pagelength", page, length)
+// 	if err != nil {
+// 		return reviewArray, errors.Wrap(err, "[DATA] [GetSearchReview]")
+// 	}
 
-	defer rows.Close()
+// 	defer rows.Close()
 
-	for rows.Next() {
-		var reviewID string
-		var reviewRating int
-		var reviewer string
-		var reviewDesc string
-		var reviewDateRaw []byte // Raw byte slice for date
+// 	for rows.Next() {
+// 		var reviewID string
+// 		var reviewRating int
+// 		var reviewer string
+// 		var reviewDesc string
+// 		var reviewDateRaw []byte // Raw byte slice for date
 
-		if err = rows.Scan(&reviewID, &reviewRating, &reviewer, &reviewDesc, &reviewDateRaw); err != nil {
-			return nil, errors.Wrap(err, "[DATA] [GetSearchReview]")
-		}
+// 		if err = rows.Scan(&reviewID, &reviewRating, &reviewer, &reviewDesc, &reviewDateRaw); err != nil {
+// 			return nil, errors.Wrap(err, "[DATA] [GetSearchReview]")
+// 		}
 
-		//convert
-		var reviewDate time.Time
-		if reviewDateRaw != nil {
-			reviewDate, err = time.Parse("2006-01-02 15:04:05", string(reviewDateRaw))
-			if err != nil {
-				return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
-			}
-		}
+// 		//convert
+// 		var reviewDate time.Time
+// 		if reviewDateRaw != nil {
+// 			reviewDate, err = time.Parse("2006-01-02 15:04:05", string(reviewDateRaw))
+// 			if err != nil {
+// 				return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
+// 			}
+// 		}
 
-		review = glodokEntity.TableReview{
-			ReviewID:     reviewID,
-			ReviewRating: reviewRating,
-			ReviewDesc:   reviewDesc,
-			ReviewDate:   reviewDate,
-		}
+// 		review = glodokEntity.TableReview{
+// 			ReviewID:     reviewID,
+// 			ReviewRating: reviewRating,
+// 			ReviewDesc:   reviewDesc,
+// 			ReviewDate:   reviewDate,
+// 		}
 
-		reviewArray = append(reviewArray, review)
-	}
-	return reviewArray, err
-}
+// 		reviewArray = append(reviewArray, review)
+// 	}
+// 	return reviewArray, err
+// }
 
-func (d Data) GetCountSearchReview(ctx context.Context, reviewid string, reviewer string) (int, error) {
-	var (
-		err   error
-		total int
-	)
+// func (d Data) GetCountSearchReview(ctx context.Context, reviewid string, reviewer string) (int, error) {
+// 	var (
+// 		err   error
+// 		total int
+// 	)
 
-	rows, err := (*d.stmt)[getCountSearchReview].QueryxContext(ctx, "%"+reviewid+"%", "%"+reviewer+"%")
-	if err != nil {
-		return total, errors.Wrap(err, "[DATA] [GetCountSearchReview]")
-	}
+// 	rows, err := (*d.stmt)[getCountSearchReview].QueryxContext(ctx, "%"+reviewid+"%", "%"+reviewer+"%")
+// 	if err != nil {
+// 		return total, errors.Wrap(err, "[DATA] [GetCountSearchReview]")
+// 	}
 
-	defer rows.Close()
+// 	defer rows.Close()
 
-	for rows.Next() {
-		if err = rows.Scan(&total); err != nil {
-			return total, errors.Wrap(err, "[DATA] [GetCountSearchReview]")
-		}
+// 	for rows.Next() {
+// 		if err = rows.Scan(&total); err != nil {
+// 			return total, errors.Wrap(err, "[DATA] [GetCountSearchReview]")
+// 		}
 
-	}
-	return total, err
-}
+// 	}
+// 	return total, err
+// }
 
-func (d Data) GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, error) {
-	var (
-		review      glodokEntity.TableReview
-		reviewArray []glodokEntity.TableReview
-		err         error
-	)
+// func (d Data) GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, error) {
+// 	var (
+// 		review      glodokEntity.TableReview
+// 		reviewArray []glodokEntity.TableReview
+// 		err         error
+// 	)
 
-	rows, err := (*d.stmt)[getTableReviewByRating].QueryxContext(ctx, rating, page, length)
-	if err != nil {
-		return reviewArray, errors.Wrap(err, "[DATA] [GetTableReviewByRating]")
-	}
+// 	rows, err := (*d.stmt)[getTableReviewByRating].QueryxContext(ctx, rating, page, length)
+// 	if err != nil {
+// 		return reviewArray, errors.Wrap(err, "[DATA] [GetTableReviewByRating]")
+// 	}
 
-	defer rows.Close()
+// 	defer rows.Close()
 
-	for rows.Next() {
-		var reviewID string
-		var reviewRating int
-		var reviewerName string
-		var reviewDesc string
-		var reviewDateRaw []byte // Raw byte slice for date
+// 	for rows.Next() {
+// 		var reviewID string
+// 		var reviewRating int
+// 		var reviewerName string
+// 		var reviewDesc string
+// 		var reviewDateRaw []byte // Raw byte slice for date
 
-		if err = rows.Scan(&reviewID, &reviewRating, &reviewerName, &reviewDesc, &reviewDateRaw); err != nil {
-			return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
-		}
+// 		if err = rows.Scan(&reviewID, &reviewRating, &reviewerName, &reviewDesc, &reviewDateRaw); err != nil {
+// 			return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview]")
+// 		}
 
-		// Convert raw date to time.Time
-		var reviewDate time.Time
-		if reviewDateRaw != nil {
-			reviewDate, err = time.Parse("2006-01-02 15:04:05", string(reviewDateRaw))
-			if err != nil {
-				return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
-			}
-		}
+// 		// Convert raw date to time.Time
+// 		var reviewDate time.Time
+// 		if reviewDateRaw != nil {
+// 			reviewDate, err = time.Parse("2006-01-02 15:04:05", string(reviewDateRaw))
+// 			if err != nil {
+// 				return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
+// 			}
+// 		}
 
-		review = glodokEntity.TableReview{
-			ReviewID:     reviewID,
-			ReviewRating: reviewRating,
-			ReviewDesc:   reviewDesc,
-			ReviewDate:   reviewDate,
-		}
+// 		review = glodokEntity.TableReview{
+// 			ReviewID:     reviewID,
+// 			ReviewRating: reviewRating,
+// 			ReviewDesc:   reviewDesc,
+// 			ReviewDate:   reviewDate,
+// 		}
 
-		reviewArray = append(reviewArray, review)
-	}
-	return reviewArray, err
-}
+// 		reviewArray = append(reviewArray, review)
+// 	}
+// 	return reviewArray, err
+// }
 
-func (d Data) GetCountTableReviewByRating(ctx context.Context, rating int) (int, error) {
-	var (
-		err   error
-		total int
-	)
+// func (d Data) GetCountTableReviewByRating(ctx context.Context, rating int) (int, error) {
+// 	var (
+// 		err   error
+// 		total int
+// 	)
 
-	rows, err := (*d.stmt)[getCountReviewByRating].QueryxContext(ctx, rating)
-	if err != nil {
-		return total, errors.Wrap(err, "[DATA] [GetCountTableReviewByRating]")
-	}
+// 	rows, err := (*d.stmt)[getCountReviewByRating].QueryxContext(ctx, rating)
+// 	if err != nil {
+// 		return total, errors.Wrap(err, "[DATA] [GetCountTableReviewByRating]")
+// 	}
 
-	defer rows.Close()
+// 	defer rows.Close()
 
-	for rows.Next() {
-		if err = rows.Scan(&total); err != nil {
-			return total, errors.Wrap(err, "[DATA] [GetCountTableReviewByRating]")
-		}
+// 	for rows.Next() {
+// 		if err = rows.Scan(&total); err != nil {
+// 			return total, errors.Wrap(err, "[DATA] [GetCountTableReviewByRating]")
+// 		}
 
-	}
-	return total, err
-}
+// 	}
+// 	return total, err
+// }
 
-func (d Data) GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error) {
-	var (
-		review      glodokEntity.TableReview
-		reviewArray []glodokEntity.TableReview
-		err         error
-	)
+// func (d Data) GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, error) {
+// 	var (
+// 		review      glodokEntity.TableReview
+// 		reviewArray []glodokEntity.TableReview
+// 		err         error
+// 	)
 
-	rows, err := (*d.stmt)[getSearchReviewByRating].QueryxContext(ctx, rating, "%"+reviewid+"%", "%"+reviewer+"%", page, length)
-	if err != nil {
-		return reviewArray, errors.Wrap(err, "[DATA] [GetSearchReviewByRating]")
-	}
+// 	rows, err := (*d.stmt)[getSearchReviewByRating].QueryxContext(ctx, rating, "%"+reviewid+"%", "%"+reviewer+"%", page, length)
+// 	if err != nil {
+// 		return reviewArray, errors.Wrap(err, "[DATA] [GetSearchReviewByRating]")
+// 	}
 
-	defer rows.Close()
+// 	defer rows.Close()
 
-	for rows.Next() {
-		var reviewID string
-		var reviewRating int
-		var reviewer string
-		var reviewDesc string
-		var reviewDateRaw []byte // Raw byte slice for date
+// 	for rows.Next() {
+// 		var reviewID string
+// 		var reviewRating int
+// 		var reviewer string
+// 		var reviewDesc string
+// 		var reviewDateRaw []byte // Raw byte slice for date
 
-		if err = rows.Scan(&reviewID, &reviewRating, &reviewer, &reviewDesc, &reviewDateRaw); err != nil {
-			return nil, errors.Wrap(err, "[DATA] [GetSearchReview]")
-		}
+// 		if err = rows.Scan(&reviewID, &reviewRating, &reviewer, &reviewDesc, &reviewDateRaw); err != nil {
+// 			return nil, errors.Wrap(err, "[DATA] [GetSearchReview]")
+// 		}
 
-		//convert
-		var reviewDate time.Time
-		if reviewDateRaw != nil {
-			reviewDate, err = time.Parse("2006-01-02 15:04:05", string(reviewDateRaw))
-			if err != nil {
-				return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
-			}
-		}
+// 		//convert
+// 		var reviewDate time.Time
+// 		if reviewDateRaw != nil {
+// 			reviewDate, err = time.Parse("2006-01-02 15:04:05", string(reviewDateRaw))
+// 			if err != nil {
+// 				return reviewArray, errors.Wrap(err, "[DATA] [GetTableReview] parsing date")
+// 			}
+// 		}
 
-		review = glodokEntity.TableReview{
-			ReviewID:     reviewID,
-			ReviewRating: reviewRating,
-			ReviewDesc:   reviewDesc,
-			ReviewDate:   reviewDate,
-		}
+// 		review = glodokEntity.TableReview{
+// 			ReviewID:     reviewID,
+// 			ReviewRating: reviewRating,
+// 			ReviewDesc:   reviewDesc,
+// 			ReviewDate:   reviewDate,
+// 		}
 
-		reviewArray = append(reviewArray, review)
-	}
-	return reviewArray, err
-}
+// 		reviewArray = append(reviewArray, review)
+// 	}
+// 	return reviewArray, err
+// }
 
-func (d Data) GetCountSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string) (int, error) {
-	var (
-		err   error
-		total int
-	)
+// func (d Data) GetCountSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string) (int, error) {
+// 	var (
+// 		err   error
+// 		total int
+// 	)
 
-	rows, err := (*d.stmt)[getCountSearchReviewByRating].QueryxContext(ctx, rating, "%"+reviewid+"%", "%"+reviewer+"%")
-	if err != nil {
-		return total, errors.Wrap(err, "[DATA] [GetCountSearchReviewByRating]")
-	}
+// 	rows, err := (*d.stmt)[getCountSearchReviewByRating].QueryxContext(ctx, rating, "%"+reviewid+"%", "%"+reviewer+"%")
+// 	if err != nil {
+// 		return total, errors.Wrap(err, "[DATA] [GetCountSearchReviewByRating]")
+// 	}
 
-	defer rows.Close()
+// 	defer rows.Close()
 
-	for rows.Next() {
-		if err = rows.Scan(&total); err != nil {
-			return total, errors.Wrap(err, "[DATA] [GetCountSearchReviewByRating]")
-		}
+// 	for rows.Next() {
+// 		if err = rows.Scan(&total); err != nil {
+// 			return total, errors.Wrap(err, "[DATA] [GetCountSearchReviewByRating]")
+// 		}
 
-	}
-	return total, err
-}
+// 	}
+// 	return total, err
+// }
 
 //berita
 
@@ -2556,6 +2563,69 @@ func (d Data) GetMaps(ctx context.Context) (glodokEntity.TableMaps, error) {
 	return maps, err
 }
 
+func (d Data) GetTableUser(ctx context.Context, userid string, username string, page int, length int) ([]glodokEntity.TableUser, error) {
+	var (
+		user      glodokEntity.TableUser
+		userArray []glodokEntity.TableUser
+		err       error
+	)
+
+	rows, err := (*d.stmt)[getTableUser].QueryxContext(ctx, "%"+userid+"%", "%"+username+"%", page, length)
+	if err != nil {
+		return userArray, errors.Wrap(err, "[DATA] [GetTableUser]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.StructScan(&user); err != nil {
+			return userArray, errors.Wrap(err, "[DATA] [GetTableUser]")
+		}
+		userArray = append(userArray, user)
+	}
+	return userArray, err
+}
+
+func (d Data) GetCountTableUser(ctx context.Context, userid string, username string) (int, error) {
+	var (
+		err   error
+		total int
+	)
+
+	rows, err := (*d.stmt)[getCountTableUser].QueryxContext(ctx, "%"+userid+"%", "%"+username+"%")
+	if err != nil {
+		return total, errors.Wrap(err, "[DATA] [GetCountTableUser]")
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		if err = rows.Scan(&total); err != nil {
+			return total, errors.Wrap(err, "[DATA] [GetCountTableUser]")
+		}
+
+	}
+	return total, err
+}
+
+func (d Data) DeleteUser(ctx context.Context, userid string) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteUser].ExecContext(ctx, userid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteUser]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
 // FOR MASYARAKAT
 func (d Data) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
 	var (
@@ -3085,37 +3155,6 @@ func (d Data) GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestina
 	return destinasiArray, err
 
 }
-
-// func (d Data) GetAvgReview(ctx context.Context, destinasiid string) (float64, error) {
-// 	var (
-// 		err           error
-// 		averageRating interface{} // Use interface{} to handle any type
-// 	)
-
-// 	// Execute the query to get the average rating
-// 	rows, err := (*d.stmt)[getAvgReview].QueryxContext(ctx, destinasiid)
-// 	if err != nil {
-// 		return 0, errors.Wrap(err, "[DATA] [GetAvgReview]")
-// 	}
-// 	defer rows.Close()
-
-// 	// Scan the result into averageRating
-// 	if rows.Next() {
-// 		if err = rows.Scan(&averageRating); err != nil {
-// 			return 0, errors.Wrap(err, "[DATA] [GetAvgReview]")
-// 		}
-// 	}
-
-// 	// Convert to float64
-// 	switch v := averageRating.(type) {
-// 	case int:
-// 		return float64(v), nil
-// 	case float64:
-// 		return v, nil
-// 	default:
-// 		return 0, errors.New("unexpected type for average rating")
-// 	}
-// }
 
 func (d Data) GetAvgReview(ctx context.Context, destinasiid string) (float64, error) {
 	var (
