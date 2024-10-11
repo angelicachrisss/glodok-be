@@ -576,7 +576,7 @@ func (s Service) InsertReview(ctx context.Context, review glodokEntity.TableRevi
 	return result, err
 }
 
-func (s Service) GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
+func (s Service) GetTableReview(ctx context.Context, destinasiid string, userid string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
 
 	var (
 		total int
@@ -585,13 +585,13 @@ func (s Service) GetTableReview(ctx context.Context, page int, length int) ([]gl
 	metadata := make(map[string]interface{})
 
 	offset := page * length
-	reviewArray, err := s.glodok.GetTableReview(ctx, offset, length)
+	reviewArray, err := s.glodok.GetTableReview(ctx, destinasiid, userid, offset, length)
 
 	if err != nil {
 		return reviewArray, metadata, errors.Wrap(err, "[Service][GetTableReview]")
 	}
 
-	total, err = s.glodok.GetCountTableReview(ctx)
+	total, err = s.glodok.GetCountTableReview(ctx, destinasiid, userid)
 
 	if err != nil {
 		return reviewArray, metadata, errors.Wrap(err, "[Service][GetCountTableReview]")
@@ -619,79 +619,79 @@ func (s Service) DeleteReview(ctx context.Context, reviewid string) (string, err
 	return result, err
 }
 
-func (s Service) GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
-	var (
-		total int
-	)
+// func (s Service) GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
+// 	var (
+// 		total int
+// 	)
 
-	metadata := make(map[string]interface{})
+// 	metadata := make(map[string]interface{})
 
-	offset := page * length
-	searchListReviewArray, err := s.glodok.GetSearchReview(ctx, reviewid, reviewer, offset, length)
+// 	offset := page * length
+// 	searchListReviewArray, err := s.glodok.GetSearchReview(ctx, reviewid, reviewer, offset, length)
 
-	if err != nil {
-		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetSearchReview]")
-	}
+// 	if err != nil {
+// 		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetSearchReview]")
+// 	}
 
-	total, err = s.glodok.GetCountSearchReview(ctx, reviewid, reviewer)
+// 	total, err = s.glodok.GetCountSearchReview(ctx, reviewid, reviewer)
 
-	if err != nil {
-		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetCountSearchReview]")
-	}
-	metadata["total_data"] = total
+// 	if err != nil {
+// 		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetCountSearchReview]")
+// 	}
+// 	metadata["total_data"] = total
 
-	return searchListReviewArray, metadata, nil
-}
+// 	return searchListReviewArray, metadata, nil
+// }
 
-func (s Service) GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
+// func (s Service) GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
 
-	var (
-		total int
-	)
+// 	var (
+// 		total int
+// 	)
 
-	metadata := make(map[string]interface{})
+// 	metadata := make(map[string]interface{})
 
-	offset := page * length
-	reviewArray, err := s.glodok.GetTableReviewByRating(ctx, rating, offset, length)
+// 	offset := page * length
+// 	reviewArray, err := s.glodok.GetTableReviewByRating(ctx, rating, offset, length)
 
-	if err != nil {
-		return reviewArray, metadata, errors.Wrap(err, "[Service][GetTableReviewByRating]")
-	}
+// 	if err != nil {
+// 		return reviewArray, metadata, errors.Wrap(err, "[Service][GetTableReviewByRating]")
+// 	}
 
-	total, err = s.glodok.GetCountTableReviewByRating(ctx, rating)
+// 	total, err = s.glodok.GetCountTableReviewByRating(ctx, rating)
 
-	if err != nil {
-		return reviewArray, metadata, errors.Wrap(err, "[Service][GetCountTableReviewByRating]")
-	}
-	metadata["total_data"] = total
+// 	if err != nil {
+// 		return reviewArray, metadata, errors.Wrap(err, "[Service][GetCountTableReviewByRating]")
+// 	}
+// 	metadata["total_data"] = total
 
-	return reviewArray, metadata, nil
+// 	return reviewArray, metadata, nil
 
-}
+// }
 
-func (s Service) GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
-	var (
-		total int
-	)
+// func (s Service) GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error) {
+// 	var (
+// 		total int
+// 	)
 
-	metadata := make(map[string]interface{})
+// 	metadata := make(map[string]interface{})
 
-	offset := page * length
-	searchListReviewArray, err := s.glodok.GetSearchReviewByRating(ctx, rating, reviewid, reviewer, offset, length)
+// 	offset := page * length
+// 	searchListReviewArray, err := s.glodok.GetSearchReviewByRating(ctx, rating, reviewid, reviewer, offset, length)
 
-	if err != nil {
-		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetSearchReviewByRating]")
-	}
+// 	if err != nil {
+// 		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetSearchReviewByRating]")
+// 	}
 
-	total, err = s.glodok.GetCountSearchReviewByRating(ctx, rating, reviewid, reviewer)
+// 	total, err = s.glodok.GetCountSearchReviewByRating(ctx, rating, reviewid, reviewer)
 
-	if err != nil {
-		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetCountSearchReviewByRating]")
-	}
-	metadata["total_data"] = total
+// 	if err != nil {
+// 		return searchListReviewArray, metadata, errors.Wrap(err, "[Service][GetCountSearchReviewByRating]")
+// 	}
+// 	metadata["total_data"] = total
 
-	return searchListReviewArray, metadata, nil
-}
+// 	return searchListReviewArray, metadata, nil
+// }
 
 // berita
 func (s Service) GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error) {
@@ -1221,6 +1221,47 @@ func (s Service) GetMaps(ctx context.Context) (glodokEntity.TableMaps, error) {
 	return maps, nil
 }
 
+func (s Service) GetTableUser(ctx context.Context, userid string, username string, page int, length int) ([]glodokEntity.TableUser, interface{}, error) {
+	var (
+		total int
+	)
+
+	metadata := make(map[string]interface{})
+
+	offset := page * length
+	listUser, err := s.glodok.GetTableUser(ctx, userid, username, offset, length)
+
+	if err != nil {
+		return listUser, metadata, errors.Wrap(err, "[Service][GetTableUser]")
+	}
+
+	total, err = s.glodok.GetCountTableUser(ctx, userid, username)
+
+	if err != nil {
+		return listUser, metadata, errors.Wrap(err, "[Service][GetTableUser]")
+	}
+	metadata["total_data"] = total
+
+	return listUser, metadata, nil
+}
+
+func (s Service) DeleteUser(ctx context.Context, userid string) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteUser(ctx, userid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteUser]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
 // for masyarakat
 func (s Service) GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error) {
 
@@ -1392,4 +1433,31 @@ func (s Service) GetAvgReview(ctx context.Context, destinasiid string) (float64,
 
 	return avg, metadata, nil
 
+}
+
+func (s Service) InsertUser(ctx context.Context, user glodokEntity.TableUser) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.InsertUser(ctx, user)
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][InsertUser]")
+	}
+	result = "Berhasil"
+	return result, err
+}
+
+func (s Service) SubmitLoginML(ctx context.Context, userid string, pass string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.SubmitLoginML(ctx, userid, pass)
+	if err != nil {
+		result = "Gagal Login"
+		fmt.Println("result", result)
+		return result, errors.Wrap(err, "[Service][SubmitLoginML]")
+	}
+	result = "Berhasil Login"
+	return result, err
 }

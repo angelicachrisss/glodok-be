@@ -34,10 +34,10 @@ type IglodokSvc interface {
 	GetTableRuteTransportasi(ctx context.Context, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
 	GetSearchRuteTransportasi(ctx context.Context, tipetransportasiname string, tujuanawal string, tujuanakhir string, page int, length int) ([]glodokEntity.TableRuteTransportasi, interface{}, error)
 
-	GetTableReview(ctx context.Context, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
-	GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
-	GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
-	GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+	GetTableReview(ctx context.Context, destinasiid string, userid string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+	// GetSearchReview(ctx context.Context, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+	// GetTableReviewByRating(ctx context.Context, rating int, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
+	// GetSearchReviewByRating(ctx context.Context, rating int, reviewid string, reviewer string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
 
 	GetDestinasi(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 	GetImageBerita(ctx context.Context, beritaid string) ([]byte, error)
@@ -59,6 +59,8 @@ type IglodokSvc interface {
 
 	GetTablePemberhentianTransportasi(ctx context.Context, pemberhentianid string, tipetransportasiname string, pemberhentianname string, page int, length int) ([]glodokEntity.TablePemberhentian, interface{}, error)
 
+	GetTableUser(ctx context.Context, userid string, username string, page int, length int) ([]glodokEntity.TableUser, interface{}, error)
+
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//insert
@@ -73,6 +75,7 @@ type IglodokSvc interface {
 	InsertVideoBeranda(ctx context.Context, videoberanda glodokEntity.TableVideoBeranda) (string, error)
 	InsertTujuanTransportasi(ctx context.Context, tujuan glodokEntity.TableTujuan) (string, error)
 	InsertPemberhentianTransportasi(ctx context.Context, pemberhentian glodokEntity.TablePemberhentian) (string, error)
+	InsertUser(ctx context.Context, user glodokEntity.TableUser) (string, error)
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 
@@ -104,12 +107,12 @@ type IglodokSvc interface {
 	DeleteTujuan(ctx context.Context, tujuanid string) (string, error)
 	DeletePemberhentian(ctx context.Context, pemberhentianid string) (string, error)
 	DeleteRuteByPemberhentian(ctx context.Context) (string, error)
+	DeleteUser(ctx context.Context, userid string) (string, error)
 
 	//for masyarakat
 	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)
 	GetAllDestinasi(ctx context.Context, jenisdestinasiid string, destinasiname string) ([]glodokEntity.TableDestinasi, error)
 	GetAllReview(ctx context.Context, destinasiid string, rating string, page int, length int) ([]glodokEntity.TableReview, interface{}, error)
-	// GetAvgReview(ctx context.Context, destinasiid string) (float64, error)
 	GetAvgReview(ctx context.Context, destinasiid string) (float64, interface{}, error)
 	GetFotoBerandaML(ctx context.Context) ([]glodokEntity.TableFotoBeranda, error)
 	GetVideoBerandaML(ctx context.Context) ([]glodokEntity.TableVideoBeranda, error)
@@ -118,6 +121,7 @@ type IglodokSvc interface {
 	GetBeritaMLByID(ctx context.Context, beritaid string) ([]glodokEntity.TableBerita, error)
 	GetJenisDestinasiML(ctx context.Context) ([]glodokEntity.TableJenisDestinasi, error)
 	GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
+	SubmitLoginML(ctx context.Context, userid string, pass string) (string, error)
 }
 
 type (

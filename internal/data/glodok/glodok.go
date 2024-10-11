@@ -256,39 +256,55 @@ const (
 	qFetchLastReviewID = `SELECT review_id FROM t_review ORDER BY review_id DESC LIMIT 1`
 
 	//-get all
+	// getTableReview  = "GetTableReview"
+	// qGetTableReview = `SELECT review_id, review_rating, review_desc, review_date FROM t_review ORDER BY review_date DESC LIMIT ?,? `
+
+	// getCountReview  = "GetCountReview"
+	// qGetCountReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review`
+
+	// getSearchTableReview  = "GetSearchTableReview"
+	// qGetSearchTableReview = `SELECT review_id, review_rating, review_desc, review_date
+	// FROM t_review
+	// WHERE review_id LIKE ?
+	// ORDER BY review_id DESC
+	// LIMIT ?,?`
+
+	// getCountSearchReview  = "GetCountSearchReview"
+	// qGetCountSearchReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_id LIKE ?`
+
+	// //-by rating
+	// getTableReviewByRating  = "GetTableReviewByRating"
+	// qGetTableReviewByRating = `SELECT review_id, review_rating, review_desc, review_date FROM t_review WHERE review_rating = ? LIMIT ?,?`
+
+	// getCountReviewByRating  = "GetCountReviewByRating"
+	// qGetCountReviewByRating = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_rating = ?`
+
+	// getSearchReviewByRating  = "GetSearchReviewByRating"
+	// qGetSearchReviewByRating = `SELECT review_id, review_rating review_desc, review_date
+	// FROM t_review
+	// WHERE review_rating = ? AND (review_id LIKE ?)
+	// ORDER BY review_id DESC
+	// LIMIT ?,?`
+
+	// getCountSearchReviewByRating  = "GetCountSearchReviewByRating"
+	// qGetCountSearchReviewByRating = `SELECT COUNT(review_id) AS TotalCount
+	// FROM t_review WHERE review_rating = ? AND (review_id LIKE ?)`
+
 	getTableReview  = "GetTableReview"
-	qGetTableReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date FROM t_review ORDER BY review_date DESC LIMIT ?,? `
-
-	getCountReview  = "GetCountReview"
-	qGetCountReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review`
-
-	getSearchTableReview  = "GetSearchTableReview"
-	qGetSearchTableReview = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date 
-	FROM t_review 
-	WHERE review_id LIKE ? OR reviewer_name LIKE ?
-	ORDER BY review_id DESC 
+	qGetTableReview = `	SELECT r.review_id, r.destinasi_id, r.user_id, u.user_name, r.review_rating, r.review_desc, r.review_date, r.review_anonyn 
+	FROM t_review AS r 
+	JOIN t_user AS u ON u.user_id COLLATE utf8mb4_unicode_ci = r.user_id COLLATE utf8mb4_unicode_ci 
+	WHERE r.destinasi_id COLLATE utf8mb4_unicode_ci LIKE ?
+	AND r.user_id LIKE ?
+	ORDER BY r.review_id DESC 
 	LIMIT ?,?`
 
-	getCountSearchReview  = "GetCountSearchReview"
-	qGetCountSearchReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_id LIKE ? OR reviewer_name LIKE ?`
-
-	//-by rating
-	getTableReviewByRating  = "GetTableReviewByRating"
-	qGetTableReviewByRating = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date FROM t_review WHERE review_rating = ? LIMIT ?,?`
-
-	getCountReviewByRating  = "GetCountReviewByRating"
-	qGetCountReviewByRating = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE review_rating = ?`
-
-	getSearchReviewByRating  = "GetSearchReviewByRating"
-	qGetSearchReviewByRating = `SELECT review_id, review_rating, reviewer_name, review_desc, review_date 
-	FROM t_review 
-	WHERE review_rating = ? AND (review_id LIKE ? OR reviewer_name LIKE ?) 
-	ORDER BY review_id DESC 
-	LIMIT ?,?`
-
-	getCountSearchReviewByRating  = "GetCountSearchReviewByRating"
-	qGetCountSearchReviewByRating = `SELECT COUNT(review_id) AS TotalCount
-	FROM t_review WHERE review_rating = ? AND (review_id LIKE ? OR reviewer_name LIKE ?)`
+	getCountTableReview  = "GetCountTableReview"
+	qGetCountTableReview = `SELECT COUNT(r.review_id) AS total_reviews
+	FROM t_review AS r
+	JOIN t_user AS u ON u.user_id COLLATE utf8mb4_unicode_ci = r.user_id COLLATE utf8mb4_unicode_ci
+	WHERE r.destinasi_id COLLATE utf8mb4_unicode_ci LIKE ?
+	AND r.user_id LIKE ?`
 
 	//berita
 	getDestinasi  = "GetDestinasi"
@@ -420,6 +436,12 @@ const (
    	OR t.tipetransportasi_name COLLATE utf8mb4_general_ci LIKE ?
    	OR p.pemberhentian_name COLLATE utf8mb4_general_ci LIKE ?`
 
+	getTableUser  = "GetTableUser"
+	qGetTableUser = `SELECT user_id, user_name, user_pass FROM t_user WHERE user_id LIKE ? OR user_name LIKE ? LIMIT ?,?`
+
+	getCountTableUser  = "GetCountTableUser"
+	qGetCountTableUser = `SELECT COUNT(user_id) FROM t_user WHERE user_id LIKE ? OR user_name LIKE ?`
+
 	//------------------------------------------------------------------------
 	//query insert
 	//--admin
@@ -537,6 +559,9 @@ const (
 	qDeleteRuteByPemberhentian = `DELETE FROM t_rutetransportasi
 	WHERE pemberhentian_id NOT IN (SELECT pemberhentian_id FROM t_pemberhentian);`
 
+	deleteUser  = "DeleteUser"
+	qDeleteUser = `DELETE FROM t_user WHERE user_id =?`
+
 	//FOR MASYARAKAT
 	//destinasi
 	getDestinasiByID  = "GetDestinasiByID"
@@ -553,11 +578,16 @@ const (
 
 	//review
 	insertReview  = "InsertReview"
-	qInsertReview = `INSERT INTO t_review (review_id, destinasi_id, review_rating, reviewer_name, review_desc, review_date) VALUES (?,?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'))`
+	qInsertReview = `INSERT INTO t_review (review_id, destinasi_id, user_id, review_rating, review_desc, review_date, review_anonyn) VALUES (?,?,?,?,?,CONVERT_TZ(NOW(), '+00:00', '+07:00'),?)`
 
 	getAllReview  = "GetAllReview"
-	qGetAllReview = `SELECT review_id, destinasi_id, review_rating, reviewer_name, review_desc, review_date 
-	FROM t_review WHERE destinasi_id = ? AND review_rating LIKE ? ORDER BY review_id DESC LIMIT ?,?`
+	qGetAllReview = `SELECT r.review_id, r.destinasi_id, r.user_id, u.user_name, r.review_rating, r.review_desc, r.review_date, r.review_anonyn 
+	FROM t_review AS r 
+	JOIN t_user AS u ON u.user_id COLLATE utf8mb4_unicode_ci = r.user_id COLLATE utf8mb4_unicode_ci 
+	WHERE r.destinasi_id COLLATE utf8mb4_unicode_ci = ? 
+	AND r.review_rating LIKE ?
+	ORDER BY r.review_id DESC 
+	LIMIT ?,?`
 
 	getCountAllReview  = `GetCountAllReview`
 	qGetCountAllReview = `SELECT COUNT(review_id) AS TotalCount FROM t_review WHERE destinasi_id = ? AND review_rating LIKE ?`
@@ -651,6 +681,13 @@ const (
 
 	getDestinasiDDML  = "GetDestinasiDDML"
 	qGetDestinasiDDML = `SELECT destinasi_id, destinasi_name FROM t_destinasi WHERE destinasi_aktifyn = "Y"`
+
+	//user
+	insertUser  = "InsertUser"
+	qInsertUser = `INSERT INTO t_user (user_id, user_name, user_pass) VALUES (?,?,?)`
+
+	submitLoginML  = "SubmitLoginML"
+	qSubmitLoginML = `SELECT user_id, user_name, user_pass FROM t_user WHERE user_id = ?`
 )
 
 var (
@@ -696,14 +733,16 @@ var (
 
 		//review
 		{fetchLastReviewID, qFetchLastReviewID},
+		// {getTableReview, qGetTableReview},
+		// {getCountReview, qGetCountReview},
+		// {getSearchTableReview, qGetSearchTableReview},
+		// {getCountSearchReview, qGetCountSearchReview},
+		// {getTableReviewByRating, qGetTableReviewByRating},
+		// {getCountReviewByRating, qGetCountReviewByRating},
+		// {getSearchReviewByRating, qGetSearchReviewByRating},
+		// {getCountSearchReviewByRating, qGetCountSearchReviewByRating},
 		{getTableReview, qGetTableReview},
-		{getCountReview, qGetCountReview},
-		{getSearchTableReview, qGetSearchTableReview},
-		{getCountSearchReview, qGetCountSearchReview},
-		{getTableReviewByRating, qGetTableReviewByRating},
-		{getCountReviewByRating, qGetCountReviewByRating},
-		{getSearchReviewByRating, qGetSearchReviewByRating},
-		{getCountSearchReviewByRating, qGetCountSearchReviewByRating},
+		{getCountTableReview, qGetCountTableReview},
 
 		//berita
 		{getDestinasi, qGetDestinasi},
@@ -746,6 +785,10 @@ var (
 		{getTablePemberhentianTransportasi, qGetTablePemberhentianTransportasi},
 		{getCountTablePemberhentianTransportasi, qGetCountTablePemberhentianTransportasi},
 
+		//user
+		{getTableUser, qGetTableUser},
+		{getCountTableUser, qGetCountTableUser},
+
 		//for masyarakat
 		{getDestinasiByID, qGetDestinasiByID},
 		{getAllDestinasi, qGetAllDestinasi},
@@ -761,6 +804,7 @@ var (
 		{getBeritaMLByID, qGetBeritaMLByID},
 		{getJenisDestinasiML, qGetJenisDestinasiML},
 		{getDestinasiDDML, qGetDestinasiDDML},
+		{submitLoginML, qSubmitLoginML},
 	}
 	insertStmt = []statement{
 		{insertDestinasi, qInsertDestinasi},
@@ -773,6 +817,7 @@ var (
 		{insertVideoBeranda, qInsertVideoBeranda},
 		{insertTujuanTransportasi, qInsertTujuanTransportasi},
 		{insertPemberhentianTransportasi, qInsertPemberhentianTransportasi},
+		{insertUser, qInsertUser},
 	}
 	updateStmt = []statement{
 		{updateAdmin, qUpdateAdmin},
@@ -800,6 +845,7 @@ var (
 		{deleteTujuan, qDeleteTujuan},
 		{deletePemberhentian, qDeletePemberhentian},
 		{deleteRuteByPemberhentian, qDeleteRuteByPemberhentian},
+		{deleteUser, qDeleteUser},
 	}
 )
 

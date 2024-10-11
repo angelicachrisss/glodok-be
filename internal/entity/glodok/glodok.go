@@ -54,10 +54,12 @@ type TableRuteTransportasi struct {
 type TableReview struct {
 	ReviewID     string    `db:"review_id" json:"review_id"`
 	DestinasiID  string    `db:"destinasi_id" json:"destinasi_id"`
+	UserID       string    `db:"user_id" json:"user_id"`
+	UserName     string    `db:"user_name" json:"user_name"`
 	ReviewRating int       `db:"review_rating" json:"review_rating"`
-	Reviewer     string    `db:"reviewer_name" json:"reviewer_name"`
 	ReviewDesc   string    `db:"review_desc" json:"review_desc"`
 	ReviewDate   time.Time `db:"review_date" json:"review_date"`
+	ReviewAnon   string    `db:"review_anonyn" json:"review_anonyn"`
 }
 
 type TableBerita struct {
@@ -110,4 +112,10 @@ type TablePemberhentian struct {
 
 type TableMaps struct {
 	MapsLink string `db:"maps_link" json:"maps_link"`
+}
+
+type TableUser struct {
+	UserID   string `db:"user_id" json:"user_id"`
+	UserName string `db:"user_name" json:"user_name"`
+	UserPass string `db:"user_pass" json:"user_pass"`
 }
