@@ -562,6 +562,10 @@ const (
 	deleteUser  = "DeleteUser"
 	qDeleteUser = `DELETE FROM t_user WHERE user_id =?`
 
+	deleteReviewByUser  = "DeleteReviewByUser"
+	qDeleteReviewByUser = `DELETE FROM t_review
+	WHERE user_id NOT IN (SELECT user_id COLLATE utf8mb4_unicode_ci FROM t_user)`
+
 	//FOR MASYARAKAT
 	//destinasi
 	getDestinasiByID  = "GetDestinasiByID"
@@ -675,9 +679,9 @@ const (
 	berita_linksumber FROM t_berita WHERE berita_id=?`
 
 	getJenisDestinasiML  = "GetJenisDestinasiML"
-	qGetJenisDestinasiML = `SELECT jd.jenisdestinasi_id, jd.jenisdestinasi_kat
+	qGetJenisDestinasiML = `SELECT DISTINCT jd.jenisdestinasi_id, jd.jenisdestinasi_kat
 	FROM t_jenisdestinasi jd
-	JOIN t_destinasi d ON jd.jenisdestinasi_id COLLATE utf8mb4_unicode_ci = d.jenisdestinasi_id COLLATE utf8mb4_unicode_ci`
+	JOIN t_destinasi d ON jd.jenisdestinasi_id = d.jenisdestinasi_id COLLATE utf8mb4_unicode_ci`
 
 	getDestinasiDDML  = "GetDestinasiDDML"
 	qGetDestinasiDDML = `SELECT destinasi_id, destinasi_name FROM t_destinasi WHERE destinasi_aktifyn = "Y"`
@@ -688,6 +692,12 @@ const (
 
 	submitLoginML  = "SubmitLoginML"
 	qSubmitLoginML = `SELECT user_id, user_name, user_pass FROM t_user WHERE user_id = ?`
+
+	getUser  = "GetUser"
+	qGetUser = `SELECT user_id, user_name, user_pass FROM t_user WHERE user_id =?`
+
+	updateUser  = "UpdateUser"
+	qUpdateUser = `UPDATE t_user SET user_name = ?, user_pass = ? WHERE user_id = ?`
 )
 
 var (
@@ -788,6 +798,7 @@ var (
 		//user
 		{getTableUser, qGetTableUser},
 		{getCountTableUser, qGetCountTableUser},
+		{getUser, qGetUser},
 
 		//for masyarakat
 		{getDestinasiByID, qGetDestinasiByID},
@@ -831,6 +842,7 @@ var (
 		{updateMaps, qUpdateMaps},
 		{updateTujuan, qUpdateTujuan},
 		{updatePemberhentian, qUpdatePemberhentian},
+		{updateUser, qUpdateUser},
 	}
 	deleteStmt = []statement{
 		{deleteAdmin, qDeleteAdmin},
@@ -846,6 +858,7 @@ var (
 		{deletePemberhentian, qDeletePemberhentian},
 		{deleteRuteByPemberhentian, qDeleteRuteByPemberhentian},
 		{deleteUser, qDeleteUser},
+		{deleteReviewByUser, qDeleteReviewByUser},
 	}
 )
 

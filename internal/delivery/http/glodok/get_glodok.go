@@ -330,6 +330,8 @@ func (h *Handler) GetGlodok(w http.ResponseWriter, r *http.Request) {
 		result, err = h.glodokSvc.GetJenisDestinasiML(ctx)
 	case "getdestinasiddml":
 		result, err = h.glodokSvc.GetDestinasiDDML(ctx)
+	case "getuser":
+		result, err = h.glodokSvc.GetUser(ctx, r.FormValue("userid"))
 
 	}
 

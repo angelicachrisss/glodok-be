@@ -1461,3 +1461,48 @@ func (s Service) SubmitLoginML(ctx context.Context, userid string, pass string) 
 	result = "Berhasil Login"
 	return result, err
 }
+
+
+func (s Service) GetUser(ctx context.Context,userid string) (glodokEntity.TableUser, error) {
+
+	user, err := s.glodok.GetUser(ctx,userid)
+
+	if err != nil {
+		return user, errors.Wrap(err, "[Service][GetUser]")
+	}
+
+	return user, nil
+}
+
+func (s Service) UpdateUser(ctx context.Context, user glodokEntity.TableUser, userid string) (string, error) {
+	var (
+		result string
+	)
+	result, err := s.glodok.UpdateUser(ctx, user, userid)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][UpdateUser]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) DeleteReviewByUser(ctx context.Context) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteReviewByUser(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteReviewByUser]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
