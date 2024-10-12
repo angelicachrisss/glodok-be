@@ -145,6 +145,9 @@ type Data interface {
 	GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 	InsertUser(ctx context.Context, user glodokEntity.TableUser) (string, error)
 	SubmitLoginML(ctx context.Context, userid string, pass string) (string, error)
+	GetUser(ctx context.Context, userid string) (glodokEntity.TableUser, error)
+	UpdateUser(ctx context.Context, user glodokEntity.TableUser, userid string) (string, error)
+	DeleteReviewByUser(ctx context.Context) (string, error)
 }
 
 type Service struct {

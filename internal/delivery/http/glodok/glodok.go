@@ -122,6 +122,9 @@ type IglodokSvc interface {
 	GetJenisDestinasiML(ctx context.Context) ([]glodokEntity.TableJenisDestinasi, error)
 	GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 	SubmitLoginML(ctx context.Context, userid string, pass string) (string, error)
+	GetUser(ctx context.Context,userid string) (glodokEntity.TableUser, error) 
+	UpdateUser(ctx context.Context, user glodokEntity.TableUser, userid string) (string, error)
+	DeleteReviewByUser(ctx context.Context) (string, error)
 }
 
 type (

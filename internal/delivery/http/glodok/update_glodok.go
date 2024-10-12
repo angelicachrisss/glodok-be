@@ -202,6 +202,11 @@ func (h *Handler) UpdateGlodok(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		json.Unmarshal(body, &pemberhentian)
 		result, err = h.glodokSvc.UpdatePemberhentian(ctx, pemberhentian, r.FormValue("pemberhentianid"))
+	case "updateuser":
+		var user glodokEntity.TableUser
+		body, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(body, &user)
+		result, err = h.glodokSvc.UpdateUser(ctx, user, r.FormValue("userid"))
 	}
 
 	if err != nil {

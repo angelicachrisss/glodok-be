@@ -33,6 +33,7 @@ func saveImageToFile(imageBytes []byte, filePath string) error {
 }
 
 var url = "http://localhost:8080"
+// var url = "https://heavy-moments-check.loca.lt"
 
 // Fungsi untuk menghasilkan URL gambar
 func generateImageURL(id string) string {
@@ -3234,4 +3235,66 @@ func (d Data) SubmitLoginML(ctx context.Context, userid string, pass string) (st
 	}
 	result = "Login successful"
 	return result, nil
+}
+
+func (d Data) GetUser(ctx context.Context, userid string) (glodokEntity.TableUser, error) {
+	var (
+		user glodokEntity.TableUser
+		err  error
+	)
+
+	rows, err := (*d.stmt)[getUser].QueryxContext(ctx, userid)
+	if err != nil {
+		return user, errors.Wrap(err, "[DATA] [GetUser]")
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		if err = rows.StructScan(&user); err != nil {
+			return user, errors.Wrap(err, "[DATA] [GetUser]")
+		}
+	} else {
+		return user, nil
+	}
+
+	return user, err
+}
+
+func (d Data) UpdateUser(ctx context.Context, user glodokEntity.TableUser, userid string) (string, error) {
+	var result string
+
+	// Generate a hashed password
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(user.UserPass), bcrypt.DefaultCost)
+	if err != nil {
+		result = "Failed to generate hashed password"
+		return result, errors.Wrap(err, "[DATA][UpdateUser]")
+	}
+
+	// Update the hashed password in the database
+	_, err = (*d.stmt)[updateUser].ExecContext(ctx, user.UserName, string(hashedPass), userid)
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][UpdateUser]")
+	}
+
+	result = "Berhasil"
+	return result, nil
+}
+
+func (d Data) DeleteReviewByUser(ctx context.Context) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteReviewByUser].ExecContext(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteReviewByUser]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
 }
