@@ -203,7 +203,8 @@ const (
     r.tujuan_id,
     tu.tujuan_awal,
     tu.tujuan_akhir,
-    r.rute_no
+    r.rute_no,
+	r.rute_link
 	FROM 
     t_rutetransportasi r
 	JOIN 
@@ -227,7 +228,8 @@ const (
     r.tujuan_id,
     tu.tujuan_awal,
     tu.tujuan_akhir,
-    r.rute_no
+    r.rute_no,
+	r.rute_link
 	FROM 
     t_rutetransportasi r
 	JOIN 
@@ -459,7 +461,7 @@ const (
 
 	//--rutetransportasi
 	insertRuteTransportasi  = "InsertRuteTransportasi"
-	qInsertRuteTransportasi = `INSERT INTO t_rutetransportasi (rute_id, tipetransportasi_id, pemberhentian_id, tujuan_id, rute_no) VALUES (?,?,?,?,?)`
+	qInsertRuteTransportasi = `INSERT INTO t_rutetransportasi (rute_id, tipetransportasi_id, pemberhentian_id, tujuan_id, rute_no, rute_link) VALUES (?,?,?,?,?,?)`
 
 	//berita
 	insertBerita  = "InsertBerita"
@@ -494,7 +496,7 @@ const (
 	qUpdateTipeTransportasi = `UPDATE t_tipetransportasi SET tipetransportasi_name =?  WHERE tipetransportasi_id =?`
 
 	updateRuteTransportasi  = "UpdateRuteTransportasi"
-	qUpdateRuteTransportasi = `UPDATE t_rutetransportasi SET pemberhentian_id = ?, rute_no = ? WHERE rute_id =?`
+	qUpdateRuteTransportasi = `UPDATE t_rutetransportasi SET pemberhentian_id = ?, rute_no = ?, rute_link = ? WHERE rute_id =?`
 
 	updateDestinasi  = "UpdateDestinasi"
 	qUpdateDestinasi = `UPDATE t_destinasi SET destinasi_name =?, destinasi_desc =?, destinasi_gambar =?, destinasi_hbuka =?, destinasi_htutup =?, destinasi_jbuka =?, destinasi_jtutup =?, destinasi_labelhalalyn =?,destinasi_otentikyn =? WHERE destinasi_id =?`
@@ -619,7 +621,8 @@ const (
     r.tujuan_id,
     tu.tujuan_awal,
     tu.tujuan_akhir,
-    r.rute_no
+    r.rute_no,
+	r.rute_link
 	FROM 
     t_rutetransportasi r
 	JOIN 
