@@ -33,6 +33,7 @@ func saveImageToFile(imageBytes []byte, filePath string) error {
 }
 
 var url = "http://localhost:8080"
+
 // var url = "https://heavy-moments-check.loca.lt"
 
 // Fungsi untuk menghasilkan URL gambar
@@ -1050,6 +1051,7 @@ func (d Data) InsertRuteTransportasi(ctx context.Context, rutetransportasi glodo
 		rutetransportasi.PemberhentianID,
 		rutetransportasi.TujuanID,
 		rutetransportasi.RuteNoBus,
+		rutetransportasi.RuteLink,
 	)
 
 	if err != nil {
@@ -1197,6 +1199,7 @@ func (d Data) UpdateRuteTransportasi(ctx context.Context, rutetransportasi glodo
 	_, err = (*d.stmt)[updateRuteTransportasi].ExecContext(ctx,
 		rutetransportasi.PemberhentianID,
 		rutetransportasi.RuteNoBus,
+		rutetransportasi.RuteLink,
 		ruteid)
 
 	if err != nil {

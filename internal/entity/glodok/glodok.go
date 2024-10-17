@@ -49,6 +49,7 @@ type TableRuteTransportasi struct {
 	PemberhentianNama        string `db:"pemberhentian_name" json:"pemberhentian_name"`
 	PemberhentianPerbaikanYN string `db:"pemberhentian_perbaikanyn" json:"pemberhentian_perbaikanyn"`
 	RuteNoBus                string `db:"rute_no" json:"rute_no"`
+	RuteLink                 string `db:"rute_link" json:"rute_link"`
 }
 
 type TableReview struct {
