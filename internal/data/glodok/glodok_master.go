@@ -33,7 +33,8 @@ func saveImageToFile(imageBytes []byte, filePath string) error {
 }
 
 // var url = "http://localhost:8080"
-var url = "http://103.127.99.8:8080"
+// var url = "http://103.127.99.8:8080"
+var url = "https://glodok.icu"
 
 // var url = "https://heavy-moments-check.loca.lt"
 
