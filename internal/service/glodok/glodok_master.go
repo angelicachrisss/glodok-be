@@ -1506,3 +1506,71 @@ func (s Service) DeleteReviewByUser(ctx context.Context) (string, error) {
 
 	return result, err
 }
+
+func (s Service) DeleteRuteByTujuan(ctx context.Context) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteRuteByTujuan(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteRuteByTujuan]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) DeleteRuteByTipe(ctx context.Context) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteRuteByTipe(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteRuteByTipe]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) DeletePemberhentianByTipe(ctx context.Context) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeletePemberhentianByTipe(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeletePemberhentianByTipe]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (s Service) DeleteTujuanByTipe(ctx context.Context) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteTujuanByTipe(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteTujuanByTipe]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
