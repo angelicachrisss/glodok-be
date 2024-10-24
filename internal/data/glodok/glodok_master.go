@@ -3301,3 +3301,77 @@ func (d Data) DeleteReviewByUser(ctx context.Context) (string, error) {
 
 	return result, err
 }
+
+func (d Data) DeleteRuteByTujuan(ctx context.Context) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteRuteByTujuan].ExecContext(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteRuteByTujuan]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (d Data) DeleteRuteByTipe(ctx context.Context) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteRuteByTipe].ExecContext(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteRuteByTipe]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (d Data) DeletePemberhentianByTipe(ctx context.Context) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deletePemberhentianByTipe].ExecContext(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeletePemberhentianByTipe]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+func (d Data) DeleteTujuanByTipe(ctx context.Context) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteTujuanByTipe].ExecContext(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteTujuanByTipe]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+

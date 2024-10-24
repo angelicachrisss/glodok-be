@@ -108,6 +108,10 @@ type IglodokSvc interface {
 	DeletePemberhentian(ctx context.Context, pemberhentianid string) (string, error)
 	DeleteRuteByPemberhentian(ctx context.Context) (string, error)
 	DeleteUser(ctx context.Context, userid string) (string, error)
+	DeleteRuteByTujuan(ctx context.Context) (string, error)
+	DeleteRuteByTipe(ctx context.Context) (string, error)
+	DeletePemberhentianByTipe(ctx context.Context) (string, error)
+	DeleteTujuanByTipe(ctx context.Context) (string, error)
 
 	//for masyarakat
 	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)
@@ -122,7 +126,7 @@ type IglodokSvc interface {
 	GetJenisDestinasiML(ctx context.Context) ([]glodokEntity.TableJenisDestinasi, error)
 	GetDestinasiDDML(ctx context.Context) ([]glodokEntity.TableDestinasi, error)
 	SubmitLoginML(ctx context.Context, userid string, pass string) (string, error)
-	GetUser(ctx context.Context,userid string) (glodokEntity.TableUser, error) 
+	GetUser(ctx context.Context, userid string) (glodokEntity.TableUser, error)
 	UpdateUser(ctx context.Context, user glodokEntity.TableUser, userid string) (string, error)
 	DeleteReviewByUser(ctx context.Context) (string, error)
 }

@@ -59,6 +59,14 @@ func (h *Handler) DeleteGlodok(w http.ResponseWriter, r *http.Request) {
 		result, err = h.glodokSvc.DeleteUser(ctx, (r.FormValue("userid")))
 	case "deletereviewbyuser":
 		result, err = h.glodokSvc.DeleteReviewByUser(ctx)
+	case "deleterutebytujuan":
+		result, err = h.glodokSvc.DeleteRuteByTujuan(ctx)
+	case "deleterutebytipe":
+		result, err = h.glodokSvc.DeleteRuteByTipe(ctx)
+	case "deletepemberhentianbytipe":
+		result, err = h.glodokSvc.DeletePemberhentianByTipe(ctx)
+	case "deletetujuanbytipe":
+		result, err = h.glodokSvc.DeleteTujuanByTipe(ctx)
 	}
 
 	if err != nil {
