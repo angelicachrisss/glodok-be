@@ -67,6 +67,8 @@ func (h *Handler) DeleteGlodok(w http.ResponseWriter, r *http.Request) {
 		result, err = h.glodokSvc.DeletePemberhentianByTipe(ctx)
 	case "deletetujuanbytipe":
 		result, err = h.glodokSvc.DeleteTujuanByTipe(ctx)
+	case "deletedestinasibyjenis":
+		result, err = h.glodokSvc.DeleteDestinasiByJenis(ctx)
 	}
 
 	if err != nil {

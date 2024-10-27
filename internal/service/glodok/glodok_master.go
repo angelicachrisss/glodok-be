@@ -1574,3 +1574,19 @@ func (s Service) DeleteTujuanByTipe(ctx context.Context) (string, error) {
 
 	return result, err
 }
+func (s Service) DeleteDestinasiByJenis(ctx context.Context) (string, error) {
+
+	var (
+		result string
+	)
+	_, err := s.glodok.DeleteDestinasiByJenis(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[Service][DeleteDestinasiByJenis]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}

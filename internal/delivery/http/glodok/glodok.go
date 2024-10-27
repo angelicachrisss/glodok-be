@@ -112,6 +112,7 @@ type IglodokSvc interface {
 	DeleteRuteByTipe(ctx context.Context) (string, error)
 	DeletePemberhentianByTipe(ctx context.Context) (string, error)
 	DeleteTujuanByTipe(ctx context.Context) (string, error)
+	DeleteDestinasiByJenis(ctx context.Context) (string, error)
 
 	//for masyarakat
 	GetDestinasiByID(ctx context.Context, destinasiid string) ([]glodokEntity.TableDestinasi, error)
