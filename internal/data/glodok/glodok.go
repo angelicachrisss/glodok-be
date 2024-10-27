@@ -576,13 +576,17 @@ const (
 	qDeleteReviewByUser = `DELETE FROM t_review
 	WHERE user_id NOT IN (SELECT user_id COLLATE utf8mb4_unicode_ci FROM t_user)`
 
-	deletePemberhentianByTipe = "DeletePemberhentianByTipe"
+	deletePemberhentianByTipe  = "DeletePemberhentianByTipe"
 	qDeletePemberhentianByTipe = `DELETE FROM t_pemberhentian
 	WHERE tipetransportasi_id NOT IN (SELECT tipetransportasi_id COLLATE utf8mb4_unicode_ci FROM t_tipetransportasi)`
 
-	deleteTujuanByTipe = "DeleteTujuanByTipe"
+	deleteTujuanByTipe  = "DeleteTujuanByTipe"
 	qDeleteTujuanByTipe = `DELETE FROM t_tujuan
 	WHERE tipetransportasi_id NOT IN (SELECT tipetransportasi_id COLLATE utf8mb4_unicode_ci FROM t_tipetransportasi)`
+
+	deleteDestinasiByJenis  = "DeleteDestinasiByJenis"
+	qDeleteDestinasiByJenis = `DELETE FROM t_destinasi
+	WHERE jenisdestinasi_id NOT IN (SELECT jenisdestinasi_id COLLATE utf8mb4_unicode_ci FROM t_jenisdestinasi)`
 
 	//FOR MASYARAKAT
 	//destinasi
@@ -882,6 +886,7 @@ var (
 		{deleteReviewByUser, qDeleteReviewByUser},
 		{deletePemberhentianByTipe,qDeletePemberhentianByTipe},
 		{deleteTujuanByTipe,qDeleteTujuanByTipe},
+		{deleteDestinasiByJenis, qDeleteDestinasiByJenis},
 	}
 )
 

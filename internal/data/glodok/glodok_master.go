@@ -3374,4 +3374,24 @@ func (d Data) DeleteTujuanByTipe(ctx context.Context) (string, error) {
 	return result, err
 }
 
+func (d Data) DeleteDestinasiByJenis(ctx context.Context) (string, error) {
+	var (
+		err    error
+		result string
+	)
+
+	_, err = (*d.stmt)[deleteDestinasiByJenis].ExecContext(ctx)
+
+	if err != nil {
+		result = "Gagal"
+		return result, errors.Wrap(err, "[DATA][DeleteDestinasiByJenis]")
+	}
+
+	result = "Berhasil"
+
+	return result, err
+}
+
+
+
 
