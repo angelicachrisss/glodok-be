@@ -1,8 +1,7 @@
 server:
   port: ":8080"
 database:
-  # master: "root:@tcp(localhost:3306)/glodok"
-   master: "u868654674_glodok:AngelicaCantik123@tcp(srv1155.hstgr.io:3306)/u868654674_glodok"
+  master: "root:@tcp(localhost:3306)/u868654674_glodok"
 swagger:
   host: "localhost:8080"
   schemes:
